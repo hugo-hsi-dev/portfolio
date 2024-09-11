@@ -14,7 +14,7 @@ export default async function RootPage() {
 
   let src: StaticImageData | string = image.url || ''
 
-  src = `${process.env.NEXT_PUBLIC_SERVER_URL}${src}`
+  src = `${process.env.NEXT_PUBLIC_VERCEL_URL}${src}`
 
   return (
     <div>
