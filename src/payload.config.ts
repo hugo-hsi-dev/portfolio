@@ -10,6 +10,7 @@ import { Projects } from '@/collections/Projects'
 import { Skills } from '@/collections/Skills'
 import { Contact } from '@/globals/Contact'
 import { Meta } from '@/globals/Meta'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users'
 
@@ -38,5 +39,14 @@ export default buildConfig({
   sharp,
   plugins: [
     // storage-adapter-placeholder
+    vercelBlobStorage({
+      enabled: true, // Optional, defaults to true
+      // Specify which collections should use Vercel Blob
+      collections: {
+        [Media.slug]: true,
+      },
+      // Token provided by Vercel once Blob storage is added to your Vercel project
+      token: process.env.BLOB_READ_WRITE_TOKEN ?? '',
+    }),
   ],
 })

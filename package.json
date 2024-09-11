@@ -19,6 +19,7 @@
     "@payloadcms/next": "beta",
     "@payloadcms/plugin-cloud": "beta",
     "@payloadcms/richtext-lexical": "beta",
+    "@payloadcms/storage-vercel-blob": "beta",
     "babel-plugin-react-compiler": "0.0.0-experimental-2bc6fec-20240910",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
