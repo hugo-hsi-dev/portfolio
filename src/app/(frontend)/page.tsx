@@ -8,11 +8,18 @@ export default async function RootPage() {
     slug: 'meta',
   })
 
+  console.log(openGraphImage)
+
   const image = openGraphImage as Media
 
   return (
     <div>
-      <Image src={image.url!} alt={image.alt} width={240} height={240} />
+      <Image
+        src={`${process.env.NEXT_PUBLIC_SERVER_URL}${image.url!}`}
+        alt={image.alt}
+        width={240}
+        height={240}
+      />
     </div>
   )
 }
