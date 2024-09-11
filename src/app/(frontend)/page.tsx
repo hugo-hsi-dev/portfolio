@@ -14,12 +14,7 @@ export default async function RootPage() {
 
   return (
     <div>
-      <Image
-        src={`${process.env.NEXT_PUBLIC_SERVER_URL}${image.url!}`}
-        alt={image.alt}
-        width={240}
-        height={240}
-      />
+      <Image src={image.url!} alt={image.alt} width={240} height={240} />
     </div>
   )
 }
