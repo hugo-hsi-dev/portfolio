@@ -162,6 +162,7 @@ export interface Meta {
   title: string;
   description: string;
   favicon: number | Media;
+  openGraphImage: number | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

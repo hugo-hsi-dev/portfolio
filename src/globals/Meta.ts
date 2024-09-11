@@ -25,5 +25,14 @@ export const Meta: GlobalConfig = {
         mimeType: { contains: 'image' },
       },
     },
+    {
+      name: 'openGraphImage',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+      filterOptions: {
+        mimeType: { contains: 'image' },
+      },
+    },
   ],
 }

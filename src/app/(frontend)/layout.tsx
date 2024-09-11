@@ -4,16 +4,21 @@ import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { Metadata } from 'next'
 export async function generateMetadata(): Promise<Metadata> {
   const payload = await getPayloadHMR({ config })
-  const { title, description, favicon } = await payload.findGlobal({
+  const { title, description, favicon, openGraphImage } = await payload.findGlobal({
     slug: 'meta',
   })
 
+  // to satisfy Payloads type generation, as favicon variable could potentially be a number
   const { url: icons } = favicon as Media
+  const { url: images } = openGraphImage as Media
 
   return {
     title,
     description,
     icons,
+    openGraph: {
+      images: images ?? '',
+    },
   }
 }
 
