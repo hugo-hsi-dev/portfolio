@@ -8,6 +8,7 @@ import { fileURLToPath } from 'url'
 
 import { Projects } from '@/collections/Projects'
 import { Skills } from '@/collections/Skills'
+import { AboutMe } from '@/globals/AboutMe'
 import { Contact } from '@/globals/Contact'
 import { Meta } from '@/globals/Meta'
 import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
@@ -25,7 +26,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Skills, Projects],
-  globals: [Meta, Contact],
+  globals: [Meta, AboutMe, Contact],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

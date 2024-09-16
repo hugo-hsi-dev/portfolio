@@ -23,6 +23,7 @@ export interface Config {
   };
   globals: {
     meta: Meta;
+    aboutMe: AboutMe;
     contacts: Contact;
   };
   locale: null;
@@ -163,6 +164,16 @@ export interface Meta {
   description: string;
   favicon: number | Media;
   openGraphImage: number | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "aboutMe".
+ */
+export interface AboutMe {
+  id: number;
+  content: string;
   updatedAt?: string | null;
   createdAt?: string | null;
 }

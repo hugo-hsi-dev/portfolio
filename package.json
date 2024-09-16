@@ -15,6 +15,7 @@
     "start": "cross-env NODE_OPTIONS=--no-deprecation next start"
   },
   "dependencies": {
+    "@formkit/auto-animate": "^0.8.2",
     "@payloadcms/db-postgres": "beta",
     "@payloadcms/next": "beta",
     "@payloadcms/plugin-cloud": "beta",
@@ -22,6 +23,7 @@
     "@payloadcms/storage-vercel-blob": "beta",
     "@tailwindcss/postcss": "4.0.0-alpha.23",
     "babel-plugin-react-compiler": "0.0.0-experimental-2bc6fec-20240910",
+    "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",
     "framer-motion": "12.0.0-alpha.0",
@@ -32,6 +34,7 @@
     "react": "19.0.0-rc-06d0b89e-20240801",
     "react-dom": "19.0.0-rc-06d0b89e-20240801",
     "sharp": "0.32.6",
+    "tailwind-merge": "^2.5.2",
     "tailwindcss": "4.0.0-alpha.23"
   },
   "devDependencies": {

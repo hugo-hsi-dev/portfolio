@@ -3,8 +3,16 @@ import config from '@payload-config'
 import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { Metadata } from 'next'
 
+import { Manrope } from 'next/font/google'
+
 import SideNav from '@/components/sideNav/SideNav'
+import ExpandedBlockContextProvider from '@/contexts/ExpandedBlockContext'
 import '@/styles/main.css'
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  display: 'swap',
+})
 
 export async function generateMetadata(): Promise<Metadata> {
   const payload = await getPayloadHMR({ config })
@@ -28,12 +36,14 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
+    <html lang="en" className={manrope.className}>
       <body>
-        <div className="fixed left-0 top-1/2 -translate-y-2/4">
-          <SideNav />
-        </div>
-        {children}
+        <ExpandedBlockContextProvider>
+          <div className="fixed left-0 top-1/2 -translate-y-2/4">
+            <SideNav />
+          </div>
+          {children}
+        </ExpandedBlockContextProvider>
       </body>
     </html>
   )
