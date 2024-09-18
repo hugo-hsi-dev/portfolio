@@ -3,7 +3,9 @@
 import {
   ComponentProps,
   createContext,
+  createRef,
   Dispatch,
+  RefObject,
   SetStateAction,
   useContext,
   useState,
@@ -12,9 +14,11 @@ import {
 type ExpandedBlockContextType = {
   expandedBlock?: string
   setExpandedBlock: Dispatch<SetStateAction<string | undefined>>
+  ref: RefObject<HTMLDivElement | null>
 } | null
 
 const ExpandedBlockContext = createContext<ExpandedBlockContextType>(null)
+const ref = createRef<HTMLDivElement>()
 
 export function useExpandedBlockContext() {
   const context = useContext(ExpandedBlockContext)
@@ -31,6 +35,7 @@ type ExpandedBlockContextProviderProps = Omit<
 
 export default function ExpandedBlockContextProvider(props: ExpandedBlockContextProviderProps) {
   const [expandedBlock, setExpandedBlock] = useState<undefined | string>()
-
-  return <ExpandedBlockContext.Provider value={{ expandedBlock, setExpandedBlock }} {...props} />
+  return (
+    <ExpandedBlockContext.Provider value={{ expandedBlock, setExpandedBlock, ref }} {...props} />
+  )
 }

@@ -2,9 +2,13 @@ import { cn } from '@/lib/classNameMerge'
 import { motion } from 'framer-motion'
 import { ComponentProps, PropsWithChildren } from 'react'
 
-type ContactListIconProps = ComponentProps<typeof motion.button> & PropsWithChildren
+type ContactExpandedIconProps = ComponentProps<typeof motion.button> & PropsWithChildren
 
-export default function ContactListIcon({ children, className, ...props }: ContactListIconProps) {
+export default function ContactExpandedIcon({
+  children,
+  className,
+  ...props
+}: ContactExpandedIconProps) {
   return (
     <div className="relative w-[100px] h-[100px]">
       <motion.button

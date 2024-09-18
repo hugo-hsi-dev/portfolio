@@ -1,8 +1,8 @@
 import { cn } from '@/lib/classNameMerge'
 import { ComponentProps } from 'react'
 
-type ContactListURLProps = ComponentProps<'button'>
+type ContactExpandedUrlProps = ComponentProps<'button'>
 
-export default function ContactListURL({ className, ...props }: ContactListURLProps) {
+export default function ContactExpandedUrl({ className, ...props }: ContactExpandedUrlProps) {
   return <button className={cn('text-4xl font-bold', className)} {...props} />
 }

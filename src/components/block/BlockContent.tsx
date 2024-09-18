@@ -50,15 +50,14 @@ export default function BlockContent({
   rows = 1,
   ...props
 }: BlockContentProps) {
-  const { expandedBlock, setExpandedBlock } = useExpandedBlockContext()
+  const { expandedBlock, setExpandedBlock, ref } = useExpandedBlockContext()
   const { highlightBlock, setHighlightBlock } = useHighlightBlockContext()
   const isExpanded = expandedBlock === id
-
-  console.log(id)
 
   if (!isExpanded) {
     return (
       <motion.div
+        ref={ref}
         className={cn(
           `p-12 transition-shadow aspect-square ${highlightBlock && !isExpanded && 'ring-8 ring-offset-8 ring-fuchsia-500'} ${getColumns(cols)} ${getRows(rows)}`,
           className,
@@ -74,6 +73,7 @@ export default function BlockContent({
   }
   return (
     <motion.div
+      ref={ref}
       className={cn(
         `p-12 transition-shadow ${highlightBlock && isExpanded && 'ring-8 ring-offset-8 ring-sky-500'} aspect-[3/2] col-span-3 row-span-2`,
         className,

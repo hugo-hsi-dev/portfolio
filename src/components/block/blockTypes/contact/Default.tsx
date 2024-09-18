@@ -1,42 +1,45 @@
 'use client'
 
 import BlockOpenTrigger from '@/components/block/BlockOpenTrigger'
-import ContactButton from '@/components/block/blockTypes/contact/ContactButton'
+import EmailButton from '@/components/block/blockTypes/contact/defaultButtons/buttons/EmailDefaultButton'
+import GithubButton from '@/components/block/blockTypes/contact/defaultButtons/buttons/GithubDefaultButton'
+import LinkedinButton from '@/components/block/blockTypes/contact/defaultButtons/buttons/LinkedinDefaultButton'
+import { liVariants } from '@/components/block/blockTypes/contact/variants'
+
+import { useContactBlockContext } from '@/contexts/ContactBlockContext'
 import { useExpandedBlockContext } from '@/contexts/ExpandedBlockContext'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Github, Linkedin, Mail, Plus } from 'lucide-react'
-import Link from 'next/link'
-import { useState } from 'react'
+import { Plus } from 'lucide-react'
 
 type DefaultProps = {
   email: string
   githubUrl: string
   linkedinUrl: string
 }
-export default function Default({ email, githubUrl, linkedinUrl }: DefaultProps) {
-  const [hoveredItem, setHoveredItem] = useState<undefined | string>()
-  const [isCopied, setIsCopied] = useState(false)
-  const { expandedBlock, setExpandedBlock } = useExpandedBlockContext()
 
-  function handleEmailClick() {
-    navigator.clipboard.writeText(email)
-    setIsCopied(true)
-  }
+export default function Default({ email, githubUrl, linkedinUrl }: DefaultProps) {
+  const { expandedBlock, setExpandedBlock } = useExpandedBlockContext()
+  const { hoveredItem, isCopied } = useContactBlockContext()
 
   return (
-    <div>
-      <ul className="grid grid-cols-2 grid-row-2 gap-12">
-        <button onClick={handleEmailClick}>
-          <ContactButton item="Email" setState={setHoveredItem} setIsCopied={setIsCopied}>
-            <Mail />
-          </ContactButton>
-        </button>
-        <Link href={githubUrl} target="_blank">
-          <ContactButton item="Github" setState={setHoveredItem} setIsCopied={setIsCopied}>
-            <Github />
-          </ContactButton>
-        </Link>
-        <li className="aspect-square flex justify-center items-center relative">
+    <AnimatePresence key="test">
+      <motion.ul
+        initial={'hidden'}
+        animate={'show'}
+        exit={'hidden'}
+        transition={{ staggerChildren: 0.1, delayChildren: 0.3 }}
+        className="grid grid-cols-2 grid-row-2 gap-12"
+      >
+        <motion.li variants={liVariants}>
+          <EmailButton />
+        </motion.li>
+        <motion.li variants={liVariants}>
+          <GithubButton />
+        </motion.li>
+        <motion.li
+          className="aspect-square flex justify-center items-center relative"
+          variants={liVariants}
+        >
           <BlockOpenTrigger className="rounded-full">
             <motion.div
               className="w-[50px] h-[50px] bg-fuchsia-500 flex justify-center items-center rounded-full"
@@ -58,13 +61,11 @@ export default function Default({ email, githubUrl, linkedinUrl }: DefaultProps)
               </motion.div>
             )}
           </AnimatePresence>
-        </li>
-        <Link href={linkedinUrl} target="_blank">
-          <ContactButton item="Linkedin" setState={setHoveredItem} setIsCopied={setIsCopied}>
-            <Linkedin />
-          </ContactButton>
-        </Link>
-      </ul>
-    </div>
+        </motion.li>
+        <motion.li variants={liVariants}>
+          <LinkedinButton />
+        </motion.li>
+      </motion.ul>
+    </AnimatePresence>
   )
 }
