@@ -58,11 +58,11 @@ export default function BlockContent({
     return (
       <motion.div
         ref={ref}
+        key={id}
         className={cn(
           `p-12 transition-shadow aspect-square ${highlightBlock && !isExpanded && 'ring-8 ring-offset-8 ring-fuchsia-500'} ${getColumns(cols)} ${getRows(rows)}`,
           className,
         )}
-        layout
         layoutId={id}
         {...props}
         style={{ borderRadius: 24 }}
@@ -74,11 +74,11 @@ export default function BlockContent({
   return (
     <motion.div
       ref={ref}
+      key={id}
       className={cn(
         `p-12 transition-shadow ${highlightBlock && isExpanded && 'ring-8 ring-offset-8 ring-sky-500'} aspect-[3/2] col-span-3 row-span-2`,
         className,
       )}
-      layout
       layoutId={id}
       {...props}
       style={{ borderRadius: 24 }}

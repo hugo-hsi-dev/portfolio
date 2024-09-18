@@ -1,6 +1,7 @@
 import BentoGrid from '@/components/bentoGrid/BentoGrid'
 import Contact from '@/components/block/blockTypes/contact/Contact'
 import Hero from '@/components/block/blockTypes/hero/Hero'
+import Projects from '@/components/block/blockTypes/project/Projects'
 import Container from '@/components/container/Container'
 import { payload } from '@/lib/getPayload'
 import { Media } from '@/payload-types'
@@ -17,6 +18,7 @@ export default async function RootPage() {
         <BentoGrid>
           <Hero />
           <Contact />
+          <Projects />
           {/* <Image src={formatImageSource(image.url)} alt={image.alt} width={240} height={240} /> */}
         </BentoGrid>
       </Container>

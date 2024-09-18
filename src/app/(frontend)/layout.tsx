@@ -1,12 +1,11 @@
 import { Media } from '@/payload-types'
-import config from '@payload-config'
-import { getPayloadHMR } from '@payloadcms/next/utilities'
 import { Metadata } from 'next'
 
 import { Manrope } from 'next/font/google'
 
 import SideNav from '@/components/sideNav/SideNav'
 import ExpandedBlockContextProvider from '@/contexts/ExpandedBlockContext'
+import { payload } from '@/lib/getPayload'
 import '@/styles/main.css'
 
 const manrope = Manrope({
@@ -15,7 +14,6 @@ const manrope = Manrope({
 })
 
 export async function generateMetadata(): Promise<Metadata> {
-  const payload = await getPayloadHMR({ config })
   const { title, description, favicon, openGraphImage } = await payload.findGlobal({
     slug: 'meta',
   })
@@ -37,12 +35,12 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={manrope.className}>
-      <body>
+      <body className="scroll-smooth">
         <ExpandedBlockContextProvider>
           <div className="fixed left-0 top-1/2 -translate-y-2/4">
             <SideNav />
           </div>
-          {children}
+          <main className="mt-20">{children}</main>
         </ExpandedBlockContextProvider>
       </body>
     </html>
