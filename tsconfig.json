@@ -29,7 +29,7 @@
     "**/*.ts",
     "**/*.tsx",
     ".next/types/**/*.ts",
-    "src/components/block/blockTypes/contact/contactButton(default)"
+    "src/components/blocks/blockTypes/contact/contactButton(default)"
   ],
   "exclude": ["node_modules"]
 }

@@ -1,0 +1,26 @@
+import Block from '@/components/blocks/Block'
+import Default from '@/components/blocks/blockTypes/contact/Default'
+import Expanded from '@/components/blocks/blockTypes/contact/Expanded'
+import { payload } from '@/lib/getPayload'
+import ButtonHoverContextProvider from './contexts/ButtonHoverContext'
+import ContactDataProvider from './contexts/ContactDataContext'
+import ContactDataContextProvider from './contexts/ContactDataContext'
+
+export default async function Contact() {
+  const contactData = await payload.findGlobal({
+    slug: 'contacts',
+  })
+
+  return (
+    <ContactDataContextProvider {...contactData}>
+      <ButtonHoverContextProvider>
+        <Block
+          id="contact"
+          className="bg-zinc-200"
+          defaultComponent={<Default />}
+          expandedComponent={<Expanded />}
+        />
+      </ButtonHoverContextProvider>
+    </ContactDataContextProvider>
+  )
+}
