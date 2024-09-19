@@ -24,6 +24,7 @@
     "@radix-ui/react-slot": "^1.1.0",
     "@tailwindcss/postcss": "4.0.0-alpha.23",
     "babel-plugin-react-compiler": "0.0.0-experimental-2bc6fec-20240910",
+    "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cross-env": "^7.0.3",
     "dotenv": "^16.4.5",

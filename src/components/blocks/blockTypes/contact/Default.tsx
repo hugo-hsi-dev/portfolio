@@ -21,9 +21,11 @@ export default function Default() {
         </div>
       </div>
       <div className="flex justify-between items-end w-full">
-        <CopyEmailTrigger>
-          <ContactHoverTrigger id="Email">
-            <Mail />
+        <CopyEmailTrigger asChild>
+          <ContactHoverTrigger id="Email" asChild>
+            <Button>
+              <Mail />
+            </Button>
           </ContactHoverTrigger>
         </CopyEmailTrigger>
         <ContactHoverTrigger id="Github">
