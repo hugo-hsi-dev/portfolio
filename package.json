@@ -21,6 +21,7 @@
     "@payloadcms/plugin-cloud": "beta",
     "@payloadcms/richtext-lexical": "beta",
     "@payloadcms/storage-vercel-blob": "beta",
+    "@radix-ui/react-slot": "^1.1.0",
     "@tailwindcss/postcss": "4.0.0-alpha.23",
     "babel-plugin-react-compiler": "0.0.0-experimental-2bc6fec-20240910",
     "clsx": "^2.1.1",

@@ -3,12 +3,17 @@
 import { useExpandedBlockContext } from '@/components/blocks/contexts/ExpandedBlockContext'
 import { useHighlightBlockContext } from '@/components/blocks/contexts/HighlightBlockContext'
 import { ComponentProps } from 'react'
+import { Slot } from '@radix-ui/react-slot'
 
-type BlockOpenTriggerProps = ComponentProps<'button'>
+type BlockOpenTriggerProps = ComponentProps<'button'> & {
+  asChild?: boolean
+}
 
-export default function BlockOpenTrigger(props: BlockOpenTriggerProps) {
+export default function BlockOpenTrigger({ asChild, ...props }: BlockOpenTriggerProps) {
   const { id, highlightBlock, setHighlightBlock } = useHighlightBlockContext()
   const { expandedBlock, setExpandedBlock, ref } = useExpandedBlockContext()
+
+  const Component = asChild ? Slot : 'button'
 
   function handleExpandBlock() {
     setExpandedBlock(id)
@@ -27,7 +32,7 @@ export default function BlockOpenTrigger(props: BlockOpenTriggerProps) {
   }
 
   return (
-    <button
+    <Component
       {...props}
       onMouseOver={() => setHighlightBlock(true)}
       onMouseOut={() => setHighlightBlock(false)}
