@@ -1,5 +1,26 @@
 @import 'tailwindcss';
 
+@layer components {
+  .display {
+    @apply text-4xl @xs:text-5xl @sm:text-6xl @md:text-7xl @lg:text-7xl @xl:text-8xl @2xl:text-8xl tracking-tight leading-none font-black;
+  }
+  .lg {
+    @apply text-xl @xs:text-2xl @sm:text-3xl @md:text-4xl @lg:text-4xl @xl:text-5xl @2xl:text-5xl tracking-tight leading-none font-bold;
+  }
+  .md {
+    @apply text-2xl font-medium;
+  }
+  .sm {
+    @apply text-xl font-normal;
+  }
+  .muted {
+    @apply text-zinc-500;
+  }
+  .muted-bg {
+    @apply bg-zinc-500;
+  }
+}
+
 button {
   cursor: pointer;
 }

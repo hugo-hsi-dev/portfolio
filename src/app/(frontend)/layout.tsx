@@ -3,8 +3,8 @@ import { Metadata } from 'next'
 
 import { Manrope } from 'next/font/google'
 
-import SideNav from '@/components/sideNav/SideNav'
 import ExpandedBlockContextProvider from '@/components/blocks/contexts/ExpandedBlockContext'
+import SideNav from '@/components/sideNav/SideNav'
 import { payload } from '@/lib/getPayload'
 import '@/styles/main.css'
 

@@ -2,16 +2,24 @@
 
 import { useExpandedBlockContext } from '@/components/blocks/contexts/ExpandedBlockContext'
 import { useHighlightBlockContext } from '@/components/blocks/contexts/HighlightBlockContext'
-import { ComponentProps } from 'react'
+import { cn } from '@/lib/classNameMerge'
+import { AsChildProps } from '@/types/asChild'
 import { Slot } from '@radix-ui/react-slot'
+import { isValidElement } from 'react'
 
-type BlockOpenTriggerProps = ComponentProps<'button'> & {
-  asChild?: boolean
-}
+type ExpandTriggerProps = AsChildProps<'button'>
 
-export default function BlockOpenTrigger({ asChild, ...props }: BlockOpenTriggerProps) {
+export default function ExpandTrigger({ className, asChild, ...props }: ExpandTriggerProps) {
   const { id, highlightBlock, setHighlightBlock } = useHighlightBlockContext()
   const { expandedBlock, setExpandedBlock, ref } = useExpandedBlockContext()
+
+  if (asChild && !isValidElement(props.children)) {
+    throw new Error('If using asChild, must have a single, valid child')
+  }
+
+  if (expandedBlock) {
+    return <>{props.children}</>
+  }
 
   const Component = asChild ? Slot : 'button'
 
@@ -33,10 +41,11 @@ export default function BlockOpenTrigger({ asChild, ...props }: BlockOpenTrigger
 
   return (
     <Component
-      {...props}
+      className={cn('cursor-pointer', className)}
       onMouseOver={() => setHighlightBlock(true)}
       onMouseOut={() => setHighlightBlock(false)}
       onClick={handleExpandBlock}
+      {...props}
     />
   )
 }
