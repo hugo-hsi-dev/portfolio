@@ -4,7 +4,7 @@ import SideNavItem from '@/components/sideNav/SideNavItem'
 import { motion, Reorder } from 'framer-motion'
 import { MoveVertical } from 'lucide-react'
 import { useState } from 'react'
-const defaultConfig = ['Hero', 'Projects', 'Skills', 'Contact']
+const defaultConfig = ['About', 'Projects', 'Skills', 'Contact']
 
 export default function SideNav() {
   const [navItems, setNavItems] = useState(defaultConfig)
