@@ -3,10 +3,8 @@ import { Metadata } from 'next'
 
 import { Manrope } from 'next/font/google'
 
-import Providers from '@/app/(frontend)/providers'
-import ExpandedBlockContextProvider from '@/components/blocks/contexts/ExpandedBlockContext'
 import SideNav from '@/components/sideNav/SideNav'
-import { payload } from '@/lib/getServerPayload'
+import { payload } from '@/lib/getPayload'
 import '@/styles/main.css'
 import { PropsWithChildren } from 'react'
 
@@ -37,15 +35,11 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en" className={manrope.className}>
-      <body className="scroll-smooth">
-        <Providers>
-          <ExpandedBlockContextProvider>
-            <div className="fixed left-0 top-1/2 -translate-y-2/4">
-              <SideNav />
-            </div>
-            <main className="mt-20">{children}</main>
-          </ExpandedBlockContextProvider>
-        </Providers>
+      <body>
+        <div className="fixed left-0 top-1/2 -translate-y-2/4">
+          <SideNav />
+        </div>
+        <main>{children}</main>
       </body>
     </html>
   )
