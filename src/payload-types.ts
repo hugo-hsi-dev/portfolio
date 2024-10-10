@@ -15,6 +15,7 @@ export interface Config {
     media: Media;
     skills: Skill;
     projects: Project;
+    'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
@@ -116,6 +117,37 @@ export interface Project {
   links: {
     githubUrl: string;
     externalUrl?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "payload-locked-documents".
+ */
+export interface PayloadLockedDocument {
+  id: number;
+  document?:
+    | ({
+        relationTo: 'users';
+        value: number | User;
+      } | null)
+    | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'skills';
+        value: number | Skill;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null);
+  globalSlug?: string | null;
+  user: {
+    relationTo: 'users';
+    value: number | User;
   };
   updatedAt: string;
   createdAt: string;
