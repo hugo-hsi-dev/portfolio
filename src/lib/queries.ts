@@ -85,7 +85,7 @@ export async function getContact() {
   return contactDTO(contact);
 }
 
-export type Contact = ReturnType<typeof contactDTO>;
+export type ContactDTO = ReturnType<typeof contactDTO>;
 
 function contactDTO(contact: Contact) {
   return {

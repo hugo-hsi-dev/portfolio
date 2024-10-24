@@ -2,12 +2,12 @@
 
 import { Heading } from '@/components/Heading';
 import { AuroraBackground } from '@/components/ui/aurora-background';
-import { Contact } from '@/lib/queries';
+import { ContactDTO } from '@/lib/queries';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import Link from 'next/link';
 import { toast } from 'sonner';
 
-export default function FooterComp({ email, githubUrl, linkedinUrl }: Contact) {
+export default function FooterComp({ email, githubUrl, linkedinUrl }: ContactDTO) {
   const { scrollYProgress } = useScroll();
 
   const scale = useTransform(scrollYProgress, [0.8, 1], [0.85, 1]);
