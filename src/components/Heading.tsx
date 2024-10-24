@@ -22,3 +22,5 @@ export const Heading = React.forwardRef<HTMLHeadingElement, HeadingProps>(
     return <Comp className={cn(headingVariants({ level, className }))} ref={ref} {...props} />;
   },
 );
+
+Heading.displayName = 'Heading';
