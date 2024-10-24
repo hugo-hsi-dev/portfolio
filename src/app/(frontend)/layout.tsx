@@ -1,9 +1,11 @@
 import { Media } from '@/payload-types';
 import { Metadata } from 'next';
 
-import BlockIsHighlightedProvider from '@/components/block/BlockIsHighlightingContext';
-import CursorBorder from '@/components/cursorBorder/CursorBorder';
+import Header from '@/components/Header';
+import SheetNav from '@/components/SheetNav';
+import { Toaster } from '@/components/ui/sonner';
 import { payload } from '@/lib/getPayload';
+import Footer from '@/sections/Footer';
 import '@/styles/globals.css';
 import { Manrope } from 'next/font/google';
 import { PropsWithChildren } from 'react';
@@ -35,11 +37,15 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function RootLayout({ children }: PropsWithChildren) {
   return (
     <html lang="en" className={manrope.className}>
-      <body className="my-6">
-        <BlockIsHighlightedProvider>
+      <body className="bg-foreground">
+        <Header />
+        <main className="absolute top-0 left-0 right-0">
           {children}
-          <CursorBorder />
-        </BlockIsHighlightedProvider>
+          <div className="h-[160px] relative -z-50" />
+        </main>
+        <Footer />
+        <SheetNav />
+        <Toaster />
       </body>
     </html>
   );

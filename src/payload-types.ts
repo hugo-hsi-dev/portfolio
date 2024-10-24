@@ -105,12 +105,10 @@ export interface Project {
   id: number;
   title: string;
   description: string;
-  stack?:
-    | {
-        technology?: (number | null) | Skill;
-        id?: string | null;
-      }[]
-    | null;
+  stack: {
+    technology?: (number | null) | Skill;
+    id?: string | null;
+  }[];
   featured: boolean;
   image?: (number | null) | Media;
   content?: string | null;

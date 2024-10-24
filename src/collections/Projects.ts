@@ -1,4 +1,4 @@
-import type { CollectionConfig } from 'payload'
+import type { CollectionConfig } from 'payload';
 
 export const Projects: CollectionConfig = {
   slug: 'projects',
@@ -19,6 +19,7 @@ export const Projects: CollectionConfig = {
     {
       name: 'stack',
       type: 'array',
+      required: true,
       fields: [
         {
           name: 'technology',
@@ -41,9 +42,9 @@ export const Projects: CollectionConfig = {
       admin: {
         condition: (data) => {
           if (data.featured) {
-            return true
+            return true;
           }
-          return false
+          return false;
         },
       },
     },
@@ -54,9 +55,9 @@ export const Projects: CollectionConfig = {
       admin: {
         condition: (data) => {
           if (data.featured) {
-            return true
+            return true;
           }
-          return false
+          return false;
         },
       },
     },
@@ -76,4 +77,4 @@ export const Projects: CollectionConfig = {
       ],
     },
   ],
-}
+};

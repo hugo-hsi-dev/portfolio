@@ -1,19 +1,17 @@
-import Header from '@/app/sections/header/Header';
-import { Card } from '@/components/ui/card';
-import { LayoutGroup } from 'framer-motion';
+import About from '@/sections/About';
+import FeaturedProjects from '@/sections/FeaturedProjects';
+import Hero from '@/sections/Hero';
+import UnfeaturedProjects from '@/sections/UnfeaturedProjects';
 
-export default async function RootPage() {
+export default function RootPage() {
   return (
-    <main className="container mx-auto">
-      <div className="mx-24 grid grid-cols-6 grid-flow-dense gap-2">
-        <LayoutGroup>
-          <Header />
-          <Card className="aspect-square col-span-3 row-span-3">hero</Card>
-          <Card className="aspect-square col-span-1 ">github</Card>
-          <Card className="aspect-square col-span-1 ">LInkedin</Card>
-          <Card className="aspect-square col-span-1 ">Email</Card>
-        </LayoutGroup>
+    <>
+      <Hero />
+      <div className="shadow-xl">
+        <About />
+        <FeaturedProjects />
+        <UnfeaturedProjects />
       </div>
-    </main>
+    </>
   );
 }
