@@ -1,8 +1,6 @@
 ---
-title: Access Control - Advanced Patterns
-description: Context-aware, time-based, subscription-based access, factory functions, templates
-tags: [payload, access-control, security, advanced, performance]
-priority: high
+name: payload-access-advanced
+description: Advanced access control patterns including context-aware, time-based, subscription-based access, factory functions, and performance optimization
 ---
 
 # Advanced Access Control Patterns

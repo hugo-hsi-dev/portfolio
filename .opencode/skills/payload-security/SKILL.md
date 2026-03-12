@@ -1,8 +1,6 @@
 ---
-title: Critical Security Patterns
-description: The three most important security patterns in Payload CMS
-tags: [payload, security, critical, access-control, transactions, hooks]
-priority: high
+name: payload-security
+description: The three most critical security patterns in Payload CMS - Local API access control, transaction safety, and preventing infinite hook loops
 ---
 
 # CRITICAL SECURITY PATTERNS

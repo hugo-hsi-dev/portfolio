@@ -1,7 +1,6 @@
 ---
-title: Plugin Development
-description: Creating Payload CMS plugins with TypeScript patterns
-tags: [payload, plugins, architecture, patterns]
+name: payload-plugins
+description: Creating Payload CMS plugins with TypeScript patterns including field injection, hooks, endpoints, and configuration
 ---
 
 # Payload Plugin Development

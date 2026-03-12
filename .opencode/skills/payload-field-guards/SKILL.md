@@ -1,7 +1,6 @@
 ---
-title: Field Type Guards
-description: Runtime field type checking and safe type narrowing
-tags: [payload, typescript, type-guards, fields]
+name: payload-field-guards
+description: Runtime field type checking and safe type narrowing utilities for Payload CMS
 ---
 
 # Payload Field Type Guards

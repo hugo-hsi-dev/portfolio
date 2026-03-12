@@ -1,7 +1,6 @@
 ---
-title: Hooks
-description: Collection hooks, field hooks, and context patterns
-tags: [payload, hooks, lifecycle, context]
+name: payload-hooks
+description: Collection hooks, field hooks, context patterns, and lifecycle management for Payload CMS
 ---
 
 # Payload CMS Hooks
