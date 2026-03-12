@@ -3,12 +3,13 @@ import type { CollectionConfig } from 'payload'
 export const Projects: CollectionConfig = {
   slug: 'projects',
   admin: {
-    useAsTitle: 'name',
-    defaultColumns: ['name', 'technologies', 'featured', 'order'],
+    useAsTitle: 'title',
+    defaultColumns: ['title', 'featured', 'order', 'createdAt'],
+    listSearchableFields: ['title', 'excerpt'],
   },
   fields: [
     {
-      name: 'name',
+      name: 'title',
       type: 'text',
       required: true,
     },
@@ -19,10 +20,19 @@ export const Projects: CollectionConfig = {
       index: true,
     },
     {
-      name: 'description',
-      type: 'textarea',
+      name: 'excerpt',
+      type: 'text',
+      required: true,
       admin: {
-        description: 'Brief description - 1-2 sentences for card views',
+        description: 'One-liner for project cards (keep it punchy)',
+      },
+    },
+    {
+      name: 'description',
+      type: 'richText',
+      required: true,
+      admin: {
+        description: 'Problem, solution, outcome. What did you build and why does it matter?',
       },
     },
     {
@@ -36,8 +46,39 @@ export const Projects: CollectionConfig = {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
+      required: true,
+    },
+    {
+      name: 'gallery',
+      type: 'array',
+      fields: [
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          required: true,
+        },
+        {
+          name: 'caption',
+          type: 'text',
+        },
+      ],
       admin: {
-        description: 'Thumbnail image for project cards',
+        description: 'Additional screenshots/images for the project detail page',
+      },
+    },
+    {
+      name: 'liveUrl',
+      type: 'text',
+      admin: {
+        description: 'URL to the live project/demo',
+      },
+    },
+    {
+      name: 'sourceUrl',
+      type: 'text',
+      admin: {
+        description: 'URL to source code (GitHub, GitLab, etc.)',
       },
     },
     {
@@ -45,21 +86,36 @@ export const Projects: CollectionConfig = {
       type: 'relationship',
       relationTo: 'technologies',
       hasMany: true,
+      required: true,
     },
     {
-      name: 'demoUrl',
-      type: 'text',
+      name: 'context',
+      type: 'select',
+      options: [
+        { label: 'Personal Project', value: 'personal' },
+        { label: 'Work Project', value: 'work' },
+        { label: 'Learning Exercise', value: 'learning' },
+        { label: 'Open Source Contribution', value: 'opensource' },
+      ],
+      admin: {
+        description:
+          'Tells recruiters where this project came from without them navigating to Experience',
+      },
     },
     {
-      name: 'repoUrl',
+      name: 'company',
       type: 'text',
+      admin: {
+        description: 'If work project, which company? (shown alongside context)',
+        condition: (data) => data?.context === 'work',
+      },
     },
     {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,
       admin: {
-        description: 'Enable to feature on homepage',
+        description: 'Featured projects appear on the homepage and get priority placement',
       },
     },
     {
