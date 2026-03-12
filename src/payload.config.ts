@@ -7,8 +7,16 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Education } from './collections/Education'
+import { Experience } from './collections/Experience'
 import { Media } from './collections/Media'
+import { Projects } from './collections/Projects'
+import { Technologies } from './collections/Technologies'
 import { Users } from './collections/Users'
+
+import { About } from './globals/About'
+import { Contact } from './globals/Contact'
+import { Homepage } from './globals/Homepage'
+import { SiteSettings } from './globals/SiteSettings'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -20,7 +28,8 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Education],
+  collections: [Users, Media, Technologies, Education, Experience, Projects],
+  globals: [Homepage, About, Contact, SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
