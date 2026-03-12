@@ -59,552 +59,605 @@ export type SupportedTimezones =
   | 'Pacific/Guam'
   | 'Pacific/Noumea'
   | 'Pacific/Auckland'
-  | 'Pacific/Fiji'
+  | 'Pacific/Fiji';
 
 export interface Config {
   auth: {
-    users: UserAuthOperations
-  }
-  blocks: {}
+    users: UserAuthOperations;
+  };
+  blocks: {};
   collections: {
-    users: User
-    media: Media
-    education: Education
-    technologies: Technology
-    projects: Project
-    'payload-kv': PayloadKv
-    'payload-locked-documents': PayloadLockedDocument
-    'payload-preferences': PayloadPreference
-    'payload-migrations': PayloadMigration
-  }
-  collectionsJoins: {}
+    users: User;
+    media: Media;
+    education: Education;
+    experience: Experience;
+    technologies: Technology;
+    projects: Project;
+    'payload-kv': PayloadKv;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
+  };
+  collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>
-    media: MediaSelect<false> | MediaSelect<true>
-    education: EducationSelect<false> | EducationSelect<true>
-    technologies: TechnologiesSelect<false> | TechnologiesSelect<true>
-    projects: ProjectsSelect<false> | ProjectsSelect<true>
-    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>
-    'payload-locked-documents':
-      | PayloadLockedDocumentsSelect<false>
-      | PayloadLockedDocumentsSelect<true>
-    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>
-    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>
-  }
+    users: UsersSelect<false> | UsersSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    education: EducationSelect<false> | EducationSelect<true>;
+    experience: ExperienceSelect<false> | ExperienceSelect<true>;
+    technologies: TechnologiesSelect<false> | TechnologiesSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+  };
   db: {
-    defaultIDType: number
-  }
-  fallbackLocale: null
+    defaultIDType: number;
+  };
+  fallbackLocale: null;
   globals: {
-    homepage: Homepage
-    contact: Contact
-  }
+    homepage: Homepage;
+    contact: Contact;
+  };
   globalsSelect: {
-    homepage: HomepageSelect<false> | HomepageSelect<true>
-    contact: ContactSelect<false> | ContactSelect<true>
-  }
-  locale: null
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
+    contact: ContactSelect<false> | ContactSelect<true>;
+  };
+  locale: null;
   widgets: {
-    collections: CollectionsWidget
-  }
-  user: User
+    collections: CollectionsWidget;
+  };
+  user: User;
   jobs: {
-    tasks: unknown
-    workflows: unknown
-  }
+    tasks: unknown;
+    workflows: unknown;
+  };
 }
 export interface UserAuthOperations {
   forgotPassword: {
-    email: string
-    password: string
-  }
+    email: string;
+    password: string;
+  };
   login: {
-    email: string
-    password: string
-  }
+    email: string;
+    password: string;
+  };
   registerFirstUser: {
-    email: string
-    password: string
-  }
+    email: string;
+    password: string;
+  };
   unlock: {
-    email: string
-    password: string
-  }
+    email: string;
+    password: string;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
-  id: number
-  updatedAt: string
-  createdAt: string
-  email: string
-  resetPasswordToken?: string | null
-  resetPasswordExpiration?: string | null
-  salt?: string | null
-  hash?: string | null
-  loginAttempts?: number | null
-  lockUntil?: string | null
+  id: number;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
   sessions?:
     | {
-        id: string
-        createdAt?: string | null
-        expiresAt: string
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
       }[]
-    | null
-  password?: string | null
-  collection: 'users'
+    | null;
+  password?: string | null;
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media".
  */
 export interface Media {
-  id: number
-  alt: string
-  updatedAt: string
-  createdAt: string
-  url?: string | null
-  thumbnailURL?: string | null
-  filename?: string | null
-  mimeType?: string | null
-  filesize?: number | null
-  width?: number | null
-  height?: number | null
-  focalX?: number | null
-  focalY?: number | null
+  id: number;
+  alt: string;
+  updatedAt: string;
+  createdAt: string;
+  url?: string | null;
+  thumbnailURL?: string | null;
+  filename?: string | null;
+  mimeType?: string | null;
+  filesize?: number | null;
+  width?: number | null;
+  height?: number | null;
+  focalX?: number | null;
+  focalY?: number | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "education".
  */
 export interface Education {
-  id: number
-  institution: string
+  id: number;
+  institution: string;
   /**
    * e.g., "Bachelor of Science", "Master of Arts"
    */
-  degree: string
+  degree: string;
   /**
    * e.g., "Computer Science", "Software Engineering"
    */
-  fieldOfStudy: string
-  startDate: string
-  endDate?: string | null
+  fieldOfStudy: string;
+  startDate: string;
+  endDate?: string | null;
   /**
    * Optional: notable achievements, relevant coursework, thesis, etc.
    */
   description?: {
     root: {
-      type: string
+      type: string;
       children: {
-        type: any
-        version: number
-        [k: string]: unknown
-      }[]
-      direction: ('ltr' | 'rtl') | null
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''
-      indent: number
-      version: number
-    }
-    [k: string]: unknown
-  } | null
-  updatedAt: string
-  createdAt: string
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experience".
+ */
+export interface Experience {
+  id: number;
+  company: string;
+  position: string;
+  location?: string | null;
+  startDate: string;
+  endDate?: string | null;
+  current?: boolean | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  logo?: (number | null) | Media;
+  technologies?: (number | Technology)[] | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "technologies".
  */
 export interface Technology {
-  id: number
-  name: string
-  slug?: string | null
-  icon?: (number | null) | Media
-  category?: ('frontend' | 'backend' | 'database' | 'devops' | 'tools' | 'languages') | null
+  id: number;
+  name: string;
+  slug?: string | null;
+  icon?: (number | null) | Media;
+  category?: ('frontend' | 'backend' | 'database' | 'devops' | 'tools' | 'languages') | null;
   /**
    * Display order (lower numbers appear first)
    */
-  order?: number | null
-  updatedAt: string
-  createdAt: string
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "projects".
  */
 export interface Project {
-  id: number
-  title: string
-  slug?: string | null
+  id: number;
+  title: string;
+  slug?: string | null;
   /**
    * One-liner for project cards (keep it punchy)
    */
-  excerpt: string
+  excerpt: string;
   /**
    * Problem, solution, outcome. What did you build and why does it matter?
    */
   description: {
     root: {
-      type: string
+      type: string;
       children: {
-        type: any
-        version: number
-        [k: string]: unknown
-      }[]
-      direction: ('ltr' | 'rtl') | null
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''
-      indent: number
-      version: number
-    }
-    [k: string]: unknown
-  }
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
   /**
    * Full project description for project detail pages
    */
   content?: {
     root: {
-      type: string
+      type: string;
       children: {
-        type: any
-        version: number
-        [k: string]: unknown
-      }[]
-      direction: ('ltr' | 'rtl') | null
-      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''
-      indent: number
-      version: number
-    }
-    [k: string]: unknown
-  } | null
-  featuredImage: number | Media
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  featuredImage: number | Media;
   /**
    * Additional screenshots/images for the project detail page
    */
   gallery?:
     | {
-        image: number | Media
-        caption?: string | null
-        id?: string | null
+        image: number | Media;
+        caption?: string | null;
+        id?: string | null;
       }[]
-    | null
+    | null;
   /**
    * URL to the live project/demo
    */
-  liveUrl?: string | null
+  liveUrl?: string | null;
   /**
    * URL to source code (GitHub, GitLab, etc.)
    */
-  sourceUrl?: string | null
-  technologies: (number | Technology)[]
+  sourceUrl?: string | null;
+  technologies: (number | Technology)[];
   /**
    * Tells recruiters where this project came from without them navigating to Experience
    */
-  context?: ('personal' | 'work' | 'learning' | 'opensource') | null
+  context?: ('personal' | 'work' | 'learning' | 'opensource') | null;
   /**
    * If work project, which company? (shown alongside context)
    */
-  company?: string | null
+  company?: string | null;
   /**
    * Featured projects appear on the homepage and get priority placement
    */
-  featured?: boolean | null
+  featured?: boolean | null;
   /**
    * Display order (lower numbers appear first)
    */
-  order?: number | null
-  updatedAt: string
-  createdAt: string
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
-  id: number
-  key: string
+  id: number;
+  key: string;
   data:
     | {
-        [k: string]: unknown
+        [k: string]: unknown;
       }
     | unknown[]
     | string
     | number
     | boolean
-    | null
+    | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
-  id: number
+  id: number;
   document?:
     | ({
-        relationTo: 'users'
-        value: number | User
+        relationTo: 'users';
+        value: number | User;
       } | null)
     | ({
-        relationTo: 'media'
-        value: number | Media
+        relationTo: 'media';
+        value: number | Media;
       } | null)
     | ({
-        relationTo: 'education'
-        value: number | Education
+        relationTo: 'education';
+        value: number | Education;
       } | null)
     | ({
-        relationTo: 'technologies'
-        value: number | Technology
+        relationTo: 'experience';
+        value: number | Experience;
       } | null)
     | ({
-        relationTo: 'projects'
-        value: number | Project
+        relationTo: 'technologies';
+        value: number | Technology;
       } | null)
-  globalSlug?: string | null
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
+      } | null);
+  globalSlug?: string | null;
   user: {
-    relationTo: 'users'
-    value: number | User
-  }
-  updatedAt: string
-  createdAt: string
+    relationTo: 'users';
+    value: number | User;
+  };
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences".
  */
 export interface PayloadPreference {
-  id: number
+  id: number;
   user: {
-    relationTo: 'users'
-    value: number | User
-  }
-  key?: string | null
+    relationTo: 'users';
+    value: number | User;
+  };
+  key?: string | null;
   value?:
     | {
-        [k: string]: unknown
+        [k: string]: unknown;
       }
     | unknown[]
     | string
     | number
     | boolean
-    | null
-  updatedAt: string
-  createdAt: string
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations".
  */
 export interface PayloadMigration {
-  id: number
-  name?: string | null
-  batch?: number | null
-  updatedAt: string
-  createdAt: string
+  id: number;
+  name?: string | null;
+  batch?: number | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
-  updatedAt?: T
-  createdAt?: T
-  email?: T
-  resetPasswordToken?: T
-  resetPasswordExpiration?: T
-  salt?: T
-  hash?: T
-  loginAttempts?: T
-  lockUntil?: T
+  updatedAt?: T;
+  createdAt?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
   sessions?:
     | T
     | {
-        id?: T
-        createdAt?: T
-        expiresAt?: T
-      }
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
-  alt?: T
-  updatedAt?: T
-  createdAt?: T
-  url?: T
-  thumbnailURL?: T
-  filename?: T
-  mimeType?: T
-  filesize?: T
-  width?: T
-  height?: T
-  focalX?: T
-  focalY?: T
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "education_select".
  */
 export interface EducationSelect<T extends boolean = true> {
-  institution?: T
-  degree?: T
-  fieldOfStudy?: T
-  startDate?: T
-  endDate?: T
-  description?: T
-  updatedAt?: T
-  createdAt?: T
+  institution?: T;
+  degree?: T;
+  fieldOfStudy?: T;
+  startDate?: T;
+  endDate?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experience_select".
+ */
+export interface ExperienceSelect<T extends boolean = true> {
+  company?: T;
+  position?: T;
+  location?: T;
+  startDate?: T;
+  endDate?: T;
+  current?: T;
+  description?: T;
+  logo?: T;
+  technologies?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "technologies_select".
  */
 export interface TechnologiesSelect<T extends boolean = true> {
-  name?: T
-  slug?: T
-  icon?: T
-  category?: T
-  order?: T
-  updatedAt?: T
-  createdAt?: T
+  name?: T;
+  slug?: T;
+  icon?: T;
+  category?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "projects_select".
  */
 export interface ProjectsSelect<T extends boolean = true> {
-  title?: T
-  slug?: T
-  excerpt?: T
-  description?: T
-  content?: T
-  featuredImage?: T
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  description?: T;
+  content?: T;
+  featuredImage?: T;
   gallery?:
     | T
     | {
-        image?: T
-        caption?: T
-        id?: T
-      }
-  liveUrl?: T
-  sourceUrl?: T
-  technologies?: T
-  context?: T
-  company?: T
-  featured?: T
-  order?: T
-  updatedAt?: T
-  createdAt?: T
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  liveUrl?: T;
+  sourceUrl?: T;
+  technologies?: T;
+  context?: T;
+  company?: T;
+  featured?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
-  key?: T
-  data?: T
+  key?: T;
+  data?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents_select".
  */
 export interface PayloadLockedDocumentsSelect<T extends boolean = true> {
-  document?: T
-  globalSlug?: T
-  user?: T
-  updatedAt?: T
-  createdAt?: T
+  document?: T;
+  globalSlug?: T;
+  user?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-preferences_select".
  */
 export interface PayloadPreferencesSelect<T extends boolean = true> {
-  user?: T
-  key?: T
-  value?: T
-  updatedAt?: T
-  createdAt?: T
+  user?: T;
+  key?: T;
+  value?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-migrations_select".
  */
 export interface PayloadMigrationsSelect<T extends boolean = true> {
-  name?: T
-  batch?: T
-  updatedAt?: T
-  createdAt?: T
+  name?: T;
+  batch?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage".
  */
 export interface Homepage {
-  id: number
+  id: number;
   hero: {
     /**
      * Main headline (e.g., "Hi, I'm Hugo")
      */
-    title: string
+    title: string;
     /**
      * Tagline (e.g., "Full-stack developer building things that matter")
      */
-    subtitle: string
+    subtitle: string;
     /**
      * Brief intro paragraph. Keep it short - recruiters scan, they don't read.
      */
     intro?: {
       root: {
-        type: string
+        type: string;
         children: {
-          type: any
-          version: number
-          [k: string]: unknown
-        }[]
-        direction: ('ltr' | 'rtl') | null
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | ''
-        indent: number
-        version: number
-      }
-      [k: string]: unknown
-    } | null
-  }
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
   /**
    * Select 3 of your best projects to feature on the homepage
    */
-  featuredProjects?: (number | Project)[] | null
+  featuredProjects?: (number | Project)[] | null;
   /**
    * Resume/CV PDF - this is a primary CTA for recruiters
    */
-  resume: number | Media
-  updatedAt?: string | null
-  createdAt?: string | null
+  resume: number | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact".
  */
 export interface Contact {
-  id: number
+  id: number;
   /**
    * Primary contact email
    */
-  email: string
+  email: string;
   /**
    * Social/professional links (GitHub, LinkedIn, etc.)
    */
   socialLinks?:
     | {
-        platform: 'github' | 'linkedin' | 'twitter' | 'mastodon' | 'website' | 'other'
-        url: string
-        id?: string | null
+        platform: 'github' | 'linkedin' | 'twitter' | 'mastodon' | 'website' | 'other';
+        url: string;
+        id?: string | null;
       }[]
-    | null
-  updatedAt?: string | null
-  createdAt?: string | null
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -614,51 +667,51 @@ export interface HomepageSelect<T extends boolean = true> {
   hero?:
     | T
     | {
-        title?: T
-        subtitle?: T
-        intro?: T
-      }
-  featuredProjects?: T
-  resume?: T
-  updatedAt?: T
-  createdAt?: T
-  globalType?: T
+        title?: T;
+        subtitle?: T;
+        intro?: T;
+      };
+  featuredProjects?: T;
+  resume?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "contact_select".
  */
 export interface ContactSelect<T extends boolean = true> {
-  email?: T
+  email?: T;
   socialLinks?:
     | T
     | {
-        platform?: T
-        url?: T
-        id?: T
-      }
-  updatedAt?: T
-  createdAt?: T
-  globalType?: T
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
->>>>>>> origin/main
  * via the `definition` "collections_widget".
  */
 export interface CollectionsWidget {
   data?: {
-    [k: string]: unknown
-  }
-  width: 'full'
+    [k: string]: unknown;
+  };
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
-  [k: string]: unknown
+  [k: string]: unknown;
 }
+
 
 declare module 'payload' {
   export interface GeneratedTypes extends Config {}

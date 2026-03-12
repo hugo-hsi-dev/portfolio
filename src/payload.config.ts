@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Education } from './collections/Education'
+import { Experience } from './collections/Experience'
 import { Homepage } from './globals/Homepage'
 import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
@@ -24,7 +25,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Education, Technologies, Projects],
+  collections: [Users, Media, Education, Experience, Technologies, Projects],
   globals: [Homepage, Contact],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
