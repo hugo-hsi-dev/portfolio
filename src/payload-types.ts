@@ -70,6 +70,8 @@ export interface Config {
     users: User;
     media: Media;
     education: Education;
+    technologies: Technology;
+    projects: Project;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +82,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     education: EducationSelect<false> | EducationSelect<true>;
+    technologies: TechnologiesSelect<false> | TechnologiesSelect<true>;
+    projects: ProjectsSelect<false> | ProjectsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -89,8 +93,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    homepage: Homepage;
+  };
+  globalsSelect: {
+    homepage: HomepageSelect<false> | HomepageSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -203,6 +211,71 @@ export interface Education {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "technologies".
+ */
+export interface Technology {
+  id: number;
+  name: string;
+  slug?: string | null;
+  icon?: (number | null) | Media;
+  category?: ('frontend' | 'backend' | 'database' | 'devops' | 'tools' | 'languages') | null;
+  /**
+   * Display order (lower numbers appear first)
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects".
+ */
+export interface Project {
+  id: number;
+  name: string;
+  slug?: string | null;
+  /**
+   * Brief description - 1-2 sentences for card views
+   */
+  description?: string | null;
+  /**
+   * Full project description for project detail pages
+   */
+  content?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Thumbnail image for project cards
+   */
+  featuredImage?: (number | null) | Media;
+  technologies?: (number | Technology)[] | null;
+  demoUrl?: string | null;
+  repoUrl?: string | null;
+  /**
+   * Enable to feature on homepage
+   */
+  featured?: boolean | null;
+  /**
+   * Display order (lower numbers appear first)
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -236,6 +309,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'education';
         value: number | Education;
+      } | null)
+    | ({
+        relationTo: 'technologies';
+        value: number | Technology;
+      } | null)
+    | ({
+        relationTo: 'projects';
+        value: number | Project;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -335,6 +416,37 @@ export interface EducationSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "technologies_select".
+ */
+export interface TechnologiesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  icon?: T;
+  category?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "projects_select".
+ */
+export interface ProjectsSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  description?: T;
+  content?: T;
+  featuredImage?: T;
+  technologies?: T;
+  demoUrl?: T;
+  repoUrl?: T;
+  featured?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -372,6 +484,69 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage".
+ */
+export interface Homepage {
+  id: number;
+  hero: {
+    /**
+     * Main headline (e.g., "Hi, I'm Hugo")
+     */
+    title: string;
+    /**
+     * Tagline (e.g., "Full-stack developer building things that matter")
+     */
+    subtitle: string;
+    /**
+     * Brief intro paragraph. Keep it short - recruiters scan, they don't read.
+     */
+    intro?: {
+      root: {
+        type: string;
+        children: {
+          type: any;
+          version: number;
+          [k: string]: unknown;
+        }[];
+        direction: ('ltr' | 'rtl') | null;
+        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+        indent: number;
+        version: number;
+      };
+      [k: string]: unknown;
+    } | null;
+  };
+  /**
+   * Select 3 of your best projects to feature on the homepage
+   */
+  featuredProjects?: (number | Project)[] | null;
+  /**
+   * Resume/CV PDF - this is a primary CTA for recruiters
+   */
+  resume: number | Media;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "homepage_select".
+ */
+export interface HomepageSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        title?: T;
+        subtitle?: T;
+        intro?: T;
+      };
+  featuredProjects?: T;
+  resume?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
