@@ -10,49 +10,25 @@ export const SiteSettings: GlobalConfig = {
       name: 'siteName',
       type: 'text',
       required: true,
+      defaultValue: 'Portfolio',
+      admin: {
+        description: 'Site name (appears in browser tab, page titles)',
+      },
     },
     {
-      name: 'siteDescription',
-      type: 'textarea',
+      name: 'tagline',
+      type: 'text',
+      admin: {
+        description: 'Short tagline (optional, used in page titles and meta)',
+      },
     },
     {
-      name: 'logo',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
-      name: 'favicon',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
-      name: 'seo',
-      type: 'group',
-      fields: [
-        {
-          name: 'ogImage',
-          type: 'upload',
-          relationTo: 'media',
-        },
-        {
-          name: 'twitterCard',
-          type: 'select',
-          options: [
-            { label: 'Summary', value: 'summary' },
-            { label: 'Summary Large Image', value: 'summary_large_image' },
-          ],
-        },
-      ],
-    },
-    {
-      name: 'analytics',
-      type: 'group',
-      fields: [
-        {
-          name: 'googleAnalyticsId',
-          type: 'text',
-        },
-      ],
+      name: 'defaultMetaDescription',
+      type: 'text',
+      admin: {
+        description:
+          'Default meta description for SEO (used when no page-specific description exists)',
+      },
     },
   ],
 }
