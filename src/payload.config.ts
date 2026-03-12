@@ -1,19 +1,13 @@
-// storage-adapter-import-placeholder
-import { postgresAdapter } from '@payloadcms/db-postgres'
+import { vercelPostgresAdapter } from '@payloadcms/db-vercel-postgres'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
 import path from 'path'
 import { buildConfig } from 'payload'
-import sharp from 'sharp'
 import { fileURLToPath } from 'url'
+import sharp from 'sharp'
 
-import { Projects } from '@/collections/Projects'
-import { Skills } from '@/collections/Skills'
-import { AboutMe } from '@/globals/AboutMe'
-import { Contact } from '@/globals/Contact'
-import { Meta } from '@/globals/Meta'
-import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
-import { Media } from './collections/Media'
 import { Users } from './collections/Users'
+import { Media } from './collections/Media'
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -25,29 +19,24 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Skills, Projects],
-  globals: [Meta, AboutMe, Contact],
+  collections: [Users, Media],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
-  db: postgresAdapter({
+  db: vercelPostgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || '',
+      connectionString: process.env.POSTGRES_URL || '',
     },
   }),
   sharp,
   plugins: [
-    // storage-adapter-placeholder
     vercelBlobStorage({
-      enabled: true, // Optional, defaults to true
-      // Specify which collections should use Vercel Blob
       collections: {
-        [Media.slug]: true,
+        media: true,
       },
-      // Token provided by Vercel once Blob storage is added to your Vercel project
-      token: process.env.BLOB_READ_WRITE_TOKEN ?? '',
+      token: process.env.BLOB_READ_WRITE_TOKEN || '',
     }),
   ],
 })
