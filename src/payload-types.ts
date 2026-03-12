@@ -70,6 +70,8 @@ export interface Config {
     users: User;
     media: Media;
     education: Education;
+    experience: Experience;
+    technologies: Technology;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -80,6 +82,8 @@ export interface Config {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     education: EducationSelect<false> | EducationSelect<true>;
+    experience: ExperienceSelect<false> | ExperienceSelect<true>;
+    technologies: TechnologiesSelect<false> | TechnologiesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -203,6 +207,55 @@ export interface Education {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experience".
+ */
+export interface Experience {
+  id: number;
+  company: string;
+  position: string;
+  location?: string | null;
+  startDate: string;
+  endDate?: string | null;
+  current?: boolean | null;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  logo?: (number | null) | Media;
+  technologies?: (number | Technology)[] | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "technologies".
+ */
+export interface Technology {
+  id: number;
+  name: string;
+  slug?: string | null;
+  icon?: (number | null) | Media;
+  category?: ('frontend' | 'backend' | 'database' | 'devops' | 'tools' | 'languages') | null;
+  /**
+   * Display order (lower numbers appear first)
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -236,6 +289,14 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'education';
         value: number | Education;
+      } | null)
+    | ({
+        relationTo: 'experience';
+        value: number | Experience;
+      } | null)
+    | ({
+        relationTo: 'technologies';
+        value: number | Technology;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -330,6 +391,36 @@ export interface EducationSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
   description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "experience_select".
+ */
+export interface ExperienceSelect<T extends boolean = true> {
+  company?: T;
+  position?: T;
+  location?: T;
+  startDate?: T;
+  endDate?: T;
+  current?: T;
+  description?: T;
+  logo?: T;
+  technologies?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "technologies_select".
+ */
+export interface TechnologiesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  icon?: T;
+  category?: T;
+  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
