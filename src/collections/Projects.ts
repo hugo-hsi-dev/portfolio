@@ -5,6 +5,7 @@ export const Projects: CollectionConfig = {
   admin: {
     useAsTitle: 'title',
     defaultColumns: ['title', 'category', 'featured', 'order'],
+    listSearchableFields: ['title', 'excerpt'],
   },
   fields: [
     {
@@ -19,12 +20,27 @@ export const Projects: CollectionConfig = {
       index: true,
     },
     {
+      name: 'excerpt',
+      type: 'text',
+      required: true,
+      admin: {
+        description: 'One-liner for project cards (keep it punchy)',
+      },
+    },
+    {
       name: 'description',
-      type: 'textarea',
+      type: 'richText',
+      required: true,
+      admin: {
+        description: 'Problem, solution, outcome. What did you build and why does it matter?',
+      },
     },
     {
       name: 'content',
       type: 'richText',
+      admin: {
+        description: 'Full project description for project detail pages',
+      },
     },
     {
       name: 'category',
@@ -41,9 +57,10 @@ export const Projects: CollectionConfig = {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
+      required: true,
     },
     {
-      name: 'images',
+      name: 'gallery',
       type: 'array',
       fields: [
         {
@@ -57,25 +74,60 @@ export const Projects: CollectionConfig = {
           type: 'text',
         },
       ],
+      admin: {
+        description: 'Additional screenshots/images for the project detail page',
+      },
+    },
+    {
+      name: 'liveUrl',
+      type: 'text',
+      admin: {
+        description: 'URL to the live project/demo',
+      },
+    },
+    {
+      name: 'sourceUrl',
+      type: 'text',
+      admin: {
+        description: 'URL to source code (GitHub, GitLab, etc.)',
+      },
     },
     {
       name: 'technologies',
       type: 'relationship',
       relationTo: 'technologies',
       hasMany: true,
+      required: true,
     },
     {
-      name: 'liveUrl',
-      type: 'text',
+      name: 'context',
+      type: 'select',
+      options: [
+        { label: 'Personal Project', value: 'personal' },
+        { label: 'Work Project', value: 'work' },
+        { label: 'Learning Exercise', value: 'learning' },
+        { label: 'Open Source Contribution', value: 'opensource' },
+      ],
+      admin: {
+        description:
+          'Tells recruiters where this project came from without them navigating to Experience',
+      },
     },
     {
-      name: 'repoUrl',
+      name: 'company',
       type: 'text',
+      admin: {
+        description: 'If work project, which company? (shown alongside context)',
+        condition: (data) => data?.context === 'work',
+      },
     },
     {
       name: 'featured',
       type: 'checkbox',
       defaultValue: false,
+      admin: {
+        description: 'Featured projects appear on the homepage and get priority placement',
+      },
     },
     {
       name: 'order',

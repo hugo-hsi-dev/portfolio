@@ -11,10 +11,24 @@ export const Homepage: GlobalConfig = {
           name: 'title',
           type: 'text',
           required: true,
+          admin: {
+            description: "Main headline (e.g., 'Hi, I\\'m Hugo')",
+          },
         },
         {
           name: 'subtitle',
           type: 'textarea',
+          required: true,
+          admin: {
+            description: 'Tagline (e.g., "Full-stack developer building things that matter")',
+          },
+        },
+        {
+          name: 'intro',
+          type: 'richText',
+          admin: {
+            description: "Brief intro paragraph. Keep it short - recruiters scan, they don't read.",
+          },
         },
         {
           name: 'ctaText',
@@ -31,8 +45,10 @@ export const Homepage: GlobalConfig = {
       type: 'relationship',
       relationTo: 'projects',
       hasMany: true,
+      minRows: 1,
+      maxRows: 3,
       admin: {
-        description: 'Select up to 6 featured projects to display on the homepage',
+        description: 'Select 3 of your best projects to feature on the homepage',
       },
     },
     {
@@ -50,6 +66,15 @@ export const Homepage: GlobalConfig = {
           hasMany: true,
         },
       ],
+    },
+    {
+      name: 'resume',
+      type: 'upload',
+      relationTo: 'media',
+      required: true,
+      admin: {
+        description: 'Resume/CV PDF - this is a primary CTA for recruiters',
+      },
     },
   ],
 }

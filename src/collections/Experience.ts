@@ -46,6 +46,11 @@ export const Experience: CollectionConfig = {
       type: 'richText',
     },
     {
+      name: 'logo',
+      type: 'upload',
+      relationTo: 'media',
+    },
+    {
       name: 'technologies',
       type: 'relationship',
       relationTo: 'technologies',
