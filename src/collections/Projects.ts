@@ -4,7 +4,7 @@ export const Projects: CollectionConfig = {
   slug: 'projects',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'featured', 'order', 'createdAt'],
+    defaultColumns: ['title', 'category', 'featured', 'order'],
     listSearchableFields: ['title', 'excerpt'],
   },
   fields: [
@@ -41,6 +41,17 @@ export const Projects: CollectionConfig = {
       admin: {
         description: 'Full project description for project detail pages',
       },
+    },
+    {
+      name: 'category',
+      type: 'select',
+      options: [
+        { label: 'Web Application', value: 'web' },
+        { label: 'Mobile App', value: 'mobile' },
+        { label: 'Open Source', value: 'opensource' },
+        { label: 'Tool', value: 'tool' },
+        { label: 'Other', value: 'other' },
+      ],
     },
     {
       name: 'featuredImage',
@@ -126,4 +137,5 @@ export const Projects: CollectionConfig = {
       },
     },
   ],
+  timestamps: true,
 }

@@ -12,12 +12,12 @@ export const Homepage: GlobalConfig = {
           type: 'text',
           required: true,
           admin: {
-            description: 'Main headline (e.g., "Hi, I\'m Hugo")',
+            description: "Main headline (e.g., 'Hi, I\\'m Hugo')",
           },
         },
         {
           name: 'subtitle',
-          type: 'text',
+          type: 'textarea',
           required: true,
           admin: {
             description: 'Tagline (e.g., "Full-stack developer building things that matter")',
@@ -29,6 +29,14 @@ export const Homepage: GlobalConfig = {
           admin: {
             description: "Brief intro paragraph. Keep it short - recruiters scan, they don't read.",
           },
+        },
+        {
+          name: 'ctaText',
+          type: 'text',
+        },
+        {
+          name: 'ctaLink',
+          type: 'text',
         },
       ],
     },
@@ -42,6 +50,22 @@ export const Homepage: GlobalConfig = {
       admin: {
         description: 'Select 3 of your best projects to feature on the homepage',
       },
+    },
+    {
+      name: 'skills',
+      type: 'group',
+      fields: [
+        {
+          name: 'title',
+          type: 'text',
+        },
+        {
+          name: 'technologies',
+          type: 'relationship',
+          relationTo: 'technologies',
+          hasMany: true,
+        },
+      ],
     },
     {
       name: 'resume',

@@ -4,7 +4,7 @@ export const Experience: CollectionConfig = {
   slug: 'experience',
   admin: {
     useAsTitle: 'company',
-    defaultColumns: ['company', 'position', 'startDate', 'current'],
+    defaultColumns: ['company', 'role', 'startDate', 'endDate', 'isCurrent'],
   },
   fields: [
     {
@@ -13,7 +13,13 @@ export const Experience: CollectionConfig = {
       required: true,
     },
     {
-      name: 'position',
+      name: 'slug',
+      type: 'text',
+      unique: true,
+      index: true,
+    },
+    {
+      name: 'role',
       type: 'text',
       required: true,
     },
@@ -25,24 +31,13 @@ export const Experience: CollectionConfig = {
       name: 'startDate',
       type: 'date',
       required: true,
-      admin: {
-        date: {
-          pickerAppearance: 'monthOnly',
-        },
-      },
     },
     {
       name: 'endDate',
       type: 'date',
-      admin: {
-        date: {
-          pickerAppearance: 'monthOnly',
-        },
-        condition: (data) => !data?.current,
-      },
     },
     {
-      name: 'current',
+      name: 'isCurrent',
       type: 'checkbox',
       defaultValue: false,
     },
@@ -61,5 +56,13 @@ export const Experience: CollectionConfig = {
       relationTo: 'technologies',
       hasMany: true,
     },
+    {
+      name: 'order',
+      type: 'number',
+      admin: {
+        description: 'Display order (lower numbers appear first)',
+      },
+    },
   ],
+  timestamps: true,
 }
