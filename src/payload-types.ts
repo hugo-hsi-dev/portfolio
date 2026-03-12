@@ -95,9 +95,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     homepage: Homepage;
+    contact: Contact;
   };
   globalsSelect: {
     homepage: HomepageSelect<false> | HomepageSelect<true>;
+    contact: ContactSelect<false> | ContactSelect<true>;
   };
   locale: null;
   widgets: {
@@ -532,6 +534,29 @@ export interface Homepage {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact".
+ */
+export interface Contact {
+  id: number;
+  /**
+   * Primary contact email
+   */
+  email: string;
+  /**
+   * Social/professional links (GitHub, LinkedIn, etc.)
+   */
+  socialLinks?:
+    | {
+        platform: 'github' | 'linkedin' | 'twitter' | 'mastodon' | 'website' | 'other';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "homepage_select".
  */
 export interface HomepageSelect<T extends boolean = true> {
@@ -544,6 +569,23 @@ export interface HomepageSelect<T extends boolean = true> {
       };
   featuredProjects?: T;
   resume?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "contact_select".
+ */
+export interface ContactSelect<T extends boolean = true> {
+  email?: T;
+  socialLinks?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
