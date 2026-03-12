@@ -7,6 +7,7 @@ import { fileURLToPath } from 'url'
 import sharp from 'sharp'
 
 import { Education } from './collections/Education'
+import { Homepage } from './globals/Homepage'
 import { Media } from './collections/Media'
 import { Users } from './collections/Users'
 
@@ -21,6 +22,7 @@ export default buildConfig({
     },
   },
   collections: [Users, Media, Education],
+  globals: [Homepage],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
