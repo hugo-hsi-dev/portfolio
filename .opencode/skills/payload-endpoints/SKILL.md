@@ -1,7 +1,6 @@
 ---
-title: Custom Endpoints
-description: Custom REST API endpoints with authentication and helpers
-tags: [payload, endpoints, api, routes, webhooks]
+name: payload-endpoints
+description: Custom REST API endpoints with authentication, route parameters, query handling, and error management
 ---
 
 # Payload Custom Endpoints

@@ -1,7 +1,6 @@
 ---
-title: Queries
-description: Local API, REST, and GraphQL query patterns
-tags: [payload, queries, local-api, rest, graphql]
+name: payload-queries
+description: Local API, query operators, AND/OR logic, nested properties, and performance optimization for Payload CMS
 ---
 
 # Payload CMS Queries

@@ -1,7 +1,6 @@
 ---
-title: Fields
-description: Field types, patterns, and configurations
-tags: [payload, fields, validation, conditional]
+name: payload-fields
+description: Field types, patterns, and configurations including text, richText, relationships, arrays, blocks, uploads, and validation
 ---
 
 # Payload CMS Fields

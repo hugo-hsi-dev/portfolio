@@ -1,7 +1,6 @@
 ---
-title: Collections
-description: Collection configurations and patterns
-tags: [payload, collections, auth, upload, drafts]
+name: payload-collections
+description: Collection configurations including basic collections, auth with RBAC, uploads, drafts, and globals
 ---
 
 # Payload CMS Collections

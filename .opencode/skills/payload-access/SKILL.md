@@ -1,7 +1,6 @@
 ---
-title: Access Control
-description: Collection, field, and global access control patterns
-tags: [payload, access-control, security, permissions, rbac]
+name: payload-access
+description: Collection, field, and global access control patterns for Payload CMS
 ---
 
 # Payload CMS Access Control

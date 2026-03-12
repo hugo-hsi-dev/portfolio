@@ -1,7 +1,6 @@
 ---
-title: Database Adapters & Transactions
-description: Database adapters, storage, email, and transaction patterns
-tags: [payload, database, mongodb, postgres, sqlite, transactions]
+name: payload-adapters
+description: Database adapters (MongoDB, Postgres, SQLite), storage adapters, email adapters, and transaction patterns
 ---
 
 # Payload CMS Adapters
