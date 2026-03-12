@@ -36,6 +36,13 @@ export const Projects: CollectionConfig = {
       },
     },
     {
+      name: 'content',
+      type: 'richText',
+      admin: {
+        description: 'Full project description for project detail pages',
+      },
+    },
+    {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
