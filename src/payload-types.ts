@@ -734,17 +734,18 @@ export interface Contact {
  */
 export interface SiteSetting {
   id: number;
+  /**
+   * Site name (appears in browser tab, page titles)
+   */
   siteName: string;
-  siteDescription?: string | null;
-  logo?: (number | null) | Media;
-  favicon?: (number | null) | Media;
-  seo?: {
-    ogImage?: (number | null) | Media;
-    twitterCard?: ('summary' | 'summary_large_image') | null;
-  };
-  analytics?: {
-    googleAnalyticsId?: string | null;
-  };
+  /**
+   * Short tagline (optional, used in page titles and meta)
+   */
+  tagline?: string | null;
+  /**
+   * Default meta description for SEO (used when no page-specific description exists)
+   */
+  defaultMetaDescription?: string | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -827,20 +828,8 @@ export interface ContactSelect<T extends boolean = true> {
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
   siteName?: T;
-  siteDescription?: T;
-  logo?: T;
-  favicon?: T;
-  seo?:
-    | T
-    | {
-        ogImage?: T;
-        twitterCard?: T;
-      };
-  analytics?:
-    | T
-    | {
-        googleAnalyticsId?: T;
-      };
+  tagline?: T;
+  defaultMetaDescription?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
