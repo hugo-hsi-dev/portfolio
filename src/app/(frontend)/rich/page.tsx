@@ -114,7 +114,7 @@ function MouseFollowHighlight() {
   )
 }
 
-export default function HomePage() {
+export default function RichHomePage() {
   return (
     <div className="min-h-screen bg-[#f8f6f1] text-[#1a1a1a] overflow-x-hidden">
       <ScrollProgress />
