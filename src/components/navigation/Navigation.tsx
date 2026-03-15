@@ -12,7 +12,7 @@ interface NavigationProps {
 export function Navigation({ siteName = 'Hugo Hsi', githubUrl, linkedinUrl }: NavigationProps) {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 mix-blend-difference">
-      <div className="flex justify-between items-center px-6 lg:px-12 py-6">
+      <div className="flex justify-between items-center pl-8 pr-6 lg:px-12 py-6">
         <MagneticButton
           href="#"
           className="font-serif text-xl tracking-tight text-white"

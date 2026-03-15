@@ -25,7 +25,7 @@ export function EducationSection({ education }: EducationSectionProps) {
   const firstEducation = education[0]
 
   return (
-    <section className="py-24 lg:py-32 px-6 lg:px-12 bg-[#1a1a1a] text-[#f8f6f1] border-t border-[#333]">
+    <section className="py-24 lg:py-32 pl-8 pr-6 lg:px-12 bg-[#1a1a1a] text-[#f8f6f1] border-t border-[#333]">
       <div className="max-w-6xl mx-auto">
         <ScrollReveal delay={0.1}>
           <div>
