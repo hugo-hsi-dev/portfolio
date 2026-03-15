@@ -8,6 +8,7 @@ interface TypewriterTextProps {
   className?: string
   delay?: number
   speed?: number
+  onComplete?: () => void
 }
 
 export function TypewriterText({
@@ -15,6 +16,7 @@ export function TypewriterText({
   className = '',
   delay = 0,
   speed = 40,
+  onComplete,
 }: TypewriterTextProps) {
   const [displayedText, setDisplayedText] = useState('')
   const [showCursor, setShowCursor] = useState(true)
@@ -34,6 +36,7 @@ export function TypewriterText({
           index++
         } else {
           clearInterval(interval)
+          onComplete?.()
         }
       }, speed)
 
@@ -41,7 +44,7 @@ export function TypewriterText({
     }, delay * 1000)
 
     return () => clearTimeout(startTimeout)
-  }, [isInView, text, delay, speed])
+  }, [isInView, text, delay, speed, onComplete])
 
   // Blink cursor
   useEffect(() => {
