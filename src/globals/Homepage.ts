@@ -24,14 +24,6 @@ export const Homepage: GlobalConfig = {
           },
         },
         {
-          name: 'role',
-          type: 'text',
-          required: true,
-          admin: {
-            description: 'Job title (e.g., "Full-Stack Developer")',
-          },
-        },
-        {
           name: 'tagline',
           type: 'text',
           required: true,

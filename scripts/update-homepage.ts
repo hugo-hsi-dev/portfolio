@@ -1,5 +1,8 @@
+import dotenv from 'dotenv'
+dotenv.config({ path: '.env' })
+
 import { getPayload } from 'payload'
-import config from '../src/payload.config.js'
+import config from '@payload-config'
 
 async function updateHomepage() {
   const p = await getPayload({ config })
@@ -7,7 +10,6 @@ async function updateHomepage() {
   const updatedHero = {
     firstName: 'Hugo',
     lastName: 'Hsi',
-    role: 'FULL-STACK SOFTWARE ENGINEER',
     tagline: 'Engineering products from design to database.',
     intro: {
       root: {
@@ -21,7 +23,7 @@ async function updateHomepage() {
             version: 1,
             children: [
               {
-                text: 'Software engineer specializing in React, Next.js, and Node.js. I bring hands-on agency experience from Praxis Loop, where I shipped client work ranging from complex headless CMS integrations to pixel-perfect Figma implementations.',
+                text: 'Software engineer specializing in React, Next.js, and Node.js. I bring hands-on agency experience working directly with clients to deliver thoughtfully engineered applications.',
                 type: 'text',
                 version: 1,
               },
