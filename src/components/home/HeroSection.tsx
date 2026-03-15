@@ -21,7 +21,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
   if (!hero) return null
 
   return (
-    <section className="min-h-screen flex flex-col justify-center px-6 lg:px-12 pt-24 pb-16 relative">
+    <section className="min-h-screen flex flex-col justify-center pl-8 pr-6 lg:px-12 pt-24 pb-16 relative">
       <ScrollProgress />
       <GrainOverlay opacity={0.02} />
 

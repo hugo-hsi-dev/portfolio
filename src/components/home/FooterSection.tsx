@@ -13,7 +13,7 @@ interface FooterSectionProps {
 
 export function FooterSection({ email, githubUrl, linkedinUrl }: FooterSectionProps) {
   return (
-    <footer className="py-24 lg:py-32 px-6 lg:px-12 bg-[#1a1a1a] text-[#f8f6f1]">
+    <footer className="py-24 lg:py-32 pl-8 pr-6 lg:px-12 bg-[#1a1a1a] text-[#f8f6f1]">
       <div className="max-w-6xl mx-auto">
         <ScrollReveal>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">

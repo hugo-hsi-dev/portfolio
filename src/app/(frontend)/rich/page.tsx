@@ -121,7 +121,7 @@ export default function RichHomePage() {
 
       {/* Navigation */}
       <nav className="fixed top-0 left-0 right-0 z-50 mix-blend-difference">
-        <div className="flex justify-between items-center px-6 lg:px-12 py-6">
+        <div className="flex justify-between items-center pl-8 pr-6 lg:px-12 py-6">
           <MagneticButton
             href="#"
             className="font-serif text-xl tracking-tight text-white"
@@ -149,7 +149,7 @@ export default function RichHomePage() {
       </nav>
 
       {/* Hero Section */}
-      <section className="min-h-screen flex flex-col justify-center px-6 lg:px-12 pt-24 pb-16 relative">
+      <section className="min-h-screen flex flex-col justify-center pl-8 pr-6 lg:px-12 pt-24 pb-16 relative">
         <GrainOverlay opacity={0.02} />
         <MouseFollowHighlight />
 
@@ -200,7 +200,7 @@ export default function RichHomePage() {
       </section>
 
       {/* Featured Projects */}
-      <section id="projects" className="py-24 lg:py-32 px-6 lg:px-12">
+      <section id="projects" className="py-24 lg:py-32 pl-8 pr-6 lg:px-12">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal className="flex items-baseline justify-between mb-16">
             <h2 className="font-serif text-4xl lg:text-5xl tracking-tight">Selected Work</h2>
@@ -339,7 +339,7 @@ export default function RichHomePage() {
       </section>
 
       {/* Credibility Bar */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-[#1a1a1a] text-[#f8f6f1]">
+      <section className="py-24 lg:py-32 pl-8 pr-6 lg:px-12 bg-[#1a1a1a] text-[#f8f6f1]">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
@@ -372,7 +372,7 @@ export default function RichHomePage() {
       </section>
 
       {/* Tech Stack */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12">
+      <section className="py-24 lg:py-32 pl-8 pr-6 lg:px-12">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal className="mb-16">
             <h2 className="font-serif text-4xl lg:text-5xl tracking-tight">Tech Stack</h2>
@@ -434,7 +434,7 @@ export default function RichHomePage() {
       </section>
 
       {/* Lab Section */}
-      <section className="py-24 lg:py-32 px-6 lg:px-12 bg-[#f0ece3]">
+      <section className="py-24 lg:py-32 pl-8 pr-6 lg:px-12 bg-[#f0ece3]">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal className="flex items-baseline justify-between mb-12">
             <h2 className="font-serif text-4xl lg:text-5xl tracking-tight">Lab</h2>
@@ -497,7 +497,7 @@ export default function RichHomePage() {
       </section>
 
       {/* Contact / Footer */}
-      <footer className="py-24 lg:py-32 px-6 lg:px-12 bg-[#1a1a1a] text-[#f8f6f1]">
+      <footer className="py-24 lg:py-32 pl-8 pr-6 lg:px-12 bg-[#1a1a1a] text-[#f8f6f1]">
         <div className="max-w-6xl mx-auto">
           <ScrollReveal>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-16">

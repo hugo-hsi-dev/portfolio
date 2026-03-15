@@ -11,7 +11,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
   if (!projects || projects.length === 0) return null
 
   return (
-    <section id="projects" className="py-24 lg:py-32 px-6 lg:px-12">
+    <section id="projects" className="py-24 lg:py-32 pl-8 pr-6 lg:px-12">
       <div className="max-w-6xl mx-auto">
         <header className="flex items-baseline justify-between mb-16">
           <h2 className="font-serif text-4xl lg:text-5xl tracking-tight">Selected Work</h2>

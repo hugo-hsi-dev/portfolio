@@ -29,7 +29,7 @@ export function TechStackSection({ technologies }: TechStackSectionProps) {
   if (categories.length === 0) return null
 
   return (
-    <section className="py-24 lg:py-32 px-6 lg:px-12">
+    <section className="py-24 lg:py-32 pl-8 pr-6 lg:px-12">
       <div className="max-w-6xl mx-auto">
         <ScrollReveal className="mb-16">
           <h2 className="font-serif text-4xl lg:text-5xl tracking-tight">Tech Stack</h2>
