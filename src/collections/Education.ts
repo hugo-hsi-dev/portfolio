@@ -4,7 +4,7 @@ export const Education: CollectionConfig = {
   slug: 'education',
   admin: {
     useAsTitle: 'institution',
-    defaultColumns: ['institution', 'degree', 'fieldOfStudy', 'startDate'],
+    defaultColumns: ['institution', 'degree', 'startDate'],
   },
   fields: [
     {
@@ -18,14 +18,6 @@ export const Education: CollectionConfig = {
       required: true,
       admin: {
         description: 'e.g., "Bachelor of Science", "Master of Arts"',
-      },
-    },
-    {
-      name: 'fieldOfStudy',
-      type: 'text',
-      required: true,
-      admin: {
-        description: 'e.g., "Computer Science", "Software Engineering"',
       },
     },
     {
@@ -45,13 +37,6 @@ export const Education: CollectionConfig = {
         date: {
           pickerAppearance: 'monthOnly',
         },
-      },
-    },
-    {
-      name: 'description',
-      type: 'richText',
-      admin: {
-        description: 'Optional: notable achievements, relevant coursework, thesis, etc.',
       },
     },
   ],

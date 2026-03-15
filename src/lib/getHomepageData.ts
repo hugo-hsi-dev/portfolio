@@ -60,9 +60,7 @@ export async function getHomepageData(payload: Payload) {
     frontend: technologiesData.filter((t) => t.category === 'frontend'),
     backend: technologiesData.filter((t) => t.category === 'backend'),
     database: technologiesData.filter((t) => t.category === 'database'),
-    devops: technologiesData.filter((t) => t.category === 'devops'),
     tools: technologiesData.filter((t) => t.category === 'tools'),
-    languages: technologiesData.filter((t) => t.category === 'languages'),
   }
 
   return {

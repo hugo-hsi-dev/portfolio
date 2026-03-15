@@ -13,19 +13,9 @@ export const Experience: CollectionConfig = {
       required: true,
     },
     {
-      name: 'slug',
-      type: 'text',
-      unique: true,
-      index: true,
-    },
-    {
       name: 'role',
       type: 'text',
       required: true,
-    },
-    {
-      name: 'location',
-      type: 'text',
     },
     {
       name: 'startDate',
@@ -40,21 +30,6 @@ export const Experience: CollectionConfig = {
       name: 'isCurrent',
       type: 'checkbox',
       defaultValue: false,
-    },
-    {
-      name: 'description',
-      type: 'richText',
-    },
-    {
-      name: 'logo',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
-      name: 'technologies',
-      type: 'relationship',
-      relationTo: 'technologies',
-      hasMany: true,
     },
     {
       name: 'order',

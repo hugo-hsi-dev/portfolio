@@ -14,26 +14,13 @@ export const Technologies: CollectionConfig = {
       unique: true,
     },
     {
-      name: 'slug',
-      type: 'text',
-      unique: true,
-      index: true,
-    },
-    {
-      name: 'icon',
-      type: 'upload',
-      relationTo: 'media',
-    },
-    {
       name: 'category',
       type: 'select',
       options: [
         { label: 'Frontend', value: 'frontend' },
         { label: 'Backend', value: 'backend' },
         { label: 'Database', value: 'database' },
-        { label: 'DevOps', value: 'devops' },
         { label: 'Tools', value: 'tools' },
-        { label: 'Languages', value: 'languages' },
       ],
     },
     {

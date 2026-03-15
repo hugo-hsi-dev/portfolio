@@ -93,16 +93,6 @@ export const Homepage: GlobalConfig = {
       ],
     },
     {
-      name: 'featuredProjects',
-      type: 'relationship',
-      relationTo: 'projects',
-      hasMany: true,
-      maxRows: 3,
-      admin: {
-        description: 'Select 3 of your best projects to feature on the homepage',
-      },
-    },
-    {
       name: 'resume',
       type: 'upload',
       relationTo: 'media',

@@ -4,7 +4,7 @@ export const Projects: CollectionConfig = {
   slug: 'projects',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['title', 'category', 'featured', 'order'],
+    defaultColumns: ['featured', 'order'],
     listSearchableFields: ['title', 'excerpt'],
   },
   fields: [
@@ -12,12 +12,6 @@ export const Projects: CollectionConfig = {
       name: 'title',
       type: 'text',
       required: true,
-    },
-    {
-      name: 'slug',
-      type: 'text',
-      unique: true,
-      index: true,
     },
     {
       name: 'excerpt',
@@ -28,54 +22,9 @@ export const Projects: CollectionConfig = {
       },
     },
     {
-      name: 'description',
-      type: 'richText',
-      required: true,
-      admin: {
-        description: 'Problem, solution, outcome. What did you build and why does it matter?',
-      },
-    },
-    {
-      name: 'content',
-      type: 'richText',
-      admin: {
-        description: 'Full project description for project detail pages',
-      },
-    },
-    {
-      name: 'category',
-      type: 'select',
-      options: [
-        { label: 'Web Application', value: 'web' },
-        { label: 'Mobile App', value: 'mobile' },
-        { label: 'Open Source', value: 'opensource' },
-        { label: 'Tool', value: 'tool' },
-        { label: 'Other', value: 'other' },
-      ],
-    },
-    {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
-    },
-    {
-      name: 'gallery',
-      type: 'array',
-      fields: [
-        {
-          name: 'image',
-          type: 'upload',
-          relationTo: 'media',
-          required: true,
-        },
-        {
-          name: 'caption',
-          type: 'text',
-        },
-      ],
-      admin: {
-        description: 'Additional screenshots/images for the project detail page',
-      },
     },
     {
       name: 'liveUrl',
