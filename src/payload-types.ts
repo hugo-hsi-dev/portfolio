@@ -73,6 +73,7 @@ export interface Config {
     education: Education;
     experience: Experience;
     projects: Project;
+    lab: Lab;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     education: EducationSelect<false> | EducationSelect<true>;
     experience: ExperienceSelect<false> | ExperienceSelect<true>;
     projects: ProjectsSelect<false> | ProjectsSelect<true>;
+    lab: LabSelect<false> | LabSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -320,7 +322,7 @@ export interface Project {
     [k: string]: unknown;
   } | null;
   category?: ('web' | 'mobile' | 'opensource' | 'tool' | 'other') | null;
-  featuredImage: number | Media;
+  featuredImage?: (number | null) | Media;
   /**
    * Additional screenshots/images for the project detail page
    */
@@ -339,7 +341,7 @@ export interface Project {
    * URL to source code (GitHub, GitLab, etc.)
    */
   sourceUrl?: string | null;
-  technologies: (number | Technology)[];
+  technologies?: (number | Technology)[] | null;
   /**
    * Tells recruiters where this project came from without them navigating to Experience
    */
@@ -351,6 +353,33 @@ export interface Project {
   /**
    * Featured projects appear on the homepage and get priority placement
    */
+  featured?: boolean | null;
+  /**
+   * Display order (lower numbers appear first)
+   */
+  order?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lab".
+ */
+export interface Lab {
+  id: number;
+  name: string;
+  /**
+   * One-line description of the experiment
+   */
+  description: string;
+  /**
+   * Technologies used (e.g., "Rust" or "Go, PostgreSQL")
+   */
+  technologies: string;
+  /**
+   * Optional link to GitHub repository
+   */
+  githubUrl?: string | null;
   featured?: boolean | null;
   /**
    * Display order (lower numbers appear first)
@@ -406,6 +435,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'projects';
         value: number | Project;
+      } | null)
+    | ({
+        relationTo: 'lab';
+        value: number | Lab;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -566,6 +599,20 @@ export interface ProjectsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "lab_select".
+ */
+export interface LabSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  technologies?: T;
+  githubUrl?: T;
+  featured?: T;
+  order?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -612,15 +659,23 @@ export interface Homepage {
   id: number;
   hero: {
     /**
-     * Main headline (e.g., 'Hi, I\'m Hugo')
+     * First name for animated headline (e.g., "Hugo")
      */
-    title: string;
+    firstName: string;
     /**
-     * Tagline (e.g., "Full-stack developer building things that matter")
+     * Last name for animated headline (e.g., "Hsi")
      */
-    subtitle: string;
+    lastName: string;
     /**
-     * Brief intro paragraph. Keep it short - recruiters scan, they don't read.
+     * Job title (e.g., "Full-Stack Developer")
+     */
+    role: string;
+    /**
+     * Typewriter text below name (e.g., "Full-stack developer with a designer's eye.")
+     */
+    tagline: string;
+    /**
+     * Bio paragraph. Keep it short - recruiters scan, they don't read.
      */
     intro?: {
       root: {
@@ -637,21 +692,35 @@ export interface Homepage {
       };
       [k: string]: unknown;
     } | null;
-    ctaText?: string | null;
-    ctaLink?: string | null;
+    ctaPrimary: {
+      /**
+       * Primary CTA button text
+       */
+      text: string;
+      /**
+       * Link for primary CTA (e.g., "#projects")
+       */
+      link: string;
+    };
+    ctaSecondary: {
+      /**
+       * Secondary CTA button text (e.g., "Download resume")
+       */
+      text: string;
+    };
+    /**
+     * Designer quote displayed alongside hero content
+     */
+    quote?: string | null;
   };
   /**
    * Select 3 of your best projects to feature on the homepage
    */
   featuredProjects?: (number | Project)[] | null;
-  skills?: {
-    title?: string | null;
-    technologies?: (number | Technology)[] | null;
-  };
   /**
    * Resume/CV PDF - this is a primary CTA for recruiters
    */
-  resume: number | Media;
+  resume?: (number | null) | Media;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -757,19 +826,25 @@ export interface HomepageSelect<T extends boolean = true> {
   hero?:
     | T
     | {
-        title?: T;
-        subtitle?: T;
+        firstName?: T;
+        lastName?: T;
+        role?: T;
+        tagline?: T;
         intro?: T;
-        ctaText?: T;
-        ctaLink?: T;
+        ctaPrimary?:
+          | T
+          | {
+              text?: T;
+              link?: T;
+            };
+        ctaSecondary?:
+          | T
+          | {
+              text?: T;
+            };
+        quote?: T;
       };
   featuredProjects?: T;
-  skills?:
-    | T
-    | {
-        title?: T;
-        technologies?: T;
-      };
   resume?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -23,7 +23,7 @@ export function TypewriterText({
   const hasStarted = useRef(false)
 
   useEffect(() => {
-    if (!isInView || hasStarted.current) return
+    if (!isInView || hasStarted.current || !text) return
     hasStarted.current = true
 
     const startTimeout = setTimeout(() => {
