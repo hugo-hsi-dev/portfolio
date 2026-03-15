@@ -38,7 +38,9 @@ function ImageLift({
 }) {
   return (
     <div className={`relative overflow-hidden ${className} group`}>
-      <div className="transition-transform duration-400 group-hover:scale-102">{children}</div>
+      <div className="h-full w-full transition-transform duration-400 group-hover:scale-102">
+        {children}
+      </div>
     </div>
   )
 }
@@ -63,7 +65,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       <a href={project.liveUrl || project.sourceUrl || '#'} className="block">
         <StaggerContainer className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           <StaggerItem className="lg:col-span-7">
-            <ImageLift className={`${featuredBg} aspect-[16/10]`}>
+            <ImageLift className={`${featuredBg} ring-1 ring-black/[0.08]`}>
               {imageUrl ? (
                 <img
                   src={imageUrl}
@@ -74,10 +76,10 @@ export function ProjectCard({ project }: ProjectCardProps) {
                       ? project.featuredImage.alt
                       : project.title
                   }
-                  className="w-full h-full object-cover"
+                  className="h-auto w-full"
                 />
               ) : (
-                <div className="absolute inset-0 flex items-center justify-center text-[#b8b4ab] font-serif text-lg">
+                <div className="aspect-video flex items-center justify-center text-[#b8b4ab] font-serif text-lg">
                   {project.title}
                 </div>
               )}
@@ -89,9 +91,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             >
               {categoryLabel}
             </span>
-            <h3 className="font-serif text-2xl lg:text-3xl mb-3 group-hover:translate-x-1 transition-transform">
-              {project.title}
-            </h3>
+            <h3 className="font-serif text-2xl lg:text-3xl mb-3">{project.title}</h3>
             <p className="font-sans text-[#5a5a5a] mb-4 leading-relaxed">{project.excerpt}</p>
             {project.technologies && project.technologies.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
@@ -106,7 +106,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
               </div>
             )}
             <span className="inline-flex items-center gap-1 font-sans text-sm text-[#1a1a1a] group-hover:gap-2 transition-all">
-              <AnimatedUnderline>View case study</AnimatedUnderline>
+              <AnimatedUnderline>Visit site</AnimatedUnderline>
               <ArrowSquareOut size={14} />
             </span>
           </StaggerItem>
