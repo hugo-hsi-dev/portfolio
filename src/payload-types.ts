@@ -552,10 +552,6 @@ export interface Homepage {
      */
     lastName: string;
     /**
-     * Job title (e.g., "Full-Stack Developer")
-     */
-    role: string;
-    /**
      * Typewriter text below name (e.g., "Full-stack developer with a designer's eye.")
      */
     tagline: string;
@@ -630,7 +626,6 @@ export interface HomepageSelect<T extends boolean = true> {
     | {
         firstName?: T;
         lastName?: T;
-        role?: T;
         tagline?: T;
         intro?: T;
         ctaPrimary?:

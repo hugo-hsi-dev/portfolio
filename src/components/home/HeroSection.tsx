@@ -1,12 +1,13 @@
 'use client'
 
-import { AnimatedName } from '@/components/motion/AnimatedText'
+import { motion } from 'motion/react'
+import { useState } from 'react'
+import type { Homepage } from '@/payload-types'
 import { TypewriterText } from '@/components/motion/TypewriterText'
 import { InkButton } from '@/components/motion/InkButton'
 import { GrainOverlay } from '@/components/motion/GrainOverlay'
 import { ScrollProgress } from '@/components/motion/ScrollProgress'
 import { RichText } from '@/components/RichText'
-import type { Homepage } from '@/payload-types'
 
 interface HeroSectionProps {
   hero: Homepage['hero']
@@ -14,10 +15,12 @@ interface HeroSectionProps {
 }
 
 function QuoteMarks({ text }: { text: string }) {
-  return <span className="text-[#c4a35a] animate-pulse-slow">{text}</span>
+  return <span className="text-[#c4a35a]">{text}</span>
 }
 
 export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
+  const [isTypingComplete, setIsTypingComplete] = useState(false)
+
   if (!hero) return null
 
   return (
@@ -27,45 +30,84 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
 
       <div className="max-w-6xl mx-auto w-full relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end">
-          <div className="lg:col-span-7">
-            {hero.role && (
-              <p className="font-sans text-xs uppercase tracking-[0.3em] text-[#8b8680] mb-6">
-                {hero.role}
-              </p>
-            )}
+          <div className="lg:col-span-8">
             {hero.firstName && hero.lastName && (
-              <AnimatedName firstName={hero.firstName} lastName={hero.lastName} className="mb-8" />
+              <motion.p
+                className="font-sans text-sm uppercase tracking-[0.2em] text-[#8b8680] mb-6"
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+              >
+                {hero.firstName} {hero.lastName}
+              </motion.p>
             )}
             {hero.tagline && (
-              <p className="font-serif text-2xl lg:text-3xl text-[#4a4a4a] max-w-xl leading-snug mb-8">
-                <TypewriterText text={hero.tagline} delay={1} speed={30} />
-              </p>
+              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1a1a1a] leading-[1.1] mb-8 max-w-2xl">
+                <TypewriterText
+                  text={hero.tagline}
+                  delay={0.3}
+                  speed={35}
+                  onComplete={() => setIsTypingComplete(true)}
+                />
+              </h1>
             )}
             {hero.intro && (
-              <div className="font-sans text-base lg:text-lg text-[#5a5a5a] max-w-xl leading-relaxed mb-10">
+              <motion.div
+                className="font-sans text-base text-[#5a5a5a] max-w-lg leading-relaxed mb-10"
+                initial={{ opacity: 0 }}
+                animate={isTypingComplete ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ duration: 0.5, delay: isTypingComplete ? 0.1 : 0 }}
+              >
                 <RichText content={hero.intro} />
-              </div>
+              </motion.div>
             )}
-            {(hero.ctaPrimary?.text || hero.ctaSecondary?.text) && (
-              <div className="flex flex-wrap gap-4">
-                {hero.ctaPrimary?.text && hero.ctaPrimary?.link && (
+            <div className="flex flex-wrap gap-4">
+              {hero.ctaPrimary?.text && hero.ctaPrimary?.link && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={isTypingComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                  transition={{
+                    duration: 0.35,
+                    delay: isTypingComplete ? 0.22 : 0,
+                    ease: [0.25, 0.46, 0.45, 0.94],
+                  }}
+                >
                   <InkButton href={hero.ctaPrimary.link}>{hero.ctaPrimary.text}</InkButton>
-                )}
-                {hero.ctaSecondary?.text && (
+                </motion.div>
+              )}
+              {hero.ctaSecondary?.text && (
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={isTypingComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
+                  transition={{
+                    duration: 0.35,
+                    delay: isTypingComplete ? 0.37 : 0,
+                    ease: [0.25, 0.46, 0.45, 0.94],
+                  }}
+                >
                   <InkButton href={resumeUrl || '#'} variant="outline">
                     {hero.ctaSecondary.text}
                   </InkButton>
-                )}
-              </div>
-            )}
+                </motion.div>
+              )}
+            </div>
           </div>
-          <div className="lg:col-span-5 lg:text-right">
+          <div className="lg:col-span-4 lg:text-right">
             {hero.quote && (
-              <p className="font-serif text-sm text-[#8b8680] italic">
+              <motion.p
+                className="font-serif text-sm text-[#8b8680] italic leading-relaxed"
+                initial={{ opacity: 0, x: 20 }}
+                animate={isTypingComplete ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
+                transition={{
+                  duration: 0.45,
+                  delay: isTypingComplete ? 0.52 : 0,
+                  ease: [0.25, 0.46, 0.45, 0.94],
+                }}
+              >
                 <QuoteMarks text="&ldquo;" />
                 {hero.quote}
                 <QuoteMarks text="&rdquo;" />
-              </p>
+              </motion.p>
             )}
           </div>
         </div>

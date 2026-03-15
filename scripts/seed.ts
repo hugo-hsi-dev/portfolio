@@ -267,7 +267,6 @@ async function seed() {
     hero: {
       firstName: 'Hugo',
       lastName: 'Hsi',
-      role: 'Full-Stack Developer',
       tagline: "Full-stack developer with a designer's eye.",
       intro: {
         root: {
