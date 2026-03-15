@@ -57,7 +57,6 @@ export const Projects: CollectionConfig = {
       name: 'featuredImage',
       type: 'upload',
       relationTo: 'media',
-      required: true,
     },
     {
       name: 'gallery',
@@ -97,7 +96,6 @@ export const Projects: CollectionConfig = {
       type: 'relationship',
       relationTo: 'technologies',
       hasMany: true,
-      required: true,
     },
     {
       name: 'context',

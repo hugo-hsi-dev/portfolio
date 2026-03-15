@@ -8,35 +8,87 @@ export const Homepage: GlobalConfig = {
       type: 'group',
       fields: [
         {
-          name: 'title',
+          name: 'firstName',
           type: 'text',
           required: true,
           admin: {
-            description: "Main headline (e.g., 'Hi, I\\'m Hugo')",
+            description: 'First name for animated headline (e.g., "Hugo")',
           },
         },
         {
-          name: 'subtitle',
-          type: 'textarea',
+          name: 'lastName',
+          type: 'text',
           required: true,
           admin: {
-            description: 'Tagline (e.g., "Full-stack developer building things that matter")',
+            description: 'Last name for animated headline (e.g., "Hsi")',
+          },
+        },
+        {
+          name: 'role',
+          type: 'text',
+          required: true,
+          admin: {
+            description: 'Job title (e.g., "Full-Stack Developer")',
+          },
+        },
+        {
+          name: 'tagline',
+          type: 'text',
+          required: true,
+          admin: {
+            description:
+              'Typewriter text below name (e.g., "Full-stack developer with a designer\'s eye.")',
           },
         },
         {
           name: 'intro',
           type: 'richText',
           admin: {
-            description: "Brief intro paragraph. Keep it short - recruiters scan, they don't read.",
+            description: "Bio paragraph. Keep it short - recruiters scan, they don't read.",
           },
         },
         {
-          name: 'ctaText',
-          type: 'text',
+          name: 'ctaPrimary',
+          type: 'group',
+          fields: [
+            {
+              name: 'text',
+              type: 'text',
+              required: true,
+              admin: {
+                description: 'Primary CTA button text',
+              },
+            },
+            {
+              name: 'link',
+              type: 'text',
+              required: true,
+              admin: {
+                description: 'Link for primary CTA (e.g., "#projects")',
+              },
+            },
+          ],
         },
         {
-          name: 'ctaLink',
-          type: 'text',
+          name: 'ctaSecondary',
+          type: 'group',
+          fields: [
+            {
+              name: 'text',
+              type: 'text',
+              required: true,
+              admin: {
+                description: 'Secondary CTA button text (e.g., "Download resume")',
+              },
+            },
+          ],
+        },
+        {
+          name: 'quote',
+          type: 'textarea',
+          admin: {
+            description: 'Designer quote displayed alongside hero content',
+          },
         },
       ],
     },
@@ -45,33 +97,15 @@ export const Homepage: GlobalConfig = {
       type: 'relationship',
       relationTo: 'projects',
       hasMany: true,
-      minRows: 1,
       maxRows: 3,
       admin: {
         description: 'Select 3 of your best projects to feature on the homepage',
       },
     },
     {
-      name: 'skills',
-      type: 'group',
-      fields: [
-        {
-          name: 'title',
-          type: 'text',
-        },
-        {
-          name: 'technologies',
-          type: 'relationship',
-          relationTo: 'technologies',
-          hasMany: true,
-        },
-      ],
-    },
-    {
       name: 'resume',
       type: 'upload',
       relationTo: 'media',
-      required: true,
       admin: {
         description: 'Resume/CV PDF - this is a primary CTA for recruiters',
       },

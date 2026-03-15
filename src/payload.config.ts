@@ -8,6 +8,7 @@ import sharp from 'sharp'
 
 import { Education } from './collections/Education'
 import { Experience } from './collections/Experience'
+import { Lab } from './collections/Lab'
 import { Media } from './collections/Media'
 import { Projects } from './collections/Projects'
 import { Technologies } from './collections/Technologies'
@@ -28,7 +29,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media, Technologies, Education, Experience, Projects],
+  collections: [Users, Media, Technologies, Education, Experience, Projects, Lab],
   globals: [Homepage, About, Contact, SiteSettings],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
