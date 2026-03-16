@@ -38,7 +38,7 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
               {formatDate(firstExperience.startDate)} — {formatDate(firstExperience.endDate)}
             </p>
             {firstExperience.description && typeof firstExperience.description === 'string' && (
-              <p className="font-sans text-[#b8b4ab] leading-relaxed">
+              <p className="font-sans text-[#b8b4ab] leading-relaxed text-pretty">
                 {firstExperience.description}
               </p>
             )}

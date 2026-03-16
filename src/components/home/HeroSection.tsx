@@ -54,7 +54,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
             )}
             {hero.intro && (
               <motion.div
-                className="font-sans text-base text-[#5a5a5a] max-w-lg leading-relaxed mb-10"
+                className="font-sans text-base text-[#5a5a5a] max-w-lg leading-relaxed mb-10 text-pretty"
                 initial={{ opacity: 0 }}
                 animate={isTypingComplete ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.5, delay: isTypingComplete ? 0.1 : 0 }}
@@ -96,7 +96,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
           <div className="lg:col-span-4 lg:text-right">
             {hero.quote && (
               <motion.p
-                className="font-serif text-sm text-[#8b8680] italic leading-relaxed"
+                className="font-serif text-sm text-[#8b8680] italic leading-relaxed text-pretty"
                 initial={{ opacity: 0, x: 20 }}
                 animate={isTypingComplete ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
                 transition={{
