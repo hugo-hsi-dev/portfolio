@@ -5,21 +5,15 @@ import { ReactNode } from 'react'
 
 interface InkButtonProps {
   children: ReactNode
-  href?: string
+  href: string
   className?: string
   variant?: 'solid' | 'outline'
-  onClick?: () => void
-  target?: '_blank' | '_self' | '_parent' | '_top'
 }
 
-export function InkButton({
-  children,
-  href,
-  className = '',
-  variant = 'solid',
-  onClick,
-  target = '_blank',
-}: InkButtonProps) {
+export function InkButton({ children, href, className = '', variant = 'solid' }: InkButtonProps) {
+  const isExternal = href.startsWith('http://') || href.startsWith('https://')
+  const target = isExternal ? '_blank' : '_self'
+
   const baseClasses =
     variant === 'solid'
       ? 'inline-flex items-center gap-2 px-6 py-3 font-sans text-sm uppercase tracking-wider relative overflow-hidden bg-[#1a1a1a] text-[#f8f6f1]'
@@ -48,17 +42,9 @@ export function InkButton({
     </motion.span>
   )
 
-  if (href) {
-    return (
-      <a href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined}>
-        {content}
-      </a>
-    )
-  }
-
   return (
-    <button onClick={onClick} className="cursor-pointer">
+    <a href={href} target={target} rel={isExternal ? 'noopener noreferrer' : undefined}>
       {content}
-    </button>
+    </a>
   )
 }
