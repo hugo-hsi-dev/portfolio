@@ -4,7 +4,7 @@ export const Technologies: CollectionConfig = {
   slug: 'technologies',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'category', 'order'],
+    defaultColumns: ['name', 'category'],
   },
   fields: [
     {
@@ -22,13 +22,6 @@ export const Technologies: CollectionConfig = {
         { label: 'Database', value: 'database' },
         { label: 'Tools', value: 'tools' },
       ],
-    },
-    {
-      name: 'order',
-      type: 'number',
-      admin: {
-        description: 'Display order (lower numbers appear first)',
-      },
     },
   ],
 }
