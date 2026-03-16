@@ -219,10 +219,6 @@ export interface Experience {
   startDate: string;
   endDate?: string | null;
   isCurrent?: boolean | null;
-  /**
-   * Display order (lower numbers appear first)
-   */
-  order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -452,7 +448,6 @@ export interface ExperienceSelect<T extends boolean = true> {
   startDate?: T;
   endDate?: T;
   isCurrent?: T;
-  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
