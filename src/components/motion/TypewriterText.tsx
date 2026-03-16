@@ -23,6 +23,7 @@ export function TypewriterText({
   const ref = useRef<HTMLSpanElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.5 })
   const hasStarted = useRef(false)
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     if (!isInView || hasStarted.current || !text) return
@@ -30,20 +31,25 @@ export function TypewriterText({
 
     const startTimeout = setTimeout(() => {
       let index = 0
-      const interval = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         if (index <= text.length) {
           setDisplayedText(text.slice(0, index))
           index++
         } else {
-          clearInterval(interval)
+          clearInterval(intervalRef.current!)
+          intervalRef.current = null
           onComplete?.()
         }
       }, speed)
-
-      return () => clearInterval(interval)
     }, delay * 1000)
 
-    return () => clearTimeout(startTimeout)
+    return () => {
+      clearTimeout(startTimeout)
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+        intervalRef.current = null
+      }
+    }
   }, [isInView, text, delay, speed, onComplete])
 
   // Blink cursor
