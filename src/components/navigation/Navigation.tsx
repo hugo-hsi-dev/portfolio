@@ -6,12 +6,11 @@ import { motion } from 'motion/react'
 import { useState, useEffect } from 'react'
 
 interface NavigationProps {
-  siteName?: string
   githubUrl?: string
   linkedinUrl?: string
 }
 
-export function Navigation({ siteName = 'Hugo Hsi', githubUrl, linkedinUrl }: NavigationProps) {
+export function Navigation({ githubUrl, linkedinUrl }: NavigationProps) {
   const [showName, setShowName] = useState(false)
 
   useEffect(() => {
@@ -45,7 +44,7 @@ export function Navigation({ siteName = 'Hugo Hsi', githubUrl, linkedinUrl }: Na
             animate={{ opacity: showName ? 1 : 0, y: showName ? 0 : -5 }}
             transition={{ duration: 0.5, ease: 'easeOut' }}
           >
-            {siteName}
+            Hugo Hsi
           </motion.span>
         </MagneticButton>
         <div className="flex items-center gap-6">
