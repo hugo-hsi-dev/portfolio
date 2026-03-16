@@ -75,7 +75,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
                   <InkButton href={hero.ctaPrimary.link}>{hero.ctaPrimary.text}</InkButton>
                 </motion.div>
               )}
-              {hero.ctaSecondary?.text && (
+              {hero.ctaSecondary?.text && resumeUrl && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={isTypingComplete ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
@@ -85,7 +85,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
                     ease: [0.25, 0.46, 0.45, 0.94],
                   }}
                 >
-                  <InkButton href={resumeUrl || '#'} variant="outline">
+                  <InkButton href={resumeUrl} variant="outline">
                     {hero.ctaSecondary.text}
                   </InkButton>
                 </motion.div>
