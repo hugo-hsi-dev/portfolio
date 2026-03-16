@@ -45,6 +45,12 @@ function ImageLift({
 }
 
 export function ProjectCard({ project }: ProjectCardProps) {
+  const hasLink = Boolean(project.liveUrl)
+  const Wrapper = hasLink ? 'a' : 'div'
+  const wrapperProps = hasLink
+    ? { href: project.liveUrl!, target: '_blank' as const, rel: 'noopener noreferrer' }
+    : {}
+
   const featuredBg = project.context === 'work' ? 'bg-cream-lighter' : 'bg-cream-light'
   const categoryColor = project.context === 'work' ? 'text-gold' : 'text-sage'
   const categoryLabel =
@@ -61,7 +67,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <article className="group lg:hover:-translate-y-1 lg:hover:shadow-lg max-lg:active:scale-[0.98] transition-all duration-300 ease-out">
-      <a href={project.liveUrl || '#'} target="_blank" rel="noopener noreferrer" className="block">
+      <Wrapper {...wrapperProps} className="block">
         <StaggerContainer className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           <StaggerItem className="lg:col-span-7">
             <ImageLift className={`${featuredBg} ring-1 ring-black/[0.08]`}>
@@ -104,13 +110,15 @@ export function ProjectCard({ project }: ProjectCardProps) {
                 ))}
               </div>
             )}
-            <span className="inline-flex items-center gap-1 font-sans text-sm text-charcoal group-hover:gap-2 transition-all">
-              <AnimatedUnderline>Visit site</AnimatedUnderline>
-              <ArrowSquareOut size={14} />
-            </span>
+            {hasLink && (
+              <span className="inline-flex items-center gap-1 font-sans text-sm text-charcoal group-hover:gap-2 transition-all">
+                <AnimatedUnderline>Visit site</AnimatedUnderline>
+                <ArrowSquareOut size={14} />
+              </span>
+            )}
           </StaggerItem>
         </StaggerContainer>
-      </a>
+      </Wrapper>
     </article>
   )
 }
