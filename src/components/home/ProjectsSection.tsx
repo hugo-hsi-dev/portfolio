@@ -1,10 +1,10 @@
 'use client'
 
-import { ArrowSquareOut } from '@phosphor-icons/react'
+import type { Project } from '@/payload-types'
 import { ProjectCard } from '@/components/ui/ProjectCard'
 
 interface ProjectsSectionProps {
-  projects: Array<any>
+  projects: Project[]
 }
 
 export function ProjectsSection({ projects }: ProjectsSectionProps) {
