@@ -20,6 +20,14 @@ import { Homepage } from './globals/Homepage'
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
 
+function requireEnv(name: string): string {
+  const value = process.env[name]
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${name}`)
+  }
+  return value
+}
+
 export default buildConfig({
   admin: {
     user: Users.slug,
@@ -30,13 +38,13 @@ export default buildConfig({
   collections: [Users, Media, Technologies, Education, Experience, Projects, Lab],
   globals: [Homepage, Contact],
   editor: lexicalEditor(),
-  secret: process.env.PAYLOAD_SECRET || '',
+  secret: requireEnv('PAYLOAD_SECRET'),
   typescript: {
     outputFile: path.resolve(dirname, 'payload-types.ts'),
   },
   db: vercelPostgresAdapter({
     pool: {
-      connectionString: process.env.POSTGRES_URL || '',
+      connectionString: requireEnv('POSTGRES_URL'),
     },
   }),
   sharp,
@@ -45,7 +53,7 @@ export default buildConfig({
       collections: {
         media: true,
       },
-      token: process.env.BLOB_READ_WRITE_TOKEN || '',
+      token: requireEnv('BLOB_READ_WRITE_TOKEN'),
     }),
   ],
 })
