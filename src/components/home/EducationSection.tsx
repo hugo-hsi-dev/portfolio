@@ -29,7 +29,6 @@ export function EducationSection({ education }: EducationSectionProps) {
         count: education.length,
       }}
       showTopBorder={true}
-      sectionBg="bg-[#1a1a1a]"
     />
   )
 }

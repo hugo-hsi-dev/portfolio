@@ -30,7 +30,6 @@ export function ExperienceSection({ experiences }: ExperienceSectionProps) {
         count: experiences.length,
       }}
       showTopBorder={false}
-      sectionBg="bg-[#1a1a1a]"
     />
   )
 }
