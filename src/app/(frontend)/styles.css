@@ -16,8 +16,6 @@
   --color-border: #333;
 }
 
-@source '../../../components/**/*.{js,ts,jsx,tsx}';
-
 @layer base {
   html {
     background-color: var(--color-charcoal);
