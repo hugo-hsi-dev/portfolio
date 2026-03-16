@@ -28,17 +28,19 @@ export default async function HomePage() {
     typeof homepage.resume === 'object' && homepage.resume !== null ? homepage.resume.url : null
 
   return (
-    <div className="min-h-screen bg-[#f8f6f1] text-[#1a1a1a] overflow-x-hidden">
-      <Navigation
-        githubUrl={contact?.github ?? undefined}
-        linkedinUrl={contact?.linkedin ?? undefined}
-      />
-      <HeroSection hero={homepage.hero} resumeUrl={resumeUrl} />
-      <ProjectsSection projects={featuredProjects} />
-      <ExperienceSection experiences={experiences} />
-      <EducationSection education={education} />
-      <TechStackSection technologies={technologies} />
-      <LabSection lab={lab} />
+    <div className="min-h-screen overflow-x-hidden">
+      <div className="bg-[#f8f6f1] text-[#1a1a1a]">
+        <Navigation
+          githubUrl={contact?.github ?? undefined}
+          linkedinUrl={contact?.linkedin ?? undefined}
+        />
+        <HeroSection hero={homepage.hero} resumeUrl={resumeUrl} />
+        <ProjectsSection projects={featuredProjects} />
+        <ExperienceSection experiences={experiences} />
+        <EducationSection education={education} />
+        <TechStackSection technologies={technologies} />
+        <LabSection lab={lab} />
+      </div>
       <FooterSection
         email={contact?.email}
         githubUrl={contact?.github}

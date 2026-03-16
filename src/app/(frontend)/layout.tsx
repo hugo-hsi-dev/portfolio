@@ -20,6 +20,12 @@ export const metadata = {
   title: 'Hugo Hsi | Portfolio',
 }
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+}
+
 export default async function RootLayout(props: { children: React.ReactNode }) {
   const { children } = props
 
