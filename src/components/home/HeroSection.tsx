@@ -14,7 +14,7 @@ interface HeroSectionProps {
 }
 
 function QuoteMarks({ text }: { text: string }) {
-  return <span className="text-[#c4a35a]">{text}</span>
+  return <span className="text-gold">{text}</span>
 }
 
 export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
@@ -33,7 +33,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
             {hero.firstName && hero.lastName && (
               <motion.p
                 id="hero-eyebrow"
-                className="font-sans text-sm uppercase tracking-[0.2em] text-[#8b8680] mb-6"
+                className="font-sans text-sm uppercase tracking-[0.2em] text-stone mb-6"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -42,7 +42,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
               </motion.p>
             )}
             {hero.tagline && (
-              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-[#1a1a1a] leading-[1.1] mb-8 max-w-2xl">
+              <h1 className="font-serif text-4xl md:text-5xl lg:text-6xl text-charcoal leading-[1.1] mb-8 max-w-2xl">
                 <TypewriterText
                   text={hero.tagline}
                   delay={0.3}
@@ -53,7 +53,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
             )}
             {hero.intro && (
               <motion.p
-                className="font-sans text-base text-[#5a5a5a] max-w-lg leading-relaxed mb-10 text-pretty"
+                className="font-sans text-base text-slate max-w-lg leading-relaxed mb-10 text-pretty"
                 initial={{ opacity: 0 }}
                 animate={isTypingComplete ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.5, delay: isTypingComplete ? 0.1 : 0 }}
@@ -95,7 +95,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
           <div className="lg:col-span-4 lg:text-right">
             {hero.quote && (
               <motion.p
-                className="font-serif text-sm text-[#8b8680] italic leading-relaxed text-pretty"
+                className="font-serif text-sm text-stone italic leading-relaxed text-pretty"
                 initial={{ opacity: 0, x: 20 }}
                 animate={isTypingComplete ? { opacity: 1, x: 0 } : { opacity: 0, x: 20 }}
                 transition={{

@@ -18,7 +18,7 @@ export default async function HomePage() {
 
   if (!homepage) {
     return (
-      <div className="min-h-screen bg-[#f8f6f1] text-[#1a1a1a] flex items-center justify-center">
+      <div className="min-h-screen bg-cream text-charcoal flex items-center justify-center">
         <p className="text-gray-500">Homepage content not found. Please configure in CMS.</p>
       </div>
     )
@@ -29,7 +29,7 @@ export default async function HomePage() {
 
   return (
     <div className="min-h-dvh overflow-x-hidden">
-      <div className="bg-[#f8f6f1] text-[#1a1a1a]">
+      <div className="bg-cream text-charcoal">
         <Navigation
           githubUrl={contact?.github ?? undefined}
           linkedinUrl={contact?.linkedin ?? undefined}
