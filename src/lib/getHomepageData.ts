@@ -6,44 +6,57 @@ export async function getHomepageData(payload: Payload) {
     await Promise.all([
       payload.findGlobal({ slug: 'homepage', depth: 1 }).catch(() => null),
 
-      payload.find({
-        collection: 'projects',
-        sort: 'order',
-        limit: 3,
-        depth: 2,
-      }),
+      payload
+        .find({
+          collection: 'projects',
+          sort: 'order',
+          limit: 3,
+          depth: 2,
+        })
+        .catch(() => null),
 
-      payload.find({
-        collection: 'experience',
-        sort: '-startDate',
-      }),
+      payload
+        .find({
+          collection: 'experience',
+          sort: '-startDate',
+          limit: 0,
+        })
+        .catch(() => null),
 
-      payload.find({
-        collection: 'education',
-        sort: '-startDate',
-      }),
+      payload
+        .find({
+          collection: 'education',
+          sort: '-startDate',
+          limit: 0,
+        })
+        .catch(() => null),
 
-      payload.find({
-        collection: 'technologies',
-        sort: 'name',
-        limit: 100,
-      }),
+      payload
+        .find({
+          collection: 'technologies',
+          sort: 'name',
+          limit: 100,
+        })
+        .catch(() => null),
 
-      payload.find({
-        collection: 'lab',
-        sort: 'name',
-      }),
+      payload
+        .find({
+          collection: 'lab',
+          sort: 'name',
+          limit: 0,
+        })
+        .catch(() => null),
 
       payload.findGlobal({ slug: 'contact' }).catch(() => null),
     ])
 
-  const homepageData = homepage as Homepage | null
-  const projectsData = featuredProjects?.docs as Project[] | []
-  const experiencesData = experiences?.docs as Experience[] | []
-  const educationData = education?.docs as Education[] | []
-  const technologiesData = technologies?.docs as Technology[] | []
-  const labData = lab?.docs || []
-  const contactData = contact as Contact | null
+  const homepageData = homepage as Homepage
+  const projectsData = (featuredProjects?.docs as Project[]) ?? []
+  const experiencesData = (experiences?.docs as Experience[]) ?? []
+  const educationData = (education?.docs as Education[]) ?? []
+  const technologiesData = (technologies?.docs as Technology[]) ?? []
+  const labData = lab?.docs ?? []
+  const contactData = contact as Contact
 
   const groupedTechs = {
     frontend: technologiesData.filter((t) => t.category === 'frontend'),
