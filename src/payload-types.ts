@@ -242,23 +242,15 @@ export interface Project {
    * URL to the live project/demo
    */
   liveUrl?: string | null;
-  /**
-   * URL to source code (GitHub, GitLab, etc.)
-   */
-  sourceUrl?: string | null;
   technologies?: (number | Technology)[] | null;
   /**
    * Tells recruiters where this project came from without them navigating to Experience
    */
-  context?: ('personal' | 'work' | 'learning' | 'opensource') | null;
+  context?: ('personal' | 'work') | null;
   /**
    * If work project, which company? (shown alongside context)
    */
   company?: string | null;
-  /**
-   * Featured projects appear on the homepage and get priority placement
-   */
-  featured?: boolean | null;
   /**
    * Display order (lower numbers appear first)
    */
@@ -473,11 +465,9 @@ export interface ProjectsSelect<T extends boolean = true> {
   excerpt?: T;
   featuredImage?: T;
   liveUrl?: T;
-  sourceUrl?: T;
   technologies?: T;
   context?: T;
   company?: T;
-  featured?: T;
   order?: T;
   updatedAt?: T;
   createdAt?: T;
