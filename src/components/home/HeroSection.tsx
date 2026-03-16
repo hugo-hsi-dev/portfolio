@@ -33,6 +33,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
           <div className="lg:col-span-8">
             {hero.firstName && hero.lastName && (
               <motion.p
+                id="hero-eyebrow"
                 className="font-sans text-sm uppercase tracking-[0.2em] text-[#8b8680] mb-6"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
