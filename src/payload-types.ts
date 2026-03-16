@@ -269,7 +269,6 @@ export interface Lab {
    * Optional link to GitHub repository
    */
   githubUrl?: string | null;
-  featured?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -467,7 +466,6 @@ export interface LabSelect<T extends boolean = true> {
   description?: T;
   technologies?: T;
   githubUrl?: T;
-  featured?: T;
   updatedAt?: T;
   createdAt?: T;
 }

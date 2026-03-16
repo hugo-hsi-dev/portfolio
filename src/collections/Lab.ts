@@ -4,7 +4,7 @@ export const Lab: CollectionConfig = {
   slug: 'lab',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'featured'],
+    defaultColumns: ['name'],
   },
   fields: [
     {
@@ -34,11 +34,6 @@ export const Lab: CollectionConfig = {
       admin: {
         description: 'Optional link to GitHub repository',
       },
-    },
-    {
-      name: 'featured',
-      type: 'checkbox',
-      defaultValue: true,
     },
   ],
   timestamps: true,
