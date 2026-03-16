@@ -28,7 +28,7 @@ export default async function HomePage() {
     typeof homepage.resume === 'object' && homepage.resume !== null ? homepage.resume.url : null
 
   return (
-    <div className="min-h-screen overflow-x-hidden">
+    <div className="min-h-dvh overflow-x-hidden">
       <div className="bg-[#f8f6f1] text-[#1a1a1a]">
         <Navigation
           githubUrl={contact?.github ?? undefined}
