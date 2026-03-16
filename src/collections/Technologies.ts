@@ -22,6 +22,7 @@ export const Technologies: CollectionConfig = {
         { label: 'Database', value: 'database' },
         { label: 'Tools', value: 'tools' },
       ],
+      required: true,
     },
   ],
 }
