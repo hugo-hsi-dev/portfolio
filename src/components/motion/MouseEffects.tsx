@@ -64,6 +64,7 @@ interface MagneticButtonProps {
   className?: string
   href?: string
   intensity?: number
+  target?: '_blank' | '_self' | '_parent' | '_top'
 }
 
 export function MagneticButton({
@@ -71,6 +72,7 @@ export function MagneticButton({
   className = '',
   href,
   intensity = 0.3,
+  target = '_blank',
 }: MagneticButtonProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const x = useMotionValue(0)
@@ -117,7 +119,11 @@ export function MagneticButton({
   )
 
   if (href) {
-    return <a href={href}>{content}</a>
+    return (
+      <a href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined}>
+        {content}
+      </a>
+    )
   }
 
   return content

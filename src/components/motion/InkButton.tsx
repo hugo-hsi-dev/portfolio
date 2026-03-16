@@ -9,6 +9,7 @@ interface InkButtonProps {
   className?: string
   variant?: 'solid' | 'outline'
   onClick?: () => void
+  target?: '_blank' | '_self' | '_parent' | '_top'
 }
 
 export function InkButton({
@@ -17,6 +18,7 @@ export function InkButton({
   className = '',
   variant = 'solid',
   onClick,
+  target = '_blank',
 }: InkButtonProps) {
   const baseClasses =
     variant === 'solid'
@@ -47,7 +49,11 @@ export function InkButton({
   )
 
   if (href) {
-    return <a href={href}>{content}</a>
+    return (
+      <a href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined}>
+        {content}
+      </a>
+    )
   }
 
   return (
