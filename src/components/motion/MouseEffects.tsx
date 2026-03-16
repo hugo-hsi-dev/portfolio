@@ -8,7 +8,6 @@ interface MagneticButtonProps {
   className?: string
   href?: string
   intensity?: number
-  target?: '_blank' | '_self' | '_parent' | '_top'
 }
 
 export function MagneticButton({
@@ -16,24 +15,22 @@ export function MagneticButton({
   className = '',
   href,
   intensity = 0.3,
-  target = '_blank',
 }: MagneticButtonProps) {
   const ref = useRef<HTMLSpanElement>(null)
   const x = useMotionValue(0)
   const y = useMotionValue(0)
+  const rafRef = useRef<number>(0)
 
   const springConfig = { damping: 15, stiffness: 150 }
   const springX = useSpring(x, springConfig)
   const springY = useSpring(y, springConfig)
 
-  let rafId: number
-
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
       if (!ref.current) return
 
-      cancelAnimationFrame(rafId)
-      rafId = requestAnimationFrame(() => {
+      cancelAnimationFrame(rafRef.current)
+      rafRef.current = requestAnimationFrame(() => {
         const rect = ref.current!.getBoundingClientRect()
         const centerX = rect.left + rect.width / 2
         const centerY = rect.top + rect.height / 2
@@ -45,10 +42,13 @@ export function MagneticButton({
   )
 
   const handleMouseLeave = useCallback(() => {
-    cancelAnimationFrame(rafId)
+    cancelAnimationFrame(rafRef.current)
     x.set(0)
     y.set(0)
-  }, [x])
+  }, [x, y])
+
+  const isExternal = href?.startsWith('http://') || href?.startsWith('https://')
+  const target = isExternal ? '_blank' : '_self'
 
   const content = (
     <motion.span
@@ -64,7 +64,7 @@ export function MagneticButton({
 
   if (href) {
     return (
-      <a href={href} target={target} rel={target === '_blank' ? 'noopener noreferrer' : undefined}>
+      <a href={href} target={target} rel={isExternal ? 'noopener noreferrer' : undefined}>
         {content}
       </a>
     )
