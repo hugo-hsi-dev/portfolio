@@ -1,21 +1,12 @@
 'use client'
 
 import { ArrowSquareOut } from '@phosphor-icons/react'
+import type { Project } from '@/payload-types'
 import { StaggerContainer, StaggerItem } from '@/components/motion/StaggerContainer'
 import { AnimatedUnderline } from '@/components/ui/AnimatedUnderline'
 
 interface ProjectCardProps {
-  project: {
-    id: number
-    title: string
-    excerpt: string
-    description?: any
-    featuredImage: any
-    technologies?: any[]
-    context?: string
-    company?: string
-    liveUrl?: string | null
-  }
+  project: Project
 }
 
 function ImageLift({
@@ -90,12 +81,12 @@ export function ProjectCard({ project }: ProjectCardProps) {
             <p className="font-sans text-slate mb-4 leading-relaxed">{project.excerpt}</p>
             {project.technologies && project.technologies.length > 0 && (
               <div className="flex flex-wrap gap-2 mb-4">
-                {project.technologies.map((tech: any) => (
+                {project.technologies?.map((tech) => (
                   <span
-                    key={tech.id}
+                    key={typeof tech === 'number' ? tech : tech.id}
                     className="font-sans text-xs px-2 py-1 bg-cream-lighter text-slate"
                   >
-                    {typeof tech === 'string' ? tech : tech.name}
+                    {typeof tech === 'number' ? String(tech) : tech.name}
                   </span>
                 ))}
               </div>
