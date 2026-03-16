@@ -23,6 +23,12 @@
   }
 }
 
+@media (max-width: 1023px) {
+  .footer-fullscreen {
+    min-height: 110dvh;
+  }
+}
+
 @keyframes grain {
   0%,
   100% {
