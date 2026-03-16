@@ -233,7 +233,6 @@ async function seed() {
       technologies: 'Rust',
       githubUrl: '',
       featured: true,
-      order: 1,
     },
     {
       name: 'Go API Server',
@@ -241,7 +240,6 @@ async function seed() {
       technologies: 'Go, PostgreSQL',
       githubUrl: '',
       featured: true,
-      order: 2,
     },
     {
       name: 'Weather Dashboard',
@@ -249,7 +247,6 @@ async function seed() {
       technologies: 'React, D3.js',
       githubUrl: '',
       featured: true,
-      order: 3,
     },
     {
       name: 'Portfolio v1',
@@ -257,7 +254,6 @@ async function seed() {
       technologies: 'Next.js, MDX',
       githubUrl: '',
       featured: true,
-      order: 4,
     },
     {
       name: 'Task Tracker',
@@ -265,7 +261,6 @@ async function seed() {
       technologies: 'Svelte, SQLite',
       githubUrl: '',
       featured: true,
-      order: 5,
     },
     {
       name: 'Color Palette Gen',
@@ -273,7 +268,6 @@ async function seed() {
       technologies: 'TypeScript, Canvas',
       githubUrl: '',
       featured: true,
-      order: 6,
     },
   ]
 

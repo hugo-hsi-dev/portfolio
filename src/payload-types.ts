@@ -270,10 +270,6 @@ export interface Lab {
    */
   githubUrl?: string | null;
   featured?: boolean | null;
-  /**
-   * Display order (lower numbers appear first)
-   */
-  order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -472,7 +468,6 @@ export interface LabSelect<T extends boolean = true> {
   technologies?: T;
   githubUrl?: T;
   featured?: T;
-  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }
