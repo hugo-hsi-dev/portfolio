@@ -1,63 +1,7 @@
 'use client'
 
 import { motion, useMotionValue, useSpring } from 'motion/react'
-import { useEffect, useRef, ReactNode, useCallback } from 'react'
-
-interface MouseFollowerProps {
-  children: ReactNode
-  className?: string
-  intensity?: number
-}
-
-export function MouseFollower({ children, className = '', intensity = 0.1 }: MouseFollowerProps) {
-  const ref = useRef<HTMLDivElement>(null)
-  const mouseX = useMotionValue(0)
-  const mouseY = useMotionValue(0)
-
-  const springConfig = { damping: 25, stiffness: 150 }
-  const x = useSpring(mouseX, springConfig)
-  const y = useSpring(mouseY, springConfig)
-
-  useEffect(() => {
-    let rafId: number
-    let lastX = 0
-    let lastY = 0
-
-    const handleMouseMove = (e: MouseEvent) => {
-      if (!ref.current) return
-
-      const rect = ref.current.getBoundingClientRect()
-      const centerX = rect.left + rect.width / 2
-      const centerY = rect.top + rect.height / 2
-
-      const newX = (e.clientX - centerX) * intensity
-      const newY = (e.clientY - centerY) * intensity
-
-      // Only update if moved significantly
-      if (Math.abs(newX - lastX) > 1 || Math.abs(newY - lastY) > 1) {
-        cancelAnimationFrame(rafId)
-        rafId = requestAnimationFrame(() => {
-          mouseX.set(newX)
-          mouseY.set(newY)
-          lastX = newX
-          lastY = newY
-        })
-      }
-    }
-
-    window.addEventListener('mousemove', handleMouseMove, { passive: true })
-    return () => {
-      window.removeEventListener('mousemove', handleMouseMove)
-      cancelAnimationFrame(rafId)
-    }
-  }, [mouseX, mouseY, intensity])
-
-  return (
-    <motion.div ref={ref} className={className} style={{ x, y }}>
-      {children}
-    </motion.div>
-  )
-}
+import { useRef, ReactNode, useCallback } from 'react'
 
 interface MagneticButtonProps {
   children: ReactNode
