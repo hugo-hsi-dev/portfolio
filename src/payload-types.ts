@@ -548,21 +548,7 @@ export interface Homepage {
     /**
      * Bio paragraph. Keep it short - recruiters scan, they don't read.
      */
-    intro?: {
-      root: {
-        type: string;
-        children: {
-          type: any;
-          version: number;
-          [k: string]: unknown;
-        }[];
-        direction: ('ltr' | 'rtl') | null;
-        format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
-        indent: number;
-        version: number;
-      };
-      [k: string]: unknown;
-    } | null;
+    intro?: string | null;
     ctaPrimary: {
       /**
        * Primary CTA button text
