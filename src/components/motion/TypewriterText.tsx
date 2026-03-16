@@ -58,7 +58,7 @@ export function TypewriterText({
     <span ref={ref} className={className}>
       {displayedText}
       <span
-        className={`inline-block w-[2px] h-[1em] bg-current ml-1 transition-opacity duration-100 ${showCursor ? 'opacity-100' : 'opacity-0'}`}
+        className={`inline-block w-[2px] h-[1cap] bg-current ml-1 vertical-align-baseline transition-opacity duration-100 ${showCursor ? 'opacity-100' : 'opacity-0'}`}
       />
     </span>
   )
