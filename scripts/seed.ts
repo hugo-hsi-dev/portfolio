@@ -28,9 +28,11 @@ async function seed() {
     { name: 'Next.js', category: 'frontend' as const, order: 2 },
     { name: 'Svelte', category: 'frontend' as const, order: 3 },
     { name: 'Tailwind CSS', category: 'frontend' as const, order: 4 },
+    { name: 'shadcn/ui', category: 'frontend' as const, order: 10 },
     { name: 'Node.js', category: 'backend' as const, order: 1 },
     { name: 'TypeScript', category: 'backend' as const, order: 2 },
     { name: 'Express', category: 'backend' as const, order: 3 },
+    { name: 'Stripe', category: 'backend' as const, order: 10 },
     { name: 'PostgreSQL', category: 'database' as const, order: 1 },
     { name: 'MongoDB', category: 'database' as const, order: 2 },
     { name: 'Redis', category: 'database' as const, order: 3 },
@@ -38,6 +40,7 @@ async function seed() {
     { name: 'Figma', category: 'tools' as const, order: 2 },
     { name: 'Docker', category: 'tools' as const, order: 3 },
     { name: 'Payload CMS', category: 'tools' as const, order: 4 },
+    { name: 'Prismic', category: 'tools' as const, order: 10 },
   ]
 
   let createdTechs = 0
@@ -132,7 +135,8 @@ async function seed() {
     {
       title: 'National Medal of Honor Museum',
       excerpt:
-        'Complete CMS migration from WordPress to Prismic. Migrated content architecture, rebuilt component library, and maintained SEO rankings throughout transition.',
+        'Solo-developed a massive WordPress-to-Prismic migration, replacing legacy MUI with a custom Next.js and Tailwind frontend.',
+      liveUrl: 'https://mohmuseum.org/',
       context: 'work' as const,
       company: 'Praxis Loop',
       order: 1,
@@ -140,15 +144,17 @@ async function seed() {
     {
       title: '1st Avenue Advisors',
       excerpt:
-        'Client-facing pages with pixel-perfect Figma-to-code implementation. Built working contact forms, dynamic content sections, and responsive layouts.',
+        'Translated high-fidelity Figma designs into responsive Next.js and Tailwind components, integrating complex frontend forms with backend mailing services.',
+      liveUrl: 'https://www.1staveadvisors.com/',
       context: 'work' as const,
       company: 'Praxis Loop',
       order: 2,
     },
     {
-      title: 'Content API Platform',
+      title: 'MineCentral',
       excerpt:
-        'Full-stack API service with authentication, rate limiting, and webhook support. Demonstrates backend architecture and database design beyond frontend work.',
+        'Co-developed a comprehensive Minecraft server hosting platform with Stripe payments, driving the database architecture, custom UI, and codebase maintainability.',
+      liveUrl: 'https://www.minecentral.net/',
       context: 'personal' as const,
       order: 3,
     },
@@ -179,6 +185,45 @@ async function seed() {
     }
   }
   console.log(`\n✓ Projects: ${createdProjects.length} total\n`)
+
+  // Link technologies to projects
+  console.log('Linking technologies to projects...')
+
+  const techMapping: Record<string, string[]> = {
+    'Next.js': ['National Medal of Honor Museum', '1st Avenue Advisors', 'MineCentral'],
+    'Tailwind CSS': ['National Medal of Honor Museum', '1st Avenue Advisors', 'MineCentral'],
+    Prismic: ['National Medal of Honor Museum'],
+    'shadcn/ui': ['1st Avenue Advisors'],
+    Stripe: ['MineCentral'],
+  }
+
+  for (const project of createdProjects) {
+    const techNames = Object.keys(techMapping).filter((techName) =>
+      techMapping[techName].includes(project.title),
+    )
+
+    const techDocs = await Promise.all(
+      techNames.map((name) =>
+        payload.find({
+          collection: 'technologies',
+          where: { name: { equals: name } },
+          limit: 1,
+        }),
+      ),
+    )
+
+    const techIds = techDocs.map((res) => res.docs[0]?.id).filter(Boolean)
+
+    if (techIds.length > 0) {
+      await payload.update({
+        collection: 'projects',
+        id: project.id,
+        data: { technologies: techIds },
+      })
+      console.log(`  ✓ Linked ${techIds.length} technologies to "${project.title}"`)
+    }
+  }
+  console.log('')
 
   // 6. Create Lab items
   console.log('Creating Lab items...')
@@ -264,27 +309,27 @@ async function seed() {
     hero: {
       firstName: 'Hugo',
       lastName: 'Hsi',
-      tagline: "Full-stack developer with a designer's eye.",
+      tagline: 'Engineering products from design to database.',
       intro: {
         root: {
           type: 'root',
+          format: '' as const,
+          indent: 0,
+          version: 1,
           children: [
             {
               type: 'paragraph',
               version: 1,
               children: [
                 {
+                  text: 'Software engineer specializing in React, Next.js, and Node.js. I bring hands-on agency experience working directly with clients to deliver thoughtfully engineered applications.',
                   type: 'text',
                   version: 1,
-                  text: "Graphic design degree turned full-stack engineer. I ship production code with an understanding of why it's designed that way. Building with React, Next.js, TypeScript, and Node.js. Formerly shipping client work at Praxis Loop.",
                 },
               ],
             },
           ],
-          direction: null,
-          format: '' as const,
-          indent: 0,
-          version: 1,
+          direction: 'ltr' as const,
         },
       },
       ctaPrimary: {
@@ -295,7 +340,7 @@ async function seed() {
         text: 'Download resume',
       },
       quote:
-        "My design training means I don't just build what's specced — I understand why it's specced that way.",
+        "Beyond the keyboard, I'm a badminton coach, an avid gamer, and an active proponent of taking a proper break to do absolutely nothing.",
     },
   }
 
@@ -308,7 +353,7 @@ async function seed() {
   console.log('✨ Seed complete! All content has been added to the CMS.')
   console.log('\n⚠️  IMPORTANT: You need to manually:')
   console.log('   1. Upload your resume PDF to the Homepage global')
-  console.log('   2. Update project screenshots in the Media collection')
+  console.log('   2. Upload project featured images in the Media collection')
   console.log('   3. Update any URLs/links with your actual profiles')
 
   process.exit(0)
