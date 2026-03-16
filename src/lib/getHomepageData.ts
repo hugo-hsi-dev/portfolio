@@ -8,9 +8,6 @@ export async function getHomepageData(payload: Payload) {
 
       payload.find({
         collection: 'projects',
-        where: {
-          featured: { equals: true },
-        },
         sort: 'order',
         limit: 3,
         depth: 2,

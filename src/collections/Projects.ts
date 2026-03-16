@@ -4,7 +4,7 @@ export const Projects: CollectionConfig = {
   slug: 'projects',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['featured', 'order'],
+    defaultColumns: ['order'],
     listSearchableFields: ['title', 'excerpt'],
   },
   fields: [
@@ -33,13 +33,7 @@ export const Projects: CollectionConfig = {
         description: 'URL to the live project/demo',
       },
     },
-    {
-      name: 'sourceUrl',
-      type: 'text',
-      admin: {
-        description: 'URL to source code (GitHub, GitLab, etc.)',
-      },
-    },
+
     {
       name: 'technologies',
       type: 'relationship',
@@ -52,8 +46,6 @@ export const Projects: CollectionConfig = {
       options: [
         { label: 'Personal Project', value: 'personal' },
         { label: 'Work Project', value: 'work' },
-        { label: 'Learning Exercise', value: 'learning' },
-        { label: 'Open Source Contribution', value: 'opensource' },
       ],
       admin: {
         description:
@@ -68,14 +60,7 @@ export const Projects: CollectionConfig = {
         condition: (data) => data?.context === 'work',
       },
     },
-    {
-      name: 'featured',
-      type: 'checkbox',
-      defaultValue: false,
-      admin: {
-        description: 'Featured projects appear on the homepage and get priority placement',
-      },
-    },
+
     {
       name: 'order',
       type: 'number',

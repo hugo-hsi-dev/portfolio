@@ -133,7 +133,6 @@ async function seed() {
       title: 'National Medal of Honor Museum',
       excerpt:
         'Complete CMS migration from WordPress to Prismic. Migrated content architecture, rebuilt component library, and maintained SEO rankings throughout transition.',
-      featured: true,
       context: 'work' as const,
       company: 'Praxis Loop',
       order: 1,
@@ -142,7 +141,6 @@ async function seed() {
       title: '1st Avenue Advisors',
       excerpt:
         'Client-facing pages with pixel-perfect Figma-to-code implementation. Built working contact forms, dynamic content sections, and responsive layouts.',
-      featured: true,
       context: 'work' as const,
       company: 'Praxis Loop',
       order: 2,
@@ -151,7 +149,6 @@ async function seed() {
       title: 'Content API Platform',
       excerpt:
         'Full-stack API service with authentication, rate limiting, and webhook support. Demonstrates backend architecture and database design beyond frontend work.',
-      featured: true,
       context: 'personal' as const,
       order: 3,
     },

@@ -14,7 +14,6 @@ interface ProjectCardProps {
     context?: string
     company?: string
     liveUrl?: string | null
-    sourceUrl?: string | null
   }
 }
 
@@ -62,7 +61,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
 
   return (
     <article className="group">
-      <a href={project.liveUrl || project.sourceUrl || '#'} className="block">
+      <a href={project.liveUrl || '#'} className="block">
         <StaggerContainer className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           <StaggerItem className="lg:col-span-7">
             <ImageLift className={`${featuredBg} ring-1 ring-black/[0.08]`}>
