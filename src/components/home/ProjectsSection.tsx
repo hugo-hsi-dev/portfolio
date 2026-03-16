@@ -15,7 +15,7 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
       <div className="max-w-6xl mx-auto">
         <header className="flex items-baseline justify-between mb-16">
           <h2 className="font-serif text-4xl lg:text-5xl tracking-tight">Selected Work</h2>
-          <span className="font-sans text-xs uppercase tracking-[0.2em] text-[#8b8680]">
+          <span className="font-sans text-xs uppercase tracking-[0.2em] text-stone">
             {projects.length} Project{projects.length !== 1 ? 's' : ''}
           </span>
         </header>

@@ -24,7 +24,7 @@ export function SocialLinks({ githubUrl, linkedinUrl, email, className = '' }: S
       {email && (
         <a
           href={`mailto:${email}`}
-          className="font-sans text-sm text-[#8b8680] hover:text-[#f8f6f1] transition-colors"
+          className="font-sans text-sm text-stone hover:text-cream transition-colors"
         >
           <AnimatedUnderline>Email</AnimatedUnderline>
         </a>
@@ -34,7 +34,7 @@ export function SocialLinks({ githubUrl, linkedinUrl, email, className = '' }: S
           href={githubUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-sans text-sm text-[#8b8680] hover:text-[#f8f6f1] transition-colors"
+          className="font-sans text-sm text-stone hover:text-cream transition-colors"
         >
           <AnimatedUnderline>GitHub</AnimatedUnderline>
         </a>
@@ -44,7 +44,7 @@ export function SocialLinks({ githubUrl, linkedinUrl, email, className = '' }: S
           href={linkedinUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className="font-sans text-sm text-[#8b8680] hover:text-[#f8f6f1] transition-colors"
+          className="font-sans text-sm text-stone hover:text-cream transition-colors"
         >
           <AnimatedUnderline>LinkedIn</AnimatedUnderline>
         </a>

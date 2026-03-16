@@ -16,13 +16,13 @@ export function InkButton({ children, href, className = '', variant = 'solid' }:
 
   const baseClasses =
     variant === 'solid'
-      ? 'inline-flex items-center gap-2 px-6 py-3 font-sans text-sm uppercase tracking-wider relative overflow-hidden bg-[#1a1a1a] text-[#f8f6f1]'
-      : 'inline-flex items-center gap-2 px-6 py-3 font-sans text-sm uppercase tracking-wider relative overflow-hidden border border-[#1a1a1a] text-[#1a1a1a]'
+      ? 'inline-flex items-center gap-2 px-6 py-3 font-sans text-sm uppercase tracking-wider relative overflow-hidden bg-charcoal text-cream'
+      : 'inline-flex items-center gap-2 px-6 py-3 font-sans text-sm uppercase tracking-wider relative overflow-hidden border border-charcoal text-charcoal'
 
   const content = (
     <motion.span className={`${baseClasses} ${className}`} whileHover="hover" initial="initial">
       <motion.span
-        className={`absolute inset-0 ${variant === 'solid' ? 'bg-[#333]' : 'bg-[#1a1a1a]'}`}
+        className={`absolute inset-0 ${variant === 'solid' ? 'bg-border' : 'bg-charcoal'}`}
         variants={{
           initial: { x: '-100%' },
           hover: { x: '0%' },
@@ -32,8 +32,8 @@ export function InkButton({ children, href, className = '', variant = 'solid' }:
       <motion.span
         className="relative z-10 flex items-center gap-2"
         variants={{
-          initial: { color: variant === 'solid' ? '#f8f6f1' : '#1a1a1a' },
-          hover: { color: variant === 'solid' ? '#f8f6f1' : '#f8f6f1' },
+          initial: { color: variant === 'solid' ? 'var(--color-cream)' : 'var(--color-charcoal)' },
+          hover: { color: 'var(--color-cream)' },
         }}
         transition={{ duration: 0.3 }}
       >

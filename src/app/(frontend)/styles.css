@@ -3,16 +3,27 @@
 @theme {
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+
+  --color-charcoal: #1a1a1a;
+  --color-cream: #f8f6f1;
+  --color-cream-light: #f0ece3;
+  --color-cream-lighter: #e8e4db;
+  --color-stone: #8b8680;
+  --color-slate: #5a5a5a;
+  --color-stone-light: #b8b4ab;
+  --color-gold: #c4a35a;
+  --color-sage: #7a9a8a;
+  --color-border: #333;
 }
 
 @source '../../../components/**/*.{js,ts,jsx,tsx}';
 
 @layer base {
   html {
-    background-color: rgb(26 26 26);
+    background-color: var(--color-charcoal);
   }
   body {
-    background-color: rgb(26 26 26);
+    background-color: var(--color-charcoal);
     min-height: 100dvh;
     padding-top: env(safe-area-inset-top);
     padding-left: env(safe-area-inset-left);

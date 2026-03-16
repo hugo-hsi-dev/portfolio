@@ -37,7 +37,7 @@ export function TechStackSection({ technologies }: TechStackSectionProps) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 lg:gap-12">
             {categories.map((category) => (
               <div key={category.title}>
-                <h3 className="font-sans text-xs uppercase tracking-[0.2em] text-[#8b8680] mb-4">
+                <h3 className="font-sans text-xs uppercase tracking-[0.2em] text-stone mb-4">
                   {category.title}
                 </h3>
                 <ul className="font-sans text-base space-y-2">
