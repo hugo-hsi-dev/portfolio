@@ -31,11 +31,7 @@ export async function getHomepageData(payload: Payload) {
 
       payload.find({
         collection: 'lab',
-        where: {
-          featured: { equals: true },
-        },
         sort: 'name',
-        limit: 6,
       }),
 
       payload.findGlobal({ slug: 'contact' }).catch(() => null),

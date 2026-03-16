@@ -232,42 +232,36 @@ async function seed() {
       description: 'File processing utility built to learn Rust',
       technologies: 'Rust',
       githubUrl: '',
-      featured: true,
     },
     {
       name: 'Go API Server',
       description: 'REST API with middleware and auth',
       technologies: 'Go, PostgreSQL',
       githubUrl: '',
-      featured: true,
     },
     {
       name: 'Weather Dashboard',
       description: 'Real-time data visualization',
       technologies: 'React, D3.js',
       githubUrl: '',
-      featured: true,
     },
     {
       name: 'Portfolio v1',
       description: 'Previous iteration of this site',
       technologies: 'Next.js, MDX',
       githubUrl: '',
-      featured: true,
     },
     {
       name: 'Task Tracker',
       description: 'Local-first productivity app',
       technologies: 'Svelte, SQLite',
       githubUrl: '',
-      featured: true,
     },
     {
       name: 'Color Palette Gen',
       description: 'Algorithmic color scheme generator',
       technologies: 'TypeScript, Canvas',
       githubUrl: '',
-      featured: true,
     },
   ]
 
