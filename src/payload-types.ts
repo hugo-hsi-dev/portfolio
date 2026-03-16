@@ -185,10 +185,6 @@ export interface Technology {
   id: number;
   name: string;
   category?: ('frontend' | 'backend' | 'database' | 'tools') | null;
-  /**
-   * Display order (lower numbers appear first)
-   */
-  order?: number | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -422,7 +418,6 @@ export interface MediaSelect<T extends boolean = true> {
 export interface TechnologiesSelect<T extends boolean = true> {
   name?: T;
   category?: T;
-  order?: T;
   updatedAt?: T;
   createdAt?: T;
 }

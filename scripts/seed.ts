@@ -91,7 +91,6 @@ async function seed() {
           role: 'Full-Stack Developer',
           startDate: '2023-01-01',
           isCurrent: true,
-          order: 1,
         },
       })
       console.log('✓ Experience created\n')
