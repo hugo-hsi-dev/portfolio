@@ -26,6 +26,7 @@ export async function getHomepageData(payload: Payload) {
       payload.find({
         collection: 'technologies',
         sort: 'name',
+        limit: 100,
       }),
 
       payload.find({

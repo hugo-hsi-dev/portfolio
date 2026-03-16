@@ -184,7 +184,7 @@ export interface Media {
 export interface Technology {
   id: number;
   name: string;
-  category?: ('frontend' | 'backend' | 'database' | 'tools') | null;
+  category: 'frontend' | 'backend' | 'database' | 'tools';
   updatedAt: string;
   createdAt: string;
 }
