@@ -1,19 +1,15 @@
 'use client'
 
 import { motion, useInView } from 'motion/react'
-import { useRef, ReactNode, useMemo } from 'react'
-
-interface StaggerContainerProps {
-  children: ReactNode
-  className?: string
-  staggerDelay?: number
-  once?: boolean
-  threshold?: number
-}
+import { useRef, ReactNode } from 'react'
 
 const containerVariants = {
   hidden: {},
-  visible: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.1,
+    },
+  },
 }
 
 const itemVariants = {
@@ -31,25 +27,12 @@ const itemVariants = {
 export function StaggerContainer({
   children,
   className = '',
-  staggerDelay = 0.1,
-  once = true,
-  threshold = 0.1,
-}: StaggerContainerProps) {
+}: {
+  children: ReactNode
+  className?: string
+}) {
   const ref = useRef<HTMLDivElement>(null)
-  const isInView = useInView(ref, { once, amount: threshold })
-
-  const variants = useMemo(
-    () => ({
-      ...containerVariants,
-      visible: {
-        ...containerVariants.visible,
-        transition: {
-          staggerChildren: staggerDelay,
-        },
-      },
-    }),
-    [staggerDelay],
-  )
+  const isInView = useInView(ref, { once: true, amount: 0.1 })
 
   return (
     <motion.div
@@ -57,7 +40,7 @@ export function StaggerContainer({
       className={className}
       initial="hidden"
       animate={isInView ? 'visible' : 'hidden'}
-      variants={variants}
+      variants={containerVariants}
     >
       {children}
     </motion.div>
