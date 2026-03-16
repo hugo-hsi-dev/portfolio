@@ -4,7 +4,7 @@ export const Lab: CollectionConfig = {
   slug: 'lab',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'featured', 'order'],
+    defaultColumns: ['name', 'featured'],
   },
   fields: [
     {
@@ -39,13 +39,6 @@ export const Lab: CollectionConfig = {
       name: 'featured',
       type: 'checkbox',
       defaultValue: true,
-    },
-    {
-      name: 'order',
-      type: 'number',
-      admin: {
-        description: 'Display order (lower numbers appear first)',
-      },
     },
   ],
   timestamps: true,

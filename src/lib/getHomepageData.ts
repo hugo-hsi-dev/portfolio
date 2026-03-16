@@ -34,7 +34,7 @@ export async function getHomepageData(payload: Payload) {
         where: {
           featured: { equals: true },
         },
-        sort: 'order',
+        sort: 'name',
         limit: 6,
       }),
 

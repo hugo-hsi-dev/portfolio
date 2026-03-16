@@ -60,7 +60,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       : null
 
   return (
-    <article className="group">
+    <article className="group hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out will-change-transform">
       <a href={project.liveUrl || '#'} target="_blank" rel="noopener noreferrer" className="block">
         <StaggerContainer className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           <StaggerItem className="lg:col-span-7">
