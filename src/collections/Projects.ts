@@ -4,7 +4,7 @@ export const Projects: CollectionConfig = {
   slug: 'projects',
   admin: {
     useAsTitle: 'title',
-    defaultColumns: ['order'],
+    defaultColumns: ['title'],
     listSearchableFields: ['title', 'excerpt'],
   },
   fields: [
