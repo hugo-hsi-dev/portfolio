@@ -2,6 +2,9 @@ import type { CollectionConfig } from 'payload'
 
 export const Education: CollectionConfig = {
   slug: 'education',
+  access: {
+    read: () => true,
+  },
   admin: {
     useAsTitle: 'institution',
     defaultColumns: ['institution', 'degree', 'startDate'],
