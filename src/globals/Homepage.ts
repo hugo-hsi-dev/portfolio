@@ -34,7 +34,7 @@ export const Homepage: GlobalConfig = {
         },
         {
           name: 'intro',
-          type: 'richText',
+          type: 'textarea',
           admin: {
             description: "Bio paragraph. Keep it short - recruiters scan, they don't read.",
           },

@@ -7,7 +7,6 @@ import { TypewriterText } from '@/components/motion/TypewriterText'
 import { InkButton } from '@/components/motion/InkButton'
 import { GrainOverlay } from '@/components/motion/GrainOverlay'
 import { ScrollProgress } from '@/components/motion/ScrollProgress'
-import { RichText } from '@/components/RichText'
 
 interface HeroSectionProps {
   hero: Homepage['hero']
@@ -53,14 +52,14 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
               </h1>
             )}
             {hero.intro && (
-              <motion.div
+              <motion.p
                 className="font-sans text-base text-[#5a5a5a] max-w-lg leading-relaxed mb-10 text-pretty"
                 initial={{ opacity: 0 }}
                 animate={isTypingComplete ? { opacity: 1 } : { opacity: 0 }}
                 transition={{ duration: 0.5, delay: isTypingComplete ? 0.1 : 0 }}
               >
-                <RichText content={hero.intro} />
-              </motion.div>
+                {hero.intro}
+              </motion.p>
             )}
             <div className="flex flex-wrap gap-4">
               {hero.ctaPrimary?.text && hero.ctaPrimary?.link && (

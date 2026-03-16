@@ -310,28 +310,8 @@ async function seed() {
       firstName: 'Hugo',
       lastName: 'Hsi',
       tagline: 'Engineering products from design to database.',
-      intro: {
-        root: {
-          type: 'root',
-          format: '' as const,
-          indent: 0,
-          version: 1,
-          children: [
-            {
-              type: 'paragraph',
-              version: 1,
-              children: [
-                {
-                  text: 'Software engineer specializing in React, Next.js, and Node.js. I bring hands-on agency experience working directly with clients to deliver thoughtfully engineered applications.',
-                  type: 'text',
-                  version: 1,
-                },
-              ],
-            },
-          ],
-          direction: 'ltr' as const,
-        },
-      },
+      intro:
+        'Software engineer specializing in React, Next.js, and Node.js. I bring hands-on agency experience working directly with clients to deliver thoughtfully engineered applications.',
       ctaPrimary: {
         text: 'View my work',
         link: '#projects',
