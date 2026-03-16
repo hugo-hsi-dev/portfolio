@@ -12,7 +12,8 @@ interface InkButtonProps {
 
 export function InkButton({ children, href, className = '', variant = 'solid' }: InkButtonProps) {
   const isExternal = href.startsWith('http://') || href.startsWith('https://')
-  const target = isExternal ? '_blank' : '_self'
+  const isPDF = href.toLowerCase().endsWith('.pdf')
+  const target = isExternal || isPDF ? '_blank' : '_self'
 
   const baseClasses =
     variant === 'solid'
