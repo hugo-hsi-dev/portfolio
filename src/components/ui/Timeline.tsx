@@ -17,7 +17,6 @@ interface TimelineProps {
     label: string
     count?: number
   }
-  sectionBg?: string
   showTopBorder?: boolean
 }
 
@@ -26,17 +25,12 @@ function formatDate(dateString: string | null | undefined) {
   return new Date(dateString).toLocaleDateString('en-US', { year: 'numeric' })
 }
 
-export function Timeline({
-  items,
-  header,
-  sectionBg = 'bg-[#1a1a1a]',
-  showTopBorder = false,
-}: TimelineProps) {
+export function Timeline({ items, header, showTopBorder = false }: TimelineProps) {
   if (!items || items.length === 0) return null
 
   return (
     <section
-      className={`py-24 lg:py-32 pl-8 pr-6 lg:px-12 ${sectionBg} text-[#f8f6f1] ${showTopBorder ? 'border-t border-[#333]' : ''}`}
+      className={`py-24 lg:py-32 pl-8 pr-6 lg:px-12 bg-[#1a1a1a] text-[#f8f6f1] ${showTopBorder ? 'border-t border-[#333]' : ''}`}
     >
       <div className="max-w-6xl mx-auto">
         {header && (
