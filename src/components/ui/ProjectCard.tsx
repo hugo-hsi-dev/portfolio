@@ -37,7 +37,7 @@ function ImageLift({
 }) {
   return (
     <div className={`relative overflow-hidden ${className} group`}>
-      <div className="h-full w-full transition-transform duration-400 group-hover:scale-102">
+      <div className="h-full w-full transition-transform duration-400 lg:group-hover:scale-102">
         {children}
       </div>
     </div>
@@ -60,7 +60,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
       : null
 
   return (
-    <article className="group hover:-translate-y-1 hover:shadow-lg transition-all duration-300 ease-out will-change-transform">
+    <article className="group lg:hover:-translate-y-1 lg:hover:shadow-lg max-lg:active:scale-[0.98] transition-all duration-300 ease-out">
       <a href={project.liveUrl || '#'} target="_blank" rel="noopener noreferrer" className="block">
         <StaggerContainer className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           <StaggerItem className="lg:col-span-7">
