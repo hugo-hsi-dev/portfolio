@@ -12,9 +12,7 @@ interface TechStackSectionProps {
     frontend?: Technology[]
     backend?: Technology[]
     database?: Technology[]
-    devops?: Technology[]
     tools?: Technology[]
-    languages?: Technology[]
   }
 }
 
