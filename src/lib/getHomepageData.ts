@@ -15,17 +15,12 @@ export async function getHomepageData(payload: Payload) {
 
       payload.find({
         collection: 'experience',
-        where: {
-          or: [{ isCurrent: { equals: true } }, { isCurrent: { exists: false } }],
-        },
-        sort: 'order',
-        limit: 3,
+        sort: '-startDate',
       }),
 
       payload.find({
         collection: 'education',
-        sort: 'startDate',
-        limit: 2,
+        sort: '-startDate',
       }),
 
       payload.find({

@@ -21,22 +21,25 @@ export const Experience: CollectionConfig = {
       name: 'startDate',
       type: 'date',
       required: true,
+      admin: {
+        date: {
+          pickerAppearance: 'monthOnly',
+        },
+      },
     },
     {
       name: 'endDate',
       type: 'date',
+      admin: {
+        date: {
+          pickerAppearance: 'monthOnly',
+        },
+      },
     },
     {
       name: 'isCurrent',
       type: 'checkbox',
       defaultValue: false,
-    },
-    {
-      name: 'order',
-      type: 'number',
-      admin: {
-        description: 'Display order (lower numbers appear first)',
-      },
     },
   ],
   timestamps: true,
