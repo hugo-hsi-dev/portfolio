@@ -25,7 +25,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
   return (
     <section className="min-h-screen flex flex-col justify-center pl-8 pr-6 lg:px-12 pt-24 pb-16 relative">
       <ScrollProgress />
-      <GrainOverlay opacity={0.02} />
+      <GrainOverlay />
 
       <div className="max-w-6xl mx-auto w-full relative z-20">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-end">
