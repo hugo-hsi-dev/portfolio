@@ -14,6 +14,8 @@ export function LabCard({ lab }: LabCardProps) {
   return (
     <a
       href={lab.githubUrl || '#'}
+      target="_blank"
+      rel="noopener noreferrer"
       className="group block p-6 bg-[#f8f6f1] hover:bg-white transition-colors"
     >
       <h3 className="font-serif text-lg mb-2 group-hover:translate-x-1 transition-transform">
