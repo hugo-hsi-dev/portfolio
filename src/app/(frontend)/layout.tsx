@@ -25,7 +25,7 @@ export const metadata = {
     template: '%s | Hugo Hsi',
   },
   description:
-    'Full-stack developer specializing in React, Next.js, and Node.js. NYC-based and open to remote opportunities with hands-on agency experience delivering thoughtfully engineered applications.',
+    'Full-stack developer specializing in React, Next.js, and Node.js. NYC-based software engineer with hands-on agency experience delivering thoughtfully engineered applications and open to remote opportunities.',
   keywords: [
     'full-stack developer',
     'React developer',
