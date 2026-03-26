@@ -1,6 +1,7 @@
 import { Outfit, Forum } from 'next/font/google'
 import React from 'react'
 import { StructuredData } from '@/components/seo/StructuredData'
+import { ReducedMotionProvider } from '@/components/motion/ReducedMotionProvider'
 import './styles.css'
 
 const sans = Outfit({
@@ -95,7 +96,9 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
       <head>
         <StructuredData />
       </head>
-      <body className="font-sans antialiased">{children}</body>
+      <body className="font-sans antialiased">
+        <ReducedMotionProvider>{children}</ReducedMotionProvider>
+      </body>
     </html>
   )
 }

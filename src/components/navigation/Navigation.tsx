@@ -2,8 +2,9 @@
 
 import { GithubLogo, LinkedinLogo } from '@phosphor-icons/react'
 import { MagneticButton } from '@/components/motion/MouseEffects'
-import { motion } from 'motion/react'
+import { LazyMotion, m, domAnimation } from 'motion/react'
 import { useState, useEffect } from 'react'
+import { useReducedMotion } from '@/components/motion/ReducedMotionProvider'
 
 interface NavigationProps {
   githubUrl?: string
@@ -12,6 +13,7 @@ interface NavigationProps {
 
 export function Navigation({ githubUrl, linkedinUrl }: NavigationProps) {
   const [showName, setShowName] = useState(false)
+  const { shouldReduceMotion } = useReducedMotion()
 
   useEffect(() => {
     const eyebrow = document.getElementById('hero-eyebrow')
@@ -43,13 +45,15 @@ export function Navigation({ githubUrl, linkedinUrl }: NavigationProps) {
           className="font-serif text-xl tracking-tight text-white"
           intensity={0.2}
         >
-          <motion.span
-            initial={{ opacity: 0, y: -5 }}
-            animate={{ opacity: showName ? 1 : 0, y: showName ? 0 : -5 }}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
-          >
-            Hugo Hsi
-          </motion.span>
+          <LazyMotion features={domAnimation}>
+            <m.span
+              initial={shouldReduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: -5 }}
+              animate={{ opacity: showName ? 1 : 0, y: showName ? 0 : -5 }}
+              transition={{ duration: 0.5, ease: 'easeOut' }}
+            >
+              Hugo Hsi
+            </m.span>
+          </LazyMotion>
         </MagneticButton>
         <div className="flex items-center gap-6">
           {githubUrl && (

@@ -1,7 +1,8 @@
 'use client'
 
-import { motion, useInView } from 'motion/react'
+import { LazyMotion, m, useInView, domAnimation } from 'motion/react'
 import { useRef, ReactNode } from 'react'
+import { useReducedMotion } from './ReducedMotionProvider'
 
 const containerVariants = {
   hidden: {},
@@ -24,6 +25,25 @@ const itemVariants = {
   },
 }
 
+const reducedMotionContainerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0,
+    },
+  },
+}
+
+const reducedMotionItemVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      duration: 0.1,
+    },
+  },
+}
+
 export function StaggerContainer({
   children,
   className = '',
@@ -33,17 +53,20 @@ export function StaggerContainer({
 }) {
   const ref = useRef<HTMLDivElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.1 })
+  const { shouldReduceMotion } = useReducedMotion()
 
   return (
-    <motion.div
-      ref={ref}
-      className={className}
-      initial="hidden"
-      animate={isInView ? 'visible' : 'hidden'}
-      variants={containerVariants}
-    >
-      {children}
-    </motion.div>
+    <LazyMotion features={domAnimation}>
+      <m.div
+        ref={ref}
+        className={className}
+        initial="hidden"
+        animate={isInView ? 'visible' : 'hidden'}
+        variants={shouldReduceMotion ? reducedMotionContainerVariants : containerVariants}
+      >
+        {children}
+      </m.div>
+    </LazyMotion>
   )
 }
 
@@ -54,9 +77,14 @@ export function StaggerItem({
   children: ReactNode
   className?: string
 }) {
+  const { shouldReduceMotion } = useReducedMotion()
+
   return (
-    <motion.div className={className} variants={itemVariants}>
+    <m.div
+      className={className}
+      variants={shouldReduceMotion ? reducedMotionItemVariants : itemVariants}
+    >
       {children}
-    </motion.div>
+    </m.div>
   )
 }

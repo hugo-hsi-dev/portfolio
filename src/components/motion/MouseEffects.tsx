@@ -1,7 +1,8 @@
 'use client'
 
-import { motion, useMotionValue, useSpring } from 'motion/react'
+import { LazyMotion, m, useMotionValue, useSpring, domAnimation } from 'motion/react'
 import { useRef, ReactNode, useCallback } from 'react'
+import { useReducedMotion } from './ReducedMotionProvider'
 
 interface MagneticButtonProps {
   children: ReactNode
@@ -20,6 +21,7 @@ export function MagneticButton({
   const x = useMotionValue(0)
   const y = useMotionValue(0)
   const rafRef = useRef<number>(0)
+  const { shouldReduceMotion } = useReducedMotion()
 
   const springConfig = { damping: 15, stiffness: 150 }
   const springX = useSpring(x, springConfig)
@@ -27,7 +29,7 @@ export function MagneticButton({
 
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
-      if (!ref.current) return
+      if (!ref.current || shouldReduceMotion) return
 
       cancelAnimationFrame(rafRef.current)
       rafRef.current = requestAnimationFrame(() => {
@@ -38,7 +40,7 @@ export function MagneticButton({
         y.set((e.clientY - centerY) * intensity)
       })
     },
-    [x, y, intensity],
+    [x, y, intensity, shouldReduceMotion],
   )
 
   const handleMouseLeave = useCallback(() => {
@@ -51,15 +53,17 @@ export function MagneticButton({
   const target = isExternal ? '_blank' : '_self'
 
   const content = (
-    <motion.span
-      ref={ref}
-      className={`inline-block ${className}`}
-      style={{ x: springX, y: springY }}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-    >
-      {children}
-    </motion.span>
+    <LazyMotion features={domAnimation}>
+      <m.span
+        ref={ref}
+        className={`inline-block ${className}`}
+        style={shouldReduceMotion ? undefined : { x: springX, y: springY }}
+        onMouseMove={handleMouseMove}
+        onMouseLeave={handleMouseLeave}
+      >
+        {children}
+      </m.span>
+    </LazyMotion>
   )
 
   if (href) {

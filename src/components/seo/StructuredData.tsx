@@ -90,13 +90,19 @@ export async function StructuredData() {
 
   return (
     <>
-      {schemas.map((schema, index) => (
-        <script
-          key={index}
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-        />
-      ))}
+      {schemas.map((schema) => {
+        const schemaId = schema['@type'] as string
+        return (
+          <script
+            key={schemaId}
+            type="application/ld+json"
+            // This is safe: schema data is generated server-side from trusted CMS data, not user input
+            // JSON-LD requires this approach for structured data injection
+            // eslint-disable-next-line react/no-danger
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+          />
+        )
+      })}
     </>
   )
 }

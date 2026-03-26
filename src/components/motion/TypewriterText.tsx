@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useRef } from 'react'
+import { useReducer, useEffect, useRef } from 'react'
 import { useInView } from 'motion/react'
 
 interface TypewriterTextProps {
@@ -11,6 +11,30 @@ interface TypewriterTextProps {
   onComplete?: () => void
 }
 
+type State = {
+  displayedText: string
+  showCursor: boolean
+  isComplete: boolean
+}
+
+type Action =
+  | { type: 'APPEND_CHAR'; char: string }
+  | { type: 'TOGGLE_CURSOR' }
+  | { type: 'COMPLETE' }
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'APPEND_CHAR':
+      return { ...state, displayedText: state.displayedText + action.char }
+    case 'TOGGLE_CURSOR':
+      return { ...state, showCursor: !state.showCursor }
+    case 'COMPLETE':
+      return { ...state, isComplete: true }
+    default:
+      return state
+  }
+}
+
 export function TypewriterText({
   text,
   className = '',
@@ -18,12 +42,16 @@ export function TypewriterText({
   speed = 40,
   onComplete,
 }: TypewriterTextProps) {
-  const [displayedText, setDisplayedText] = useState('')
-  const [showCursor, setShowCursor] = useState(true)
+  const [state, dispatch] = useReducer(reducer, {
+    displayedText: '',
+    showCursor: true,
+    isComplete: false,
+  })
   const ref = useRef<HTMLSpanElement>(null)
   const isInView = useInView(ref, { once: true, amount: 0.5 })
   const hasStarted = useRef(false)
-  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const typeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const cursorIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null)
 
   useEffect(() => {
     if (!isInView || hasStarted.current || !text) return
@@ -31,13 +59,14 @@ export function TypewriterText({
 
     const startTimeout = setTimeout(() => {
       let index = 0
-      intervalRef.current = setInterval(() => {
-        if (index <= text.length) {
-          setDisplayedText(text.slice(0, index))
+      typeIntervalRef.current = setInterval(() => {
+        if (index < text.length) {
+          dispatch({ type: 'APPEND_CHAR', char: text[index] })
           index++
         } else {
-          clearInterval(intervalRef.current!)
-          intervalRef.current = null
+          clearInterval(typeIntervalRef.current!)
+          typeIntervalRef.current = null
+          dispatch({ type: 'COMPLETE' })
           onComplete?.()
         }
       }, speed)
@@ -45,26 +74,29 @@ export function TypewriterText({
 
     return () => {
       clearTimeout(startTimeout)
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current)
-        intervalRef.current = null
+      if (typeIntervalRef.current) {
+        clearInterval(typeIntervalRef.current)
       }
     }
   }, [isInView, text, delay, speed, onComplete])
 
   // Blink cursor
   useEffect(() => {
-    const interval = setInterval(() => {
-      setShowCursor((prev) => !prev)
+    cursorIntervalRef.current = setInterval(() => {
+      dispatch({ type: 'TOGGLE_CURSOR' })
     }, 530)
-    return () => clearInterval(interval)
+    return () => {
+      if (cursorIntervalRef.current) {
+        clearInterval(cursorIntervalRef.current)
+      }
+    }
   }, [])
 
   return (
     <span ref={ref} className={className}>
-      {displayedText}
+      {state.displayedText}
       <span
-        className={`inline-block w-[2px] h-[1cap] bg-current ml-1 vertical-align-baseline transition-opacity duration-100 ${showCursor ? 'opacity-100' : 'opacity-0'}`}
+        className={`inline-block w-[2px] h-[1cap] bg-current ml-1 vertical-align-baseline transition-opacity duration-100 ${state.showCursor ? 'opacity-100' : 'opacity-0'}`}
       />
     </span>
   )

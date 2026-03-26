@@ -10,6 +10,12 @@ import { TechStackSection } from '@/components/home/TechStackSection'
 import { LabSection } from '@/components/home/LabSection'
 import { FooterSection } from '@/components/home/FooterSection'
 
+export const metadata = {
+  title: 'Home',
+  description:
+    'Full-stack developer specializing in React, Next.js, and Node.js. NYC-based software engineer with hands-on agency experience.',
+}
+
 export default async function HomePage() {
   const payload = await getPayload({ config })
 

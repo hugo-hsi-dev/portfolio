@@ -1,7 +1,8 @@
 'use client'
 
-import { motion } from 'motion/react'
+import { LazyMotion, m, domAnimation } from 'motion/react'
 import { ReactNode } from 'react'
+import { useReducedMotion } from './ReducedMotionProvider'
 
 interface InkButtonProps {
   children: ReactNode
@@ -21,6 +22,7 @@ export function InkButton({
   const isExternal = href.startsWith('http://') || href.startsWith('https://')
   const isPDF = href.toLowerCase().endsWith('.pdf')
   const target = isExternal || isPDF ? '_blank' : '_self'
+  const { shouldReduceMotion } = useReducedMotion()
 
   const baseClasses =
     variant === 'solid'
@@ -28,26 +30,38 @@ export function InkButton({
       : 'inline-flex items-center gap-2 px-6 py-3 font-sans text-sm uppercase tracking-wider relative overflow-hidden border border-charcoal text-charcoal'
 
   const content = (
-    <motion.span className={`${baseClasses} ${className}`} whileHover="hover" initial="initial">
-      <motion.span
-        className={`absolute inset-0 ${variant === 'solid' ? 'bg-border' : 'bg-charcoal'}`}
-        variants={{
-          initial: { x: '-100%' },
-          hover: { x: '0%' },
-        }}
-        transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
-      />
-      <motion.span
-        className="relative z-10 flex items-center gap-2"
-        variants={{
-          initial: { color: variant === 'solid' ? 'var(--color-cream)' : 'var(--color-charcoal)' },
-          hover: { color: 'var(--color-cream)' },
-        }}
-        transition={{ duration: 0.3 }}
+    <LazyMotion features={domAnimation}>
+      <m.span
+        className={`${baseClasses} ${className}`}
+        whileHover={shouldReduceMotion ? undefined : 'hover'}
+        initial="initial"
       >
-        {children}
-      </motion.span>
-    </motion.span>
+        <m.span
+          className={`absolute inset-0 ${variant === 'solid' ? 'bg-border' : 'bg-charcoal'}`}
+          variants={
+            shouldReduceMotion
+              ? { initial: { x: '0%' }, hover: { x: '0%' } }
+              : {
+                  initial: { x: '-100%' },
+                  hover: { x: '0%' },
+                }
+          }
+          transition={{ duration: 0.4, ease: [0.25, 0.46, 0.45, 0.94] }}
+        />
+        <m.span
+          className="relative z-10 flex items-center gap-2"
+          variants={{
+            initial: {
+              color: variant === 'solid' ? 'var(--color-cream)' : 'var(--color-charcoal)',
+            },
+            hover: { color: 'var(--color-cream)' },
+          }}
+          transition={{ duration: 0.3 }}
+        >
+          {children}
+        </m.span>
+      </m.span>
+    </LazyMotion>
   )
 
   return (
