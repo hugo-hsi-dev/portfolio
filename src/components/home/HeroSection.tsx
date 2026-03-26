@@ -72,7 +72,9 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
                     ease: [0.25, 0.46, 0.45, 0.94],
                   }}
                 >
-                  <InkButton href={hero.ctaPrimary.link}>{hero.ctaPrimary.text}</InkButton>
+                  <InkButton href={hero.ctaPrimary.link} ariaLabel="View my work">
+                    {hero.ctaPrimary.text}
+                  </InkButton>
                 </motion.div>
               )}
               {hero.ctaSecondary?.text && resumeUrl && (
@@ -85,7 +87,7 @@ export function HeroSection({ hero, resumeUrl }: HeroSectionProps) {
                     ease: [0.25, 0.46, 0.45, 0.94],
                   }}
                 >
-                  <InkButton href={resumeUrl} variant="outline">
+                  <InkButton href={resumeUrl} variant="outline" ariaLabel="Download resume">
                     {hero.ctaSecondary.text}
                   </InkButton>
                 </motion.div>

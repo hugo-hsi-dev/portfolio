@@ -32,10 +32,14 @@ export function Navigation({ githubUrl, linkedinUrl }: NavigationProps) {
   }, [])
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 mix-blend-difference">
+    <nav
+      className="fixed top-0 left-0 right-0 z-50 mix-blend-difference"
+      aria-label="Main navigation"
+    >
       <div className="flex justify-between items-center pl-8 pr-6 lg:px-12 py-6">
         <MagneticButton
           href="#"
+          aria-label="Scroll to top"
           className="font-serif text-xl tracking-tight text-white"
           intensity={0.2}
         >
@@ -53,6 +57,7 @@ export function Navigation({ githubUrl, linkedinUrl }: NavigationProps) {
               href={githubUrl}
               className="text-white/80 hover:text-white transition-colors"
               intensity={0.3}
+              aria-label="GitHub Profile"
             >
               <GithubLogo size={20} />
             </MagneticButton>
@@ -62,6 +67,7 @@ export function Navigation({ githubUrl, linkedinUrl }: NavigationProps) {
               href={linkedinUrl}
               className="text-white/80 hover:text-white transition-colors"
               intensity={0.3}
+              aria-label="LinkedIn Profile"
             >
               <LinkedinLogo size={20} />
             </MagneticButton>
