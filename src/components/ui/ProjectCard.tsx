@@ -4,6 +4,7 @@ import { ArrowSquareOut } from '@phosphor-icons/react'
 import type { Project } from '@/payload-types'
 import { StaggerContainer, StaggerItem } from '@/components/motion/StaggerContainer'
 import { AnimatedUnderline } from '@/components/ui/AnimatedUnderline'
+import Image from 'next/image'
 
 interface ProjectCardProps {
   project: Project
@@ -25,7 +26,7 @@ function ImageLift({
   )
 }
 
-export function ProjectCard({ project }: ProjectCardProps) {
+export function ProjectCard({ project, index = 0 }: ProjectCardProps & { index?: number }) {
   const hasLink = Boolean(project.liveUrl)
   const Wrapper = hasLink ? 'a' : 'div'
   const wrapperProps = hasLink
@@ -41,9 +42,9 @@ export function ProjectCard({ project }: ProjectCardProps) {
         ? 'Personal Project'
         : 'Project'
 
-  const imageUrl =
+  const featuredImage =
     typeof project.featuredImage === 'object' && project.featuredImage !== null
-      ? project.featuredImage.url
+      ? project.featuredImage
       : null
 
   return (
@@ -52,18 +53,17 @@ export function ProjectCard({ project }: ProjectCardProps) {
         <StaggerContainer className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
           <StaggerItem className="lg:col-span-7">
             <ImageLift className={`${featuredBg} ring-1 ring-black/[0.08]`}>
-              {imageUrl ? (
-                <img
-                  src={imageUrl}
-                  alt={
-                    typeof project.featuredImage === 'object' &&
-                    project.featuredImage !== null &&
-                    project.featuredImage.alt
-                      ? project.featuredImage.alt
-                      : project.title
-                  }
-                  className="h-auto w-full"
-                />
+              {featuredImage ? (
+                <div className="relative aspect-video">
+                  <Image
+                    src={featuredImage.url || ''}
+                    alt={featuredImage.alt || project.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 66vw, 58vw"
+                    className="object-cover transition-transform duration-400 lg:group-hover:scale-105"
+                    priority={index < 2}
+                  />
+                </div>
               ) : (
                 <div className="aspect-video flex items-center justify-center text-stone-light font-serif text-lg">
                   {project.title}

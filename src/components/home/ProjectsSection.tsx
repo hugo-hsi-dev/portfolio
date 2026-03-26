@@ -21,8 +21,8 @@ export function ProjectsSection({ projects }: ProjectsSectionProps) {
         </header>
 
         <div className="space-y-20">
-          {projects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
+          {projects.map((project, index) => (
+            <ProjectCard key={project.id} project={project} index={index} />
           ))}
         </div>
       </div>

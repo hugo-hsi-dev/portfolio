@@ -8,9 +8,16 @@ interface InkButtonProps {
   href: string
   className?: string
   variant?: 'solid' | 'outline'
+  ariaLabel?: string
 }
 
-export function InkButton({ children, href, className = '', variant = 'solid' }: InkButtonProps) {
+export function InkButton({
+  children,
+  href,
+  className = '',
+  variant = 'solid',
+  ariaLabel,
+}: InkButtonProps) {
   const isExternal = href.startsWith('http://') || href.startsWith('https://')
   const isPDF = href.toLowerCase().endsWith('.pdf')
   const target = isExternal || isPDF ? '_blank' : '_self'
@@ -44,7 +51,12 @@ export function InkButton({ children, href, className = '', variant = 'solid' }:
   )
 
   return (
-    <a href={href} target={target} rel={isExternal ? 'noopener noreferrer' : undefined}>
+    <a
+      href={href}
+      target={target}
+      rel={isExternal ? 'noopener noreferrer' : undefined}
+      aria-label={ariaLabel}
+    >
       {content}
     </a>
   )
