@@ -5,8 +5,8 @@
 	"context": "personal",
 	"order": 3,
 	"liveUrl": "https://www.minecentral.net/",
+	"featuredImage": "/media/projects/minecentral/hero.jpg",
+	"featuredImageAlt": "MineCentral website showing its Minecraft hosting platform",
 	"technologies": ["Next.js", "Tailwind CSS", "Stripe"]
 }
 ---
-
-Personal project.

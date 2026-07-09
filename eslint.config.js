@@ -2,7 +2,7 @@ import prettier from 'eslint-config-prettier';
 import path from 'node:path';
 import js from '@eslint/js';
 import svelte from 'eslint-plugin-svelte';
-import { defineConfig, includeIgnoreFile } from 'eslint/config';
+import { defineConfig, globalIgnores, includeIgnoreFile } from 'eslint/config';
 import globals from 'globals';
 import ts from 'typescript-eslint';
 
@@ -10,6 +10,7 @@ const gitignorePath = path.resolve(import.meta.dirname, '.gitignore');
 
 export default defineConfig(
 	includeIgnoreFile(gitignorePath),
+	globalIgnores(['.agents/**', 'worker-configuration.d.ts']),
 	js.configs.recommended,
 	ts.configs.recommended,
 	svelte.configs.recommended,
@@ -31,6 +32,32 @@ export default defineConfig(
 				extraFileExtensions: ['.svelte'],
 				parser: ts.parser
 			}
+		}
+	},
+	{
+		files: [
+			'src/lib/components/InkLink.svelte',
+			'src/lib/components/ProjectCard.svelte',
+			'src/lib/components/SocialLink.svelte',
+			'src/routes/+page.svelte'
+		],
+		rules: {
+			// These components receive validated external URLs, not SvelteKit routes.
+			'svelte/no-navigation-without-resolve': 'off'
+		}
+	},
+	{
+		files: ['src/lib/components/Timeline.svelte', 'src/routes/+page.svelte'],
+		rules: {
+			// Timeline HTML is trusted repository Markdown; JSON-LD is generated and escaped.
+			'svelte/no-at-html-tags': 'off'
+		}
+	},
+	{
+		files: ['src/routes/+page.svelte'],
+		rules: {
+			// The Svelte parser treats application/ld+json contents as raw text.
+			'@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^structuredDataJson$' }]
 		}
 	},
 	{

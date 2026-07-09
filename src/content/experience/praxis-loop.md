@@ -6,5 +6,3 @@
 	"isCurrent": true
 }
 ---
-
-Full-stack client delivery work.

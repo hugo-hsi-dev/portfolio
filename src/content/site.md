@@ -16,15 +16,30 @@
 	},
 	"contact": {
 		"email": "hello@hugohsi.dev",
-		"github": "https://github.com",
-		"linkedin": "https://linkedin.com"
+		"github": "https://github.com/hugohsi-dev",
+		"linkedin": "https://www.linkedin.com/in/hugo-hsi/"
 	},
 	"footer": {
 		"heading": "Let's work together",
 		"intro": "I'm currently available for full-time engineering roles. Based in NYC, open to remote opportunities.",
 		"builtWith": "Built with SvelteKit, TypeScript, and attention to detail."
+	},
+	"seo": {
+		"title": "Hugo Hsi | Full-Stack Developer",
+		"description": "Full-stack developer specializing in React, Next.js, and Node.js. NYC-based software engineer with hands-on agency experience.",
+		"canonicalUrl": "https://www.hugohsi.dev",
+		"image": "/media/site/social-preview.jpg",
+		"imageAlt": "Hugo Hsi, full-stack developer portfolio",
+		"keywords": [
+			"full-stack developer",
+			"React developer",
+			"Next.js developer",
+			"Node.js developer",
+			"TypeScript developer",
+			"web developer NYC"
+		],
+		"themeColor": "#F8F6F1",
+		"jobTitle": "Full-Stack Developer"
 	}
 }
 ---
-
-Homepage-level portfolio content.

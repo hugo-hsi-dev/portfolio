@@ -6,8 +6,8 @@
 	"company": "Praxis Loop",
 	"order": 2,
 	"liveUrl": "https://www.1staveadvisors.com/",
+	"featuredImage": "/media/projects/1st-avenue-advisors/hero.jpg",
+	"featuredImageAlt": "1st Avenue Advisors website with its Decades of Experience headline",
 	"technologies": ["Next.js", "Tailwind CSS", "shadcn/ui"]
 }
 ---
-
-Client work at Praxis Loop.
