@@ -76,14 +76,6 @@
 </article>
 
 <style>
-	article {
-		transition: transform 240ms var(--ease-out);
-	}
-
-	article:has(a:hover) {
-		transform: translateY(-0.25rem);
-	}
-
 	.project-layout {
 		display: grid;
 		gap: 1.75rem;
@@ -106,11 +98,6 @@
 		width: 100%;
 		height: 100%;
 		object-fit: cover;
-		transition: transform 320ms var(--ease-out);
-	}
-
-	a:hover .project-image img {
-		transform: scale(1.025);
 	}
 
 	.project-image > span {
@@ -188,11 +175,32 @@
 		content: '';
 		transform: scaleX(0);
 		transform-origin: left;
-		transition: transform 220ms var(--ease-out);
 	}
 
-	a:hover .visit > span::after {
-		transform: scaleX(1);
+	@media (hover: hover) and (pointer: fine) {
+		article {
+			transition: transform 220ms var(--ease-out);
+		}
+
+		article:has(a:hover) {
+			transform: translateY(-0.25rem);
+		}
+
+		.project-image img {
+			transition: transform 220ms var(--ease-out);
+		}
+
+		a:hover .project-image img {
+			transform: scale(1.025);
+		}
+
+		.visit > span::after {
+			transition: transform 180ms var(--ease-out);
+		}
+
+		a:hover .visit > span::after {
+			transform: scaleX(1);
+		}
 	}
 
 	@media (min-width: 64rem) {
@@ -220,6 +228,10 @@
 		article:has(a:hover),
 		a:hover .project-image img {
 			transform: none;
+		}
+
+		a:hover .visit > span::after {
+			transform: scaleX(0);
 		}
 	}
 </style>

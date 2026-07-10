@@ -16,19 +16,31 @@
 		width: 2.75rem;
 		height: 2.75rem;
 		color: rgb(255 255 255 / 0.78);
-		transition:
-			color 180ms ease,
-			transform 180ms var(--ease-out);
+		transition: color 180ms ease;
 	}
 
-	a:hover {
-		color: white;
-		transform: translateY(-2px);
+	@media (hover: hover) and (pointer: fine) {
+		a {
+			transition:
+				color 180ms ease,
+				transform 180ms var(--ease-out);
+		}
+
+		a:hover {
+			color: white;
+			transform: translateY(-2px);
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		a {
-			transition: none;
+			transition: color 180ms ease;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+		a:hover {
+			transform: none;
 		}
 	}
 </style>

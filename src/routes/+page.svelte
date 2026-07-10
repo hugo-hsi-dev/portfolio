@@ -22,18 +22,40 @@
 		{ key: 'tools', label: 'Tools' }
 	] as const;
 	const currentYear = new Date().getFullYear();
+	const initialCharacterDelayMs = 200;
+	const characterDelayMs = 40;
 
-	let taglineWords = $derived.by(() => {
-		let characterIndex = 0;
+	let typedCharacterCount = $state(0);
+	let taglineCharacters = $derived(Array.from(data.site.metadata.hero.tagline));
+	let typewriterEndDelay = $derived(
+		`${initialCharacterDelayMs + data.site.metadata.hero.tagline.length * characterDelayMs}ms`
+	);
 
-		return data.site.metadata.hero.tagline.split(/\s+/).map((word, wordIndex) => ({
-			index: wordIndex,
-			characters: [...word].map((character) => ({
-				character,
-				index: characterIndex++
-			}))
-		}));
-	});
+	const typewriter: Attachment<HTMLElement> = () => {
+		const tagline = data.site.metadata.hero.tagline;
+		if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+			typedCharacterCount = tagline.length;
+			return;
+		}
+
+		typedCharacterCount = 0;
+		let intervalId: number | undefined;
+		const startId = window.setTimeout(() => {
+			typedCharacterCount = 1;
+			intervalId = window.setInterval(() => {
+				typedCharacterCount = Math.min(typedCharacterCount + 1, tagline.length);
+				if (typedCharacterCount === tagline.length && intervalId) {
+					window.clearInterval(intervalId);
+					intervalId = undefined;
+				}
+			}, characterDelayMs);
+		}, initialCharacterDelayMs);
+
+		return () => {
+			window.clearTimeout(startId);
+			if (intervalId) window.clearInterval(intervalId);
+		};
+	};
 
 	let experienceItems = $derived(
 		data.experience.map((item) => ({
@@ -197,7 +219,11 @@
 </nav>
 
 <main id="main" tabindex="-1">
-	<section class="hero" aria-labelledby="hero-title">
+	<section
+		class="hero"
+		aria-labelledby="hero-title"
+		style:--typewriter-end-delay={typewriterEndDelay}
+	>
 		<div class="hero-inner">
 			<div class="hero-main">
 				<p id="hero-eyebrow" class="eyebrow" {@attach watchEyebrow}>
@@ -206,15 +232,17 @@
 				</p>
 
 				<h1 id="hero-title" aria-label={data.site.metadata.hero.tagline}>
-					<span class="animated-tagline" aria-hidden="true">
-						{#each taglineWords as word (word.index)}
-							<span class="word">
-								{#each word.characters as item (item.index)}
-									<span class="character" style:--character-delay={`${160 + item.index * 22}ms`}
-										>{item.character}</span
-									>
-								{/each}
-							</span>
+					<span
+						class="typewriter-text"
+						class:typing-not-started={typedCharacterCount === 0}
+						aria-hidden="true"
+						{@attach typewriter}
+					>
+						{#each taglineCharacters as character, index (`${index}-${character}`)}
+							<span
+								class:untyped-character={index >= typedCharacterCount}
+								class:cursor-anchor={index === typedCharacterCount - 1}>{character}</span
+							>
 						{/each}
 					</span>
 				</h1>
@@ -264,7 +292,7 @@
 
 				<div class="project-list">
 					{#each data.projects as project, index (project.slug)}
-						<Reveal delay={Math.min(index * 90, 180)}>
+						<Reveal delay={Math.min(index * 80, 160)}>
 							<ProjectCard {project} priority={index === 0} />
 						</Reveal>
 					{/each}
@@ -288,7 +316,7 @@
 					<SectionHeader title="Tech Stack" id="stack-title" />
 				</Reveal>
 
-				<Reveal delay={90}>
+				<Reveal delay={80}>
 					<div class="stack-grid">
 						{#each technologyCategories as category (category.key)}
 							{#if data.technologies.metadata[category.key].length}
@@ -317,7 +345,7 @@
 
 				<div class="lab-grid">
 					{#each data.lab as item, index (item.slug)}
-						<Reveal delay={Math.min(index * 70, 210)}>
+						<Reveal delay={Math.min(index * 80, 240)}>
 							{#if item.metadata.githubUrl}
 								<a
 									class="lab-card"
@@ -415,8 +443,8 @@
 		opacity: 0;
 		transform: translateY(-0.3rem);
 		transition:
-			opacity 320ms var(--ease-out),
-			transform 320ms var(--ease-out);
+			opacity 240ms var(--ease-out),
+			transform 240ms var(--ease-out);
 		pointer-events: none;
 	}
 
@@ -471,7 +499,6 @@
 		font-size: 0.8125rem;
 		font-weight: 500;
 		text-transform: uppercase;
-		animation: hero-follow 420ms var(--ease-out) both;
 	}
 
 	h1 {
@@ -484,20 +511,18 @@
 		text-wrap: balance;
 	}
 
-	.animated-tagline,
-	.word,
-	.character {
+	.untyped-character {
+		visibility: hidden;
+	}
+
+	.typewriter-text.typing-not-started::before,
+	.cursor-anchor::after {
 		display: inline-block;
-	}
-
-	.word:not(:last-child) {
-		margin-inline-end: 0.22em;
-	}
-
-	.character {
-		opacity: 0;
-		transform: translateY(0.55em);
-		animation: character-in 380ms var(--ease-out) var(--character-delay) both;
+		width: 0;
+		height: 0.86em;
+		border-inline-start: 2px solid currentColor;
+		content: '';
+		vertical-align: -0.05em;
 	}
 
 	.hero-intro {
@@ -507,14 +532,12 @@
 		font-size: 1.0625rem;
 		line-height: 1.75;
 		text-wrap: pretty;
-		animation: hero-follow 460ms var(--ease-out) 1.12s both;
 	}
 
 	.hero-actions {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.875rem;
-		animation: hero-follow 460ms var(--ease-out) 1.24s both;
 	}
 
 	.hero-quote {
@@ -524,7 +547,6 @@
 		font-size: 1rem;
 		font-style: italic;
 		line-height: 1.65;
-		animation: hero-quote-in 480ms var(--ease-out) 1.34s both;
 	}
 
 	.hero-quote span {
@@ -594,14 +616,7 @@
 		min-height: 12rem;
 		background: var(--color-cream);
 		padding: 1.5rem;
-		transition:
-			background-color 180ms ease,
-			transform 180ms var(--ease-out);
-	}
-
-	a.lab-card:hover {
-		background: white;
-		transform: translateY(-0.2rem);
+		transition: background-color 180ms ease;
 	}
 
 	.lab-card h3 {
@@ -676,10 +691,6 @@
 		transition: color 180ms ease;
 	}
 
-	.email-link:hover {
-		color: var(--color-gold);
-	}
-
 	.footer-socials {
 		display: flex;
 		gap: 1.5rem;
@@ -702,15 +713,6 @@
 		content: '';
 		transform: scaleX(0);
 		transform-origin: left;
-		transition: transform 200ms var(--ease-out);
-	}
-
-	.footer-socials a:hover {
-		color: var(--color-cream);
-	}
-
-	.footer-socials a:hover::after {
-		transform: scaleX(1);
 	}
 
 	.footer-bottom {
@@ -729,13 +731,6 @@
 		line-height: 1.5;
 	}
 
-	@keyframes character-in {
-		to {
-			opacity: 1;
-			transform: translateY(0);
-		}
-	}
-
 	@keyframes hero-follow {
 		from {
 			opacity: 0;
@@ -748,6 +743,18 @@
 		}
 	}
 
+	@keyframes cursor-blink {
+		0%,
+		49% {
+			opacity: 1;
+		}
+
+		50%,
+		100% {
+			opacity: 0;
+		}
+	}
+
 	@keyframes hero-quote-in {
 		from {
 			opacity: 0;
@@ -757,6 +764,54 @@
 		to {
 			opacity: 1;
 			transform: translateX(0);
+		}
+	}
+
+	@media (prefers-reduced-motion: no-preference) {
+		.eyebrow {
+			animation: hero-follow 600ms var(--ease-out) both;
+		}
+
+		.typewriter-text.typing-not-started::before,
+		.cursor-anchor::after {
+			animation: cursor-blink 900ms steps(1, end) infinite;
+		}
+
+		.hero-intro {
+			animation: hero-follow 680ms var(--ease-out) calc(var(--typewriter-end-delay) + 700ms) both;
+		}
+
+		.hero-quote {
+			animation: hero-quote-in 820ms var(--ease-out) calc(var(--typewriter-end-delay) + 900ms) both;
+		}
+	}
+
+	@media (hover: hover) and (pointer: fine) {
+		.lab-card {
+			transition:
+				background-color 180ms ease,
+				transform 180ms var(--ease-out);
+		}
+
+		a.lab-card:hover {
+			background: white;
+			transform: translateY(-0.2rem);
+		}
+
+		.email-link:hover {
+			color: var(--color-gold);
+		}
+
+		.footer-socials a::after {
+			transition: transform 180ms var(--ease-out);
+		}
+
+		.footer-socials a:hover {
+			color: var(--color-cream);
+		}
+
+		.footer-socials a:hover::after {
+			transform: scaleX(1);
 		}
 	}
 
@@ -835,23 +890,21 @@
 
 	@media (prefers-reduced-motion: reduce) {
 		.brand,
-		.character,
-		.hero-intro,
-		.hero-actions,
-		.hero-quote,
-		.eyebrow,
-		.lab-card,
 		.footer-socials a::after {
-			animation: none;
 			transition: none;
 		}
 
-		.character,
-		.hero-intro,
-		.hero-actions,
-		.hero-quote,
-		.eyebrow {
-			opacity: 1;
+		.lab-card {
+			transition: background-color 180ms ease;
+		}
+
+		.footer-socials a::after {
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+		a.lab-card:hover {
 			transform: none;
 		}
 	}

@@ -40,7 +40,7 @@
 
 		<div class="timeline-list">
 			{#each items as item, index (item.slug)}
-				<Reveal delay={index * 90}>
+				<Reveal delay={Math.min(index * 80, 240)}>
 					<article>
 						<span class="marker" aria-hidden="true"></span>
 						<p class="date">

@@ -52,10 +52,43 @@ test.describe('portfolio homepage', () => {
 
 	test('provides a keyboard-accessible skip link', async ({ page }) => {
 		await page.goto('/');
+		const skipLink = page.getByRole('link', { name: 'Skip to content' });
+		expect(await skipLink.evaluate((element) => getComputedStyle(element).transitionDuration)).toBe(
+			'0s'
+		);
+
 		await page.keyboard.press('Tab');
-		await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
+		await expect(skipLink).toBeFocused();
 		await page.keyboard.press('Enter');
 		await expect(page.locator('#main')).toBeFocused();
+	});
+
+	test('keeps the primary hero action immediately available', async ({ page }) => {
+		await page.goto('/');
+		const actions = page.locator('.hero-actions');
+		const typewriterText = page.locator('.typewriter-text');
+		const untypedCharacter = page.locator('.untyped-character').first();
+		const cursorAnchor = page
+			.locator('.typewriter-text.typing-not-started, .cursor-anchor')
+			.first();
+
+		await expect(actions).toBeVisible();
+		expect(await actions.evaluate((element) => getComputedStyle(element).animationName)).toBe(
+			'none'
+		);
+		expect(await actions.evaluate((element) => getComputedStyle(element).opacity)).toBe('1');
+		expect(await typewriterText.textContent()).toBe(
+			'Engineering products from design to database.'
+		);
+		expect(await untypedCharacter.evaluate((element) => getComputedStyle(element).visibility)).toBe(
+			'hidden'
+		);
+		expect(
+			await cursorAnchor.evaluate((element) => {
+				const pseudo = element.classList.contains('typewriter-text') ? '::before' : '::after';
+				return getComputedStyle(element, pseudo).animationName;
+			})
+		).toContain('cursor-blink');
 	});
 });
 
@@ -91,13 +124,28 @@ test.describe('reduced motion', () => {
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await page.goto('/');
 
-		const character = page.locator('.character').first();
-		expect(await character.evaluate((element) => getComputedStyle(element).animationName)).toBe(
-			'none'
-		);
-		expect(await character.evaluate((element) => getComputedStyle(element).opacity)).toBe('1');
+		const typewriterText = page.locator('.typewriter-text');
+		await expect(typewriterText).toHaveText('Engineering products from design to database.');
+		expect(await page.locator('.untyped-character').count()).toBe(0);
+		expect(
+			await page
+				.locator('.cursor-anchor')
+				.evaluate((element) => getComputedStyle(element, '::after').animationName)
+		).toBe('none');
 		expect(
 			await page.locator('.progress').evaluate((element) => getComputedStyle(element).display)
+		).toBe('none');
+
+		const socialLink = page.getByRole('link', { name: 'GitHub profile' });
+		await socialLink.hover();
+		expect(await socialLink.evaluate((element) => getComputedStyle(element).transform)).toBe(
+			'none'
+		);
+
+		const primaryAction = page.getByRole('link', { name: 'View my work' });
+		await primaryAction.hover();
+		expect(
+			await primaryAction.evaluate((element) => getComputedStyle(element, '::before').display)
 		).toBe('none');
 	});
 });

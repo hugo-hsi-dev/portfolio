@@ -33,15 +33,15 @@
 <style>
 	.reveal:global([data-reveal='pending']) {
 		opacity: 0;
-		transform: translateY(2rem);
+		transform: translateY(0.875rem);
 	}
 
 	.reveal:global([data-reveal='visible']) {
 		opacity: 1;
 		transform: translateY(0);
 		transition:
-			opacity 560ms var(--ease-out) var(--reveal-delay),
-			transform 560ms var(--ease-out) var(--reveal-delay);
+			opacity 420ms var(--ease-out) var(--reveal-delay),
+			transform 420ms var(--ease-out) var(--reveal-delay);
 	}
 
 	@media (prefers-reduced-motion: reduce) {

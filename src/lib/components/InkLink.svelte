@@ -51,11 +51,6 @@
 		content: '';
 		transform: scaleX(0);
 		transform-origin: left;
-		transition: transform 280ms var(--ease-out);
-	}
-
-	.ink-link:hover::before {
-		transform: scaleX(1);
 	}
 
 	.ink-link--solid {
@@ -72,13 +67,30 @@
 		color: var(--color-charcoal);
 	}
 
-	.ink-link--outline:hover {
-		color: var(--color-cream);
+	@media (hover: hover) and (pointer: fine) {
+		.ink-link::before {
+			transition: transform 220ms var(--ease-out);
+		}
+
+		.ink-link:hover::before {
+			transform: scaleX(1);
+		}
+
+		.ink-link--outline:hover {
+			color: var(--color-cream);
+		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {
 		.ink-link::before {
-			transition: none;
+			display: none;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) and (hover: hover) and (pointer: fine) {
+		.ink-link--outline:hover {
+			background: var(--color-charcoal);
+			color: var(--color-cream);
 		}
 	}
 </style>
