@@ -1,67 +1,207 @@
-# Payload Blank Template
+# Hugo Hsi Portfolio
 
-This template comes configured with the bare minimum to get started on anything you need.
+A one-page SvelteKit portfolio backed by repository-authored Markdown and static media. Content is validated at build time and deployed through the Cloudflare adapter.
 
-## Quick start
+## Development
 
-This template can be deployed directly from our Cloud hosting and it will setup MongoDB and cloud S3 object storage for media.
+```sh
+pnpm install
+pnpm dev
+```
 
-## Quick Start - local setup
+Quality checks:
 
-To spin up this template locally, follow these steps:
+```sh
+pnpm lint
+pnpm check
+pnpm test:unit
+pnpm test:e2e
+pnpm build
+```
 
-### Clone
+`pnpm preview` serves the Cloudflare build on `http://localhost:4173`.
 
-After you click the `Deploy` button above, you'll want to have standalone copy of this repo on your machine. If you've already cloned this repo, skip to [Development](#development).
+## Content Workflow
 
-### Development
+Content lives in `src/content`. Each file starts with strict JSON between `---` fences. The optional Markdown body is parsed with `marked`; it is trusted repository content and is not sanitized.
 
-1. First [clone the repo](#clone) if you have not done so already
-2. `cd my-project && cp .env.example .env` to copy the example environment variables. You'll need to add the `MONGODB_URL` from your Cloud project to your `.env` if you want to use S3 storage and the MongoDB database that was created for you.
+1. Add or edit a Markdown file.
+2. Add referenced media under `static/media`.
+3. Run `pnpm test:unit` to validate content and asset paths.
+4. Run `pnpm check` and `pnpm build` before committing.
 
-3. `pnpm install && pnpm dev` to install dependencies and start the dev server
-4. open `http://localhost:3000` to open the app in your browser
+Collection order is automatic:
 
-That's it! Changes made in `./src` will be reflected in your app. Follow the on-screen instructions to login and create your first admin user. Then check out [Production](#production) once you're ready to build and serve your app, and [Deployment](#deployment) when you're ready to go live.
+- Projects use ascending `order` values, which must be unique.
+- Experience and education use newest `startDate` first.
+- Lab entries sort alphabetically by `name`.
+- Technology arrays retain their authored order.
+- Empty education and lab collections are hidden from the homepage.
 
-#### Docker (Optional)
+### Site
 
-If you prefer to use Docker for local development instead of a local MongoDB instance, the provided docker-compose.yml file can be used.
+`src/content/site.md` owns the hero, contact details, footer, metadata, and optional resume path.
 
-To do so, follow these steps:
+```md
+---
+{
+  'hero':
+    {
+      'firstName': 'Hugo',
+      'lastName': 'Hsi',
+      'tagline': 'Engineering products from design to database.',
+      'intro': 'Short introduction.',
+      'ctaPrimary': { 'text': 'View my work', 'link': '#projects' },
+      'ctaSecondary': { 'text': 'Download resume' },
+      'quote': 'Optional quote.'
+    },
+  'contact':
+    {
+      'email': 'hello@example.com',
+      'github': 'https://github.com/example',
+      'linkedin': 'https://www.linkedin.com/in/example/'
+    },
+  'footer':
+    {
+      'heading': "Let's work together",
+      'intro': 'Availability and location.',
+      'builtWith': 'Built with SvelteKit and TypeScript.'
+    },
+  'seo':
+    {
+      'title': 'Name | Role',
+      'description': 'Search and social description.',
+      'canonicalUrl': 'https://example.com',
+      'image': '/media/site/social-preview.jpg',
+      'imageAlt': 'Social preview description',
+      'keywords': ['keyword'],
+      'themeColor': '#F8F6F1',
+      'jobTitle': 'Full-Stack Developer'
+    },
+  'resumeUrl': '/media/resume/name-resume.pdf'
+}
+---
+```
 
-- Modify the `MONGODB_URL` in your `.env` file to `mongodb://127.0.0.1/<dbname>`
-- Modify the `docker-compose.yml` file's `MONGODB_URL` to match the above `<dbname>`
-- Run `docker-compose up` to start the database, optionally pass `-d` to run in the background.
+Remove `resumeUrl` to hide the resume button. `ctaSecondary` may remain in place.
 
-## How it works
+### Projects
 
-The Payload config is tailored specifically to the needs of most websites. It is pre-configured in the following ways:
+Create `src/content/projects/{slug}.md`:
 
-### Collections
+```md
+---
+{
+  'title': 'Project name',
+  'excerpt': 'Concise card description.',
+  'context': 'work',
+  'company': 'Company name',
+  'order': 1,
+  'liveUrl': 'https://example.com',
+  'featuredImage': '/media/projects/project-name/hero.jpg',
+  'featuredImageAlt': 'Description of the project screenshot',
+  'technologies': ['SvelteKit', 'TypeScript']
+}
+---
 
-See the [Collections](https://payloadcms.com/docs/configuration/collections) docs for details on how to extend this functionality.
+Optional Markdown retained for future long-form use.
+```
 
-- #### Users (Authentication)
+`context` is `work` or `personal`. Work projects require `company`. A featured image and its alt text must be provided together.
 
-  Users are auth-enabled collections that have access to the admin panel.
+### Experience
 
-  For additional help, see the official [Auth Example](https://github.com/payloadcms/payload/tree/main/examples/auth) or the [Authentication](https://payloadcms.com/docs/authentication/overview#authentication-overview) docs.
+Create `src/content/experience/{slug}.md`:
 
-- #### Media
+```md
+---
+{
+  'company': 'Company',
+  'role': 'Full-Stack Developer',
+  'startDate': '2023-01-01',
+  'isCurrent': true
+}
+---
 
-  This is the uploads enabled collection. It features pre-configured sizes, focal point and manual resizing to help you manage your pictures.
+Optional Markdown description displayed in the timeline.
+```
 
-### Docker
+Use `endDate` for completed roles and omit it when `isCurrent` is true. Dates must use `YYYY-MM-DD`.
 
-Alternatively, you can use [Docker](https://www.docker.com) to spin up this template locally. To do so, follow these steps:
+### Education
 
-1. Follow [steps 1 and 2 from above](#development), the docker-compose file will automatically use the `.env` file in your project root
-1. Next run `docker-compose up`
-1. Follow [steps 4 and 5 from above](#development) to login and create your first admin user
+Create `src/content/education/{slug}.md`:
 
-That's it! The Docker instance will help you get up and running quickly while also standardizing the development environment across your teams.
+```md
+---
+{
+  'institution': 'Institution',
+  'degree': 'Degree',
+  'startDate': '2015-01-01',
+  'endDate': '2019-01-01'
+}
+---
 
-## Questions
+Optional Markdown description displayed in the timeline.
+```
 
-If you have any issues or questions, reach out to us on [Discord](https://discord.com/invite/payload) or start a [GitHub discussion](https://github.com/payloadcms/payload/discussions).
+### Lab
+
+Create `src/content/lab/{slug}.md`:
+
+```md
+---
+{
+  'name': 'Experiment name',
+  'description': 'One-line description.',
+  'technologies': 'Svelte, SQLite',
+  'githubUrl': 'https://github.com/example/project'
+}
+---
+```
+
+`githubUrl` is optional. Entries without it render as non-interactive cards.
+
+### Technologies
+
+`src/content/technologies.md` contains the four supported groups:
+
+```md
+---
+{
+  'frontend': ['Svelte', 'React'],
+  'backend': ['Node.js', 'TypeScript'],
+  'database': ['PostgreSQL'],
+  'tools': ['Git', 'Figma']
+}
+---
+```
+
+## Media
+
+Static assets use public paths beginning with `/media/`:
+
+```text
+static/
+  fonts/
+  media/
+    projects/{project-slug}/hero.jpg
+    lab/{lab-slug}/...
+    resume/hugo-hsi-resume.pdf
+    site/social-preview.jpg
+```
+
+Project hero images are 1600 by 900 pixels. Keep screenshots readable, crop them to 16:9, and avoid decorative or unrelated imagery. The content test verifies that every referenced media file exists.
+
+## Design System
+
+Foundations live in `src/routes/layout.css`: self-hosted Forum and Outfit fonts, the cream/charcoal/gold/sage palette, page gutters, section spacing, focus styles, and motion easing. Repeated interface behavior lives in `src/lib/components`:
+
+- `InkLink` for primary and outline calls to action.
+- `ProjectCard` for selected work.
+- `Timeline` for experience and education.
+- `SectionHeader` for section titles and counts.
+- `Reveal` and `ScrollProgress` for reduced-motion-safe movement.
+- `SocialLink` and `BrandIcon` for accessible profile links.
+
+The historical source design is recorded in `HOMEPAGE_REDO_DESIGN_RECORD.md`.

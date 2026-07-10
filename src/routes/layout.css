@@ -1,0 +1,159 @@
+@import 'tailwindcss';
+
+@font-face {
+	font-family: 'Forum';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/forum-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/outfit-latin-400-normal.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/outfit-latin-500-normal.woff2') format('woff2');
+}
+
+@font-face {
+	font-family: 'Outfit';
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url('/fonts/outfit-latin-600-normal.woff2') format('woff2');
+}
+
+@theme {
+	--color-charcoal: #1a1a1a;
+	--color-cream: #f8f6f1;
+	--color-cream-light: #f0ece3;
+	--color-cream-lighter: #e8e4db;
+	--color-stone: #8b8680;
+	--color-slate: #5a5a5a;
+	--color-stone-light: #b8b4ab;
+	--color-gold: #c4a35a;
+	--color-gold-dark: #765a24;
+	--color-sage: #7a9a8a;
+	--color-sage-dark: #4d7561;
+	--color-border: #333333;
+	--font-sans: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+	--font-serif: 'Forum', ui-serif, Georgia, serif;
+}
+
+:root {
+	font-family: var(--font-sans);
+	font-synthesis: none;
+	color: var(--color-charcoal);
+	background: var(--color-charcoal);
+	--content-width: 72rem;
+	--page-gutter: 1.5rem;
+	--section-space: 6rem;
+	--ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+html {
+	background: var(--color-charcoal);
+	scroll-behavior: smooth;
+	scroll-padding-top: 5rem;
+}
+
+body {
+	min-height: 100dvh;
+	margin: 0;
+	background: var(--color-charcoal);
+	color: var(--color-charcoal);
+	font-family: var(--font-sans);
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+	letter-spacing: 0;
+}
+
+a {
+	color: inherit;
+	text-decoration: none;
+}
+
+img,
+svg {
+	display: block;
+}
+
+button,
+a {
+	-webkit-tap-highlight-color: transparent;
+	touch-action: manipulation;
+}
+
+section[id],
+footer[id] {
+	scroll-margin-top: 5rem;
+}
+
+:focus-visible {
+	outline: 3px solid var(--color-gold);
+	outline-offset: 3px;
+}
+
+::selection {
+	background: var(--color-gold);
+	color: var(--color-charcoal);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	clip-path: inset(50%);
+}
+
+.skip-link {
+	position: fixed;
+	z-index: 100;
+	top: 0;
+	left: 1rem;
+	background: var(--color-charcoal);
+	color: var(--color-cream);
+	padding: 0.75rem 1rem;
+	font-weight: 600;
+	transform: translateY(-120%);
+}
+
+.skip-link:focus {
+	transform: translateY(1rem);
+}
+
+.section-container {
+	width: min(100%, var(--content-width));
+	margin-inline: auto;
+}
+
+@media (min-width: 64rem) {
+	:root {
+		--page-gutter: 3rem;
+		--section-space: 8rem;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+}
