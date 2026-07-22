@@ -81,6 +81,7 @@ test.describe('portfolio homepage', () => {
 	test('keeps the primary hero action immediately available', async ({ page }) => {
 		await page.goto('/');
 		const actions = page.locator('.hero-actions');
+		const resumeLink = page.getByRole('link', { name: 'Download resume' });
 		const typewriterText = page.locator('.typewriter-text');
 		const untypedCharacter = page.locator('.untyped-character').first();
 		const cursorAnchor = page
@@ -88,6 +89,9 @@ test.describe('portfolio homepage', () => {
 			.first();
 
 		await expect(actions).toBeVisible();
+		await expect(resumeLink).toHaveAttribute('href', '/media/resume/resume_hugo-hsi.pdf');
+		await expect(resumeLink).toHaveAttribute('download', 'resume_hugo-hsi.pdf');
+		expect(await resumeLink.getAttribute('target')).toBeNull();
 		expect(await actions.evaluate((element) => getComputedStyle(element).animationName)).toBe(
 			'none'
 		);
