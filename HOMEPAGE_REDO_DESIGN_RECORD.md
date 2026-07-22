@@ -277,7 +277,7 @@ Main layout:
 
 Footer contact content:
 
-- Email: `hello@hugohsi.dev`
+- Email: `hugohsidev@gmail.com`
 - GitHub: `https://github.com`
 - LinkedIn: `https://linkedin.com`
 
