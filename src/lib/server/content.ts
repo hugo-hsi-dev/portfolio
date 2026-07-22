@@ -2,6 +2,7 @@ import { marked } from 'marked';
 
 export type ProjectContext = 'personal' | 'work';
 export type TechnologyCategory = 'frontend' | 'backend' | 'database' | 'tools';
+export type DatePrecision = 'month' | 'year';
 
 export interface MarkdownDocument<TMetadata> {
 	slug: string;
@@ -64,15 +65,17 @@ export interface ExperienceContent {
 	company: string;
 	role: string;
 	startDate: string;
+	startDatePrecision?: DatePrecision;
 	endDate?: string;
+	endDatePrecision?: DatePrecision;
 	isCurrent?: boolean;
 }
 
 export interface EducationContent {
 	institution: string;
 	degree: string;
-	startDate: string;
-	endDate?: string;
+	completionDate: string;
+	datePrecision?: DatePrecision;
 }
 
 export interface LabContent {
@@ -183,7 +186,9 @@ export function buildPortfolioContent(sources: PortfolioSources): PortfolioConte
 		technologies: parseOne('technologies', sources.technologies, validateTechnologies),
 		projects,
 		experience: parseMany(sources.experience, validateExperience).sort(byNewestStartDate),
-		education: parseMany(sources.education, validateEducation).sort(byNewestStartDate),
+		education: parseMany(sources.education, validateEducation).sort(
+			(a, b) => Date.parse(b.metadata.completionDate) - Date.parse(a.metadata.completionDate)
+		),
 		lab: parseMany(sources.lab, validateLab).sort((a, b) =>
 			a.metadata.name.localeCompare(b.metadata.name)
 		)
@@ -290,7 +295,17 @@ function validateProject(value: unknown, sourcePath: string): ProjectContent {
 function validateExperience(value: unknown, sourcePath: string): ExperienceContent {
 	const experience = object(value, sourcePath, 'frontmatter');
 	const startDate = date(experience.startDate, sourcePath, 'startDate');
+	const startDatePrecision = optionalDatePrecision(
+		experience.startDatePrecision,
+		sourcePath,
+		'startDatePrecision'
+	);
 	const endDate = optionalDate(experience.endDate, sourcePath, 'endDate');
+	const endDatePrecision = optionalDatePrecision(
+		experience.endDatePrecision,
+		sourcePath,
+		'endDatePrecision'
+	);
 	const isCurrent = optionalBoolean(experience.isCurrent, sourcePath, 'isCurrent');
 
 	validateDateRange(startDate, endDate, sourcePath);
@@ -302,23 +317,21 @@ function validateExperience(value: unknown, sourcePath: string): ExperienceConte
 		company: string(experience.company, sourcePath, 'company'),
 		role: string(experience.role, sourcePath, 'role'),
 		startDate,
+		startDatePrecision,
 		endDate,
+		endDatePrecision,
 		isCurrent
 	};
 }
 
 function validateEducation(value: unknown, sourcePath: string): EducationContent {
 	const education = object(value, sourcePath, 'frontmatter');
-	const startDate = date(education.startDate, sourcePath, 'startDate');
-	const endDate = optionalDate(education.endDate, sourcePath, 'endDate');
-
-	validateDateRange(startDate, endDate, sourcePath);
 
 	return {
 		institution: string(education.institution, sourcePath, 'institution'),
 		degree: string(education.degree, sourcePath, 'degree'),
-		startDate,
-		endDate
+		completionDate: date(education.completionDate, sourcePath, 'completionDate'),
+		datePrecision: optionalDatePrecision(education.datePrecision, sourcePath, 'datePrecision')
 	};
 }
 
@@ -527,6 +540,12 @@ function date(value: unknown, sourcePath: string, field: string) {
 
 function optionalDate(value: unknown, sourcePath: string, field: string) {
 	return value === undefined || value === null ? undefined : date(value, sourcePath, field);
+}
+
+function optionalDatePrecision(value: unknown, sourcePath: string, field: string) {
+	return value === undefined || value === null
+		? undefined
+		: enumValue(value, ['month', 'year'] as const, sourcePath, field);
 }
 
 function validateDateRange(startDate: string, endDate: string | undefined, sourcePath: string) {

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { DatePrecision } from '$lib/server/content';
 	import Reveal from './Reveal.svelte';
 	import SectionHeader from './SectionHeader.svelte';
 
@@ -6,8 +7,12 @@
 		slug: string;
 		title: string;
 		subtitle: string;
-		startDate: string;
+		startDate?: string;
+		startDatePrecision?: DatePrecision;
 		endDate?: string;
+		endDatePrecision?: DatePrecision;
+		completionDate?: string;
+		datePrecision?: DatePrecision;
 		isCurrent?: boolean;
 		html?: string;
 	};
@@ -18,8 +23,26 @@
 		topBorder = false
 	}: { title: string; items: TimelineItem[]; topBorder?: boolean } = $props();
 
-	function year(date?: string) {
-		return date ? new Date(`${date}T00:00:00.000Z`).getUTCFullYear() : 'Present';
+	function formatDate(date: string, precision: DatePrecision = 'year') {
+		const parsed = new Date(`${date}T00:00:00.000Z`);
+
+		return precision === 'month'
+			? new Intl.DateTimeFormat('en-US', {
+					month: 'short',
+					year: 'numeric',
+					timeZone: 'UTC'
+				}).format(parsed)
+			: String(parsed.getUTCFullYear());
+	}
+
+	function formatItemDate(item: TimelineItem) {
+		if (item.completionDate) return formatDate(item.completionDate, item.datePrecision);
+		if (!item.startDate) return '';
+
+		const start = formatDate(item.startDate, item.startDatePrecision);
+		if (item.isCurrent) return `${start} - Present`;
+		if (item.endDate) return `${start} - ${formatDate(item.endDate, item.endDatePrecision)}`;
+		return start;
 	}
 
 	let headingId = $derived(`${title.toLowerCase().replaceAll(' ', '-')}-title`);
@@ -43,9 +66,7 @@
 				<Reveal delay={Math.min(index * 80, 240)}>
 					<article>
 						<span class="marker" aria-hidden="true"></span>
-						<p class="date">
-							{year(item.startDate)} - {item.isCurrent ? 'Present' : year(item.endDate)}
-						</p>
+						<p class="date">{formatItemDate(item)}</p>
 						<h3>{item.title}</h3>
 						<p class="subtitle">{item.subtitle}</p>
 						{#if item.html}
@@ -121,6 +142,20 @@
 		margin: 0.75rem 0 0;
 		color: var(--color-stone-light);
 		line-height: 1.7;
+	}
+
+	.description :global(ul) {
+		display: grid;
+		max-width: 44rem;
+		gap: 0.75rem;
+		margin: 1rem 0 0;
+		padding-inline-start: 1.25rem;
+		color: var(--color-stone-light);
+		line-height: 1.7;
+	}
+
+	.description :global(li) {
+		padding-inline-start: 0.25rem;
 	}
 
 	@media (min-width: 64rem) {

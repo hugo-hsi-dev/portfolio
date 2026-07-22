@@ -24,7 +24,8 @@ test.describe('portfolio homepage', () => {
 		await expect(page.locator('#projects article h3')).toHaveText([
 			'National Medal of Honor Museum',
 			'1st Avenue Advisors',
-			'MineCentral'
+			'MineCentral',
+			'Me Save Money'
 		]);
 
 		const images = page.locator('#projects img');
@@ -41,6 +42,20 @@ test.describe('portfolio homepage', () => {
 			await expect(link).toHaveAttribute('target', '_blank');
 			await expect(link).toHaveAttribute('rel', 'noopener noreferrer');
 		}
+
+		await expect(
+			page.getByRole('heading', { level: 3, name: 'Full Stack Developer (Contractor)' })
+		).toBeVisible();
+		await expect(page.getByText('Oct 2025 - Present')).toBeVisible();
+		await expect(
+			page.getByRole('heading', { level: 3, name: 'Design Production Intern' })
+		).toBeVisible();
+		await expect(page.getByText('2022 - 2023')).toBeVisible();
+		await expect(
+			page.getByRole('heading', { level: 3, name: 'Full Stack Web Development Bootcamp' })
+		).toBeVisible();
+		await expect(page.getByText('May 2024', { exact: true })).toBeVisible();
+		await expect(page.getByText('May 2023', { exact: true })).toBeVisible();
 
 		expect(
 			await page.evaluate(
