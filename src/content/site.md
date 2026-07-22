@@ -14,6 +14,7 @@
 		},
 		"quote": "Beyond the keyboard, I'm a badminton coach, an avid gamer, and an active proponent of taking a proper break to do absolutely nothing."
 	},
+	"resumeUrl": "/media/resume/resume_hugo-hsi.pdf",
 	"contact": {
 		"email": "hello@hugohsi.dev",
 		"github": "https://github.com/hugohsi-dev",

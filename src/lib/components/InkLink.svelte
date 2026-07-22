@@ -5,16 +5,18 @@
 		href,
 		children,
 		variant = 'solid',
-		ariaLabel
+		ariaLabel,
+		download
 	}: {
 		href: string;
 		children: Snippet;
 		variant?: 'solid' | 'outline';
 		ariaLabel?: string;
+		download?: string;
 	} = $props();
 
 	let isExternal = $derived(/^https?:\/\//.test(href));
-	let opensNewTab = $derived(isExternal || href.toLowerCase().endsWith('.pdf'));
+	let opensNewTab = $derived(!download && (isExternal || href.toLowerCase().endsWith('.pdf')));
 </script>
 
 <a
@@ -23,6 +25,7 @@
 	target={opensNewTab ? '_blank' : undefined}
 	rel={isExternal ? 'noopener noreferrer' : undefined}
 	aria-label={ariaLabel}
+	{download}
 >
 	<span>{@render children()}</span>
 </a>

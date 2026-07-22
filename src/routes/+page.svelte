@@ -264,6 +264,7 @@
 							href={data.site.metadata.resumeUrl}
 							variant="outline"
 							ariaLabel={data.site.metadata.hero.ctaSecondary.text}
+							download="resume_hugo-hsi.pdf"
 						>
 							{data.site.metadata.hero.ctaSecondary.text}
 						</InkLink>
