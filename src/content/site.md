@@ -15,7 +15,7 @@
 		"quote": "Beyond the keyboard, I'm a badminton coach, an avid gamer, and an active proponent of taking a proper break to do absolutely nothing."
 	},
 	"contact": {
-		"email": "hello@hugohsi.dev",
+		"email": "hugohsidev@gmail.com",
 		"github": "https://github.com/hugohsi-dev",
 		"linkedin": "https://www.linkedin.com/in/hugo-hsi/"
 	},
