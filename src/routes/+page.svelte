@@ -63,7 +63,9 @@
 			title: item.metadata.role,
 			subtitle: item.metadata.company,
 			startDate: item.metadata.startDate,
+			startDatePrecision: item.metadata.startDatePrecision,
 			endDate: item.metadata.endDate,
+			endDatePrecision: item.metadata.endDatePrecision,
 			isCurrent: item.metadata.isCurrent,
 			html: item.html || undefined
 		}))
@@ -74,8 +76,8 @@
 			slug: item.slug,
 			title: item.metadata.degree,
 			subtitle: item.metadata.institution,
-			startDate: item.metadata.startDate,
-			endDate: item.metadata.endDate,
+			completionDate: item.metadata.completionDate,
+			datePrecision: item.metadata.datePrecision,
 			html: item.html || undefined
 		}))
 	);

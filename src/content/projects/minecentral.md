@@ -1,7 +1,7 @@
 ---
 {
 	"title": "MineCentral",
-	"excerpt": "Co-developed a comprehensive Minecraft server hosting platform with Stripe payments, driving the database architecture, custom UI, and codebase maintainability.",
+	"excerpt": "Built a Minecraft server hosting platform where users can spin up servers, manage subscriptions through Stripe, and monitor their instances in real time through the Pterodactyl dashboard.",
 	"context": "personal",
 	"order": 3,
 	"liveUrl": "https://www.minecentral.net/",

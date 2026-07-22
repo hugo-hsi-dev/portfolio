@@ -132,7 +132,7 @@ describe('buildPortfolioContent', () => {
 
 describe('getPortfolioContent', () => {
 	it('loads only verified checked-in content', () => {
-		expect.assertions(6);
+		expect.assertions(8);
 		const content = getPortfolioContent();
 
 		expect(content.site.metadata.hero.firstName).toBe('Hugo');
@@ -140,10 +140,26 @@ describe('getPortfolioContent', () => {
 		expect(content.projects.map((item) => item.slug)).toEqual([
 			'national-medal-of-honor-museum',
 			'1st-avenue-advisors',
-			'minecentral'
+			'minecentral',
+			'me-save-money'
 		]);
-		expect(content.experience).toHaveLength(1);
-		expect(content.education).toEqual([]);
+		expect(content.experience.map((item) => item.metadata.company)).toEqual([
+			'Praxis Loop',
+			'Lookout'
+		]);
+		expect(content.education.map((item) => item.metadata.institution)).toEqual([
+			'Columbia University',
+			'The New School'
+		]);
+		expect(content.experience[0].metadata).toMatchObject({
+			role: 'Full Stack Developer (Contractor)',
+			startDate: '2025-10-01',
+			startDatePrecision: 'month',
+			isCurrent: true
+		});
+		expect(content.experience[1].html).toContain(
+			'Graphic Design USA American Inhouse Design Award'
+		);
 		expect(content.lab).toEqual([]);
 	});
 
