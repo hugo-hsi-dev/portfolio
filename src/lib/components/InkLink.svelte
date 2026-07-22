@@ -16,7 +16,9 @@
 	} = $props();
 
 	let isExternal = $derived(/^https?:\/\//.test(href));
-	let opensNewTab = $derived(!download && (isExternal || href.toLowerCase().endsWith('.pdf')));
+	let opensNewTab = $derived(
+		download === undefined && (isExternal || href.toLowerCase().endsWith('.pdf'))
+	);
 </script>
 
 <a
