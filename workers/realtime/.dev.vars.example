@@ -1,2 +1,0 @@
-# Use the same long random value as the SvelteKit Worker.
-BOARD_RESET_TOKEN=replace-with-a-long-random-value

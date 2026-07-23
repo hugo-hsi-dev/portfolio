@@ -1,7 +1,7 @@
 {
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "portfolio",
-	"compatibility_date": "2026-07-09",
+	"compatibility_date": "2026-07-23",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": ".svelte-kit/cloudflare/_worker.js",
 	"assets": {
@@ -19,6 +19,11 @@
 	},
 	"secrets": {
 		"required": ["BOARD_RESET_TOKEN"]
+	},
+	"observability": {
+		"enabled": true,
+		"logs": { "head_sampling_rate": 1, "invocation_logs": true },
+		"traces": { "enabled": true, "head_sampling_rate": 0.05 }
 	},
 	"workers_dev": true,
 	"preview_urls": true

@@ -1,0 +1,247 @@
+import { DurableObject } from 'cloudflare:workers';
+import {
+	MAX_CLIENT_MESSAGE_BYTES,
+	clientMessageSchema,
+	identitySchema,
+	visitorIdSchema,
+	type FrameState,
+	type Identity,
+	type RoomSnapshot,
+	type ServerMessage
+} from '@portfolio/realtime-contract';
+
+import { MAX_CONNECTIONS, RATE_LIMIT_CLOSE_CODE, RESET_HEADER } from './constants';
+import { log } from './logger';
+import {
+	attachmentFor,
+	identityForVisitor,
+	isAllowedOrigin,
+	recordMessage,
+	toPeerState,
+	tokensMatch,
+	type ConnectionAttachment
+} from './policy';
+import { PortfolioRoomStorage } from './storage';
+
+export class PortfolioRoom extends DurableObject<RealtimeEnv> {
+	private readonly boardStorage: PortfolioRoomStorage;
+
+	constructor(ctx: DurableObjectState, env: RealtimeEnv) {
+		super(ctx, env);
+		this.boardStorage = new PortfolioRoomStorage(ctx.storage);
+		ctx.blockConcurrencyWhile(async () => this.boardStorage.migrate());
+	}
+
+	async fetch(request: Request): Promise<Response> {
+		const url = new URL(request.url);
+		if (request.method === 'POST' && url.pathname === '/reset') {
+			return this.handleReset(request);
+		}
+		if (request.method !== 'GET' || url.pathname !== '/ws') {
+			return new Response('Not found', { status: 404 });
+		}
+		if (request.headers.get('upgrade')?.toLowerCase() !== 'websocket') {
+			return new Response('Expected WebSocket upgrade', { status: 426 });
+		}
+		if (!isAllowedOrigin(request, this.env.ALLOWED_ORIGINS)) {
+			return new Response('Forbidden', { status: 403 });
+		}
+
+		const visitorIdResult = visitorIdSchema.safeParse(url.searchParams.get('visitorId'));
+		if (!visitorIdResult.success) {
+			return new Response('Invalid visitor id', { status: 400 });
+		}
+		const activeConnections = this.ctx
+			.getWebSockets()
+			.filter((socket) => socket.readyState === WebSocket.OPEN).length;
+		if (activeConnections >= MAX_CONNECTIONS) {
+			return new Response('Room is full', { status: 503 });
+		}
+
+		const [client, server] = Object.values(new WebSocketPair());
+		const identity = identityForVisitor(visitorIdResult.data, crypto.randomUUID());
+		const attachment: ConnectionAttachment = {
+			...identity,
+			cursor: null,
+			selectedFrameId: null,
+			lastSeq: -1,
+			rateWindowStartedAt: Date.now(),
+			rateWindowCount: 0,
+			rateLimited: false
+		};
+
+		this.ctx.acceptWebSocket(server);
+		server.serializeAttachment(attachment);
+		server.send(JSON.stringify(this.createSnapshot(identity, server)));
+		this.broadcast({ type: 'peer.join', peer: toPeerState(attachment) }, server);
+		log('info', 'peer connected', {
+			sessionId: identity.sessionId,
+			connections: activeConnections + 1
+		});
+
+		return new Response(null, { status: 101, webSocket: client });
+	}
+
+	webSocketMessage(socket: WebSocket, message: string | ArrayBuffer): void {
+		const currentAttachment = attachmentFor(socket);
+		if (!currentAttachment) {
+			socket.close(1008, 'Invalid session');
+			return;
+		}
+
+		const rate = recordMessage(currentAttachment, Date.now());
+		const attachment = rate.attachment;
+		socket.serializeAttachment(attachment);
+		if (rate.exceeded) {
+			if (!currentAttachment.rateLimited) {
+				this.sendError(socket, 'rate-limited', 'Too many updates. Please slow down.');
+				socket.close(RATE_LIMIT_CLOSE_CODE, 'Rate limit exceeded');
+			}
+			return;
+		}
+		if (typeof message !== 'string') {
+			this.sendError(socket, 'invalid-message', 'Binary messages are not supported.');
+			return;
+		}
+		if (new TextEncoder().encode(message).byteLength > MAX_CLIENT_MESSAGE_BYTES) {
+			this.sendError(socket, 'message-too-large', 'Message exceeds the 2 KB limit.');
+			return;
+		}
+
+		let json: unknown;
+		try {
+			json = JSON.parse(message);
+		} catch {
+			this.sendError(socket, 'invalid-message', 'Message must be valid JSON.');
+			return;
+		}
+		const parsed = clientMessageSchema.safeParse(json);
+		if (!parsed.success) {
+			this.sendError(socket, 'invalid-message', 'Message does not match the realtime protocol.');
+			return;
+		}
+		if (parsed.data.seq <= attachment.lastSeq) return;
+
+		if (parsed.data.type === 'presence.update') {
+			const updatedAttachment: ConnectionAttachment = {
+				...attachment,
+				lastSeq: parsed.data.seq,
+				cursor: parsed.data.cursor,
+				selectedFrameId: parsed.data.selectedFrameId
+			};
+			socket.serializeAttachment(updatedAttachment);
+			this.broadcast(
+				{
+					type: 'peer.update',
+					sessionId: updatedAttachment.sessionId,
+					cursor: updatedAttachment.cursor,
+					selectedFrameId: updatedAttachment.selectedFrameId
+				},
+				socket
+			);
+			return;
+		}
+
+		let frame: FrameState;
+		try {
+			frame = this.boardStorage.moveFrame(
+				parsed.data.frameId,
+				parsed.data.x,
+				parsed.data.y,
+				Date.now(),
+				attachment.sessionId
+			);
+		} catch (error) {
+			log('error', 'frame update failed', {
+				sessionId: attachment.sessionId,
+				frameId: parsed.data.frameId,
+				error: error instanceof Error ? error.message : String(error)
+			});
+			this.sendError(socket, 'server-error', 'The frame could not be updated.');
+			return;
+		}
+
+		socket.serializeAttachment({ ...attachment, lastSeq: parsed.data.seq });
+		this.broadcast({
+			type: 'frame.update',
+			frame,
+			sourceSessionId: attachment.sessionId,
+			clientSeq: parsed.data.seq
+		});
+	}
+
+	webSocketClose(socket: WebSocket): void {
+		const attachment = attachmentFor(socket);
+		if (!attachment) return;
+		this.broadcast({ type: 'peer.leave', sessionId: attachment.sessionId }, socket);
+		log('info', 'peer disconnected', { sessionId: attachment.sessionId });
+	}
+
+	webSocketError(socket: WebSocket, error: unknown): void {
+		const attachment = attachmentFor(socket);
+		log('error', 'websocket error', {
+			sessionId: attachment?.sessionId,
+			error: error instanceof Error ? error.message : String(error)
+		});
+	}
+
+	async getBoardState(): Promise<{ revision: number; frames: FrameState[] }> {
+		return this.boardStorage.getBoardState();
+	}
+
+	private createSnapshot(identity: Identity, currentSocket: WebSocket): RoomSnapshot {
+		const peers = this.ctx
+			.getWebSockets()
+			.filter((socket) => socket !== currentSocket && socket.readyState === WebSocket.OPEN)
+			.map(attachmentFor)
+			.filter((attachment): attachment is ConnectionAttachment => attachment !== null)
+			.map(toPeerState);
+		const board = this.boardStorage.getBoardState();
+		return {
+			type: 'room.snapshot',
+			revision: board.revision,
+			frames: board.frames,
+			self: identitySchema.parse(identity),
+			peers
+		};
+	}
+
+	private broadcast(message: ServerMessage, except?: WebSocket): void {
+		const payload = JSON.stringify(message);
+		for (const socket of this.ctx.getWebSockets()) {
+			if (socket === except || socket.readyState !== WebSocket.OPEN) continue;
+			try {
+				socket.send(payload);
+			} catch (error) {
+				log('warn', 'broadcast failed', {
+					error: error instanceof Error ? error.message : String(error)
+				});
+			}
+		}
+	}
+
+	private sendError(
+		socket: WebSocket,
+		code: 'invalid-message' | 'message-too-large' | 'rate-limited' | 'server-error',
+		message: string
+	): void {
+		if (socket.readyState === WebSocket.OPEN) {
+			socket.send(JSON.stringify({ type: 'error', code, message } satisfies ServerMessage));
+		}
+	}
+
+	private async handleReset(request: Request): Promise<Response> {
+		const provided = request.headers.get(RESET_HEADER);
+		if (!provided || !this.env.BOARD_RESET_TOKEN) {
+			return Response.json({ error: 'Unauthorized' }, { status: 401 });
+		}
+		if (!(await tokensMatch(provided, this.env.BOARD_RESET_TOKEN))) {
+			return Response.json({ error: 'Unauthorized' }, { status: 401 });
+		}
+
+		const reset = this.boardStorage.reset(Date.now());
+		this.broadcast({ type: 'board.reset', revision: reset.revision, frames: reset.frames });
+		log('info', 'board reset', { revision: reset.revision });
+		return Response.json({ ok: true, revision: reset.revision });
+	}
+}

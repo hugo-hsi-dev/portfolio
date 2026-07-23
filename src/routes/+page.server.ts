@@ -1,7 +1,8 @@
-import { getPortfolioContent } from '$lib/server/content';
+import { buildCanvasDocument, getPortfolioContent } from '$lib/features/portfolio-content';
 
 export const prerender = true;
 
 export function load() {
-	return getPortfolioContent();
+	const content = getPortfolioContent();
+	return { content, canvas: buildCanvasDocument(content) };
 }

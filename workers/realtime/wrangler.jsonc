@@ -2,7 +2,7 @@
 	"$schema": "../../node_modules/wrangler/config-schema.json",
 	"name": "portfolio-realtime",
 	"main": "./index.ts",
-	"compatibility_date": "2026-07-09",
+	"compatibility_date": "2026-07-23",
 	"compatibility_flags": ["nodejs_compat"],
 	"dev": {
 		"ip": "127.0.0.1",
@@ -22,7 +22,7 @@
 		"required": ["BOARD_RESET_TOKEN"]
 	},
 	"vars": {
-		"ALLOWED_ORIGINS": "https://www.hugohsi.dev,https://hugohsi.dev,http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173"
+		"ALLOWED_ORIGINS": "https://www.hugohsi.dev,https://hugohsi.dev"
 	},
 	"observability": {
 		"enabled": true,
