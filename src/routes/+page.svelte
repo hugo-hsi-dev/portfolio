@@ -106,6 +106,7 @@
 	let selfPeer = $state<Identity | null>(null);
 	let layersOpen = $state(true);
 	let mobileLayersOpen = $state(false);
+	let mobileLayerDestination = $state<FrameId | null>(null);
 	let browseOpen = $state(false);
 	let resetDialogOpen = $state(false);
 	let ownerKey = $state('');
@@ -319,7 +320,21 @@
 			const center = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 };
 			if (!pinchStart) pinchStart = { distance, camera: { ...camera }, center };
 			const ratio = distance / Math.max(pinchStart.distance, 1);
-			setZoom(pinchStart.camera.zoom * ratio, center.x, center.y, pinchStart.camera);
+			const rect = viewport.getBoundingClientRect();
+			const startCenter = {
+				x: pinchStart.center.x - rect.left,
+				y: pinchStart.center.y - rect.top
+			};
+			const currentCenter = { x: center.x - rect.left, y: center.y - rect.top };
+			const zoomedCamera = zoomCameraAt(
+				pinchStart.camera,
+				startCenter,
+				pinchStart.camera.zoom * ratio
+			);
+			camera = panCamera(zoomedCamera, {
+				x: currentCenter.x - startCenter.x,
+				y: currentCenter.y - startCenter.y
+			});
 			return;
 		}
 
@@ -445,18 +460,30 @@
 		});
 	}
 
+	function goToFrameFromMobileLayers(frame: FrameDefinition) {
+		mobileLayerDestination = frame.id;
+		goToFrame(frame);
+	}
+
+	function onMobileLayersCloseAutoFocus(event: Event) {
+		if (!mobileLayerDestination) return;
+		event.preventDefault();
+		const destination = mobileLayerDestination;
+		mobileLayerDestination = null;
+		requestAnimationFrame(() => {
+			document.querySelector<HTMLElement>(`[data-frame-id="${destination}"]`)?.focus();
+		});
+	}
+
 	function onKeydown(event: KeyboardEvent) {
 		if (event.key === 'Escape') {
-			if (mobileLayersOpen) {
-				mobileLayersOpen = false;
-				return;
-			}
+			if (mobileLayersOpen || browseOpen || resetDialogOpen) return;
 			selectedFrameId = null;
 			return;
 		}
 		if (!selectedFrameId || !editingReady || !isArrowKey(event.key)) return;
 		const target = event.target as HTMLElement;
-		if (!target.closest('[data-canvas-viewport], [data-frame-id]')) return;
+		if (!target.matches('[data-canvas-viewport], [data-frame-id]')) return;
 		event.preventDefault();
 		const position = positions[selectedFrameId];
 		if (!position) return;
@@ -556,16 +583,38 @@
 <main class="portfolio-file" id="main" tabindex="-1">
 	<header class="topbar">
 		<div class="topbar__left">
-			<button
-				class="tool-button mobile-layers-toggle"
-				type="button"
-				aria-label="Toggle layers"
-				aria-controls="mobile-layers"
-				aria-expanded={mobileLayersOpen}
-				onclick={() => (mobileLayersOpen = !mobileLayersOpen)}
-			>
-				<Menu size={17} />
-			</button>
+			<Dialog.Root bind:open={mobileLayersOpen}>
+				<Dialog.Trigger class="tool-button mobile-layers-toggle" aria-label="Toggle layers">
+					<Menu size={17} />
+				</Dialog.Trigger>
+				<Dialog.Portal>
+					<Dialog.Overlay class="mobile-layer-backdrop" />
+					<Dialog.Content class="mobile-layers" onCloseAutoFocus={onMobileLayersCloseAutoFocus}>
+						<Dialog.Title class="sr-only">Layers</Dialog.Title>
+						<Dialog.Description class="sr-only">
+							Choose a portfolio frame to select and center it on the canvas.
+						</Dialog.Description>
+						<nav id="mobile-layers" aria-label="Layers">
+							<div class="panel-heading">
+								<span>Layers</span>
+								<Dialog.Close class="mobile-layers-close" aria-label="Close layers">
+									<X size={16} />
+								</Dialog.Close>
+							</div>
+							{#each frames as frame (frame.id)}
+								<button
+									type="button"
+									class={['layer-row', selectedFrameId === frame.id && 'is-selected']}
+									aria-label={`Go to ${frame.title}`}
+									onclick={() => goToFrameFromMobileLayers(frame)}
+								>
+									<FileText size={14} /><span>{frame.title}</span>
+								</button>
+							{/each}
+						</nav>
+					</Dialog.Content>
+				</Dialog.Portal>
+			</Dialog.Root>
 
 			<DropdownMenu.Root>
 				<DropdownMenu.Trigger class="file-trigger" aria-label="Open file menu">
@@ -694,7 +743,6 @@
 						height={frame.height}
 						selected={selectedFrameId === frame.id}
 						dragging={dragState?.frameId === frame.id}
-						disabled={!editingReady}
 						onfocus={() => (selectedFrameId = frame.id)}
 						onpointerdown={(event) => onFramePointerDown(event, frame.id)}
 					>
@@ -890,32 +938,6 @@
 		>
 	</div>
 </main>
-
-{#if mobileLayersOpen}
-	<button
-		class="mobile-layer-backdrop"
-		type="button"
-		aria-label="Close layers"
-		onclick={() => (mobileLayersOpen = false)}
-	></button>
-	<nav class="mobile-layers" id="mobile-layers" aria-label="Layers">
-		<div class="panel-heading">
-			<span>Layers</span><button
-				type="button"
-				aria-label="Close layers"
-				onclick={() => (mobileLayersOpen = false)}><X size={16} /></button
-			>
-		</div>
-		{#each frames as frame (frame.id)}
-			<button
-				type="button"
-				class={['layer-row', selectedFrameId === frame.id && 'is-selected']}
-				aria-label={`Go to ${frame.title}`}
-				onclick={() => goToFrame(frame)}><FileText size={14} /><span>{frame.title}</span></button
-			>
-		{/each}
-	</nav>
-{/if}
 
 <Dialog.Root bind:open={browseOpen}>
 	<Dialog.Portal>
@@ -1141,8 +1163,15 @@
 		color: #9a9a9a;
 		font-size: 11px;
 	}
-	.mobile-layers-toggle {
+	:global(.mobile-layers-toggle) {
 		display: none;
+		width: 30px;
+		height: 30px;
+		border: 0;
+		place-items: center;
+		border-radius: 4px;
+		background: transparent;
+		color: #ddd;
 	}
 	.collaborators {
 		flex-direction: row-reverse;
@@ -1213,6 +1242,14 @@
 	.layers-panel.is-collapsed {
 		flex-basis: 40px;
 		width: 40px;
+		overflow: hidden;
+	}
+	.layers-panel.is-collapsed .panel-heading {
+		justify-content: center;
+		padding: 0;
+	}
+	.layers-panel.is-collapsed .panel-heading > span {
+		display: none;
 	}
 	.panel-heading {
 		display: flex;
@@ -1931,8 +1968,8 @@
 		color: #333 !important;
 		font-weight: 600;
 	}
-	.mobile-layers,
-	.mobile-layer-backdrop {
+	:global(.mobile-layers),
+	:global(.mobile-layer-backdrop) {
 		display: none;
 	}
 	@media (max-width: 800px) {
@@ -1948,7 +1985,7 @@
 		.file-mark {
 			display: none;
 		}
-		.mobile-layers-toggle {
+		:global(.mobile-layers-toggle) {
 			display: grid;
 			width: 40px;
 			height: 40px;
@@ -1975,7 +2012,7 @@
 			width: 40px;
 			height: 40px;
 		}
-		.mobile-layer-backdrop {
+		:global(.mobile-layer-backdrop) {
 			position: fixed;
 			z-index: 80;
 			inset: 46px 0 0;
@@ -1985,7 +2022,7 @@
 			border: 0;
 			background: rgb(0 0 0 / 25%);
 		}
-		.mobile-layers {
+		:global(.mobile-layers) {
 			position: fixed;
 			z-index: 90;
 			top: 46px;
@@ -1994,12 +2031,23 @@
 			display: block;
 			width: min(300px, 86vw);
 			padding-bottom: 18px;
+			border: 0;
 			overflow: auto;
 			background: #f8f8f8;
 			box-shadow: 6px 0 24px rgb(0 0 0 / 18%);
 		}
-		.mobile-layers .layer-row {
+		:global(.mobile-layers) .layer-row {
 			padding: 10px 14px;
+		}
+		:global(.mobile-layers-close) {
+			display: grid;
+			width: 40px;
+			height: 40px;
+			border: 0;
+			place-items: center;
+			border-radius: 4px;
+			background: transparent;
+			color: #666;
 		}
 		.profile-frame {
 			padding: 46px;

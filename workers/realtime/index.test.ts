@@ -1,5 +1,6 @@
 import { env, exports } from 'cloudflare:workers';
-import { describe, expect, it } from 'vitest';
+import { runInDurableObject } from 'cloudflare:test';
+import { afterEach, describe, expect, it } from 'vitest';
 
 import { DEFAULT_FRAME_POSITIONS } from '../../src/lib/realtime/layout';
 import {
@@ -11,6 +12,13 @@ import {
 const RESET_TOKEN = 'test-reset-token-at-least-32-characters';
 const VISITOR_A = '2ac3308f-a622-4b9b-9782-981d19ef943c';
 const VISITOR_B = 'af25372d-9b06-4cd3-a849-aac48d490713';
+const MESSAGE_TIMEOUT_MS = 5_000;
+const openSockets = new Set<WebSocket>();
+
+afterEach(() => {
+	for (const socket of openSockets) socket.close(1000, 'Test cleanup');
+	openSockets.clear();
+});
 
 function simulatedVisitorId(index: number): string {
 	return `00000000-0000-4000-8000-${index.toString().padStart(12, '0')}`;
@@ -24,7 +32,7 @@ function nextMessage(
 		const timeout = setTimeout(() => {
 			socket.removeEventListener('message', listener);
 			reject(new Error('Timed out waiting for WebSocket message'));
-		}, 2_000);
+		}, MESSAGE_TIMEOUT_MS);
 		const listener = (event: MessageEvent) => {
 			try {
 				const message = serverMessageSchema.parse(JSON.parse(String(event.data)));
@@ -52,7 +60,7 @@ function collectMessages(
 		const timeout = setTimeout(() => {
 			socket.removeEventListener('message', listener);
 			reject(new Error(`Timed out waiting for ${count} WebSocket messages`));
-		}, 2_000);
+		}, MESSAGE_TIMEOUT_MS);
 		const listener = (event: MessageEvent) => {
 			try {
 				const message = serverMessageSchema.parse(JSON.parse(String(event.data)));
@@ -81,6 +89,8 @@ async function connect(visitorId: string): Promise<{ socket: WebSocket; snapshot
 	expect(response.status).toBe(101);
 	const socket = response.webSocket;
 	if (!socket) throw new Error('Expected a WebSocket response');
+	openSockets.add(socket);
+	socket.addEventListener('close', () => openSockets.delete(socket));
 	socket.accept();
 	const message = await nextMessage(socket, (candidate) => candidate.type === 'room.snapshot');
 	if (message.type !== 'room.snapshot') throw new Error('Expected a room snapshot');
@@ -119,6 +129,35 @@ describe('PortfolioRoom', () => {
 		);
 		first.socket.send('{');
 		expect((await malformedPromise).type).toBe('error');
+
+		await runInDurableObject(room, (_instance, state) => {
+			state.storage.sql.exec(`
+				CREATE TRIGGER fail_profile_update
+				BEFORE UPDATE ON frames
+				WHEN NEW.frame_id = 'profile' AND NEW.x = 666
+				BEGIN
+					SELECT RAISE(ABORT, 'forced frame update failure');
+				END;
+			`);
+		});
+		const failedMovePromise = nextMessage(
+			first.socket,
+			(message) => message.type === 'error' && message.code === 'server-error'
+		);
+		first.socket.send(
+			JSON.stringify({
+				type: 'frame.move',
+				seq: 2,
+				frameId: 'profile',
+				x: 666,
+				y: 654,
+				final: true
+			})
+		);
+		expect((await failedMovePromise).type).toBe('error');
+		await runInDurableObject(room, (_instance, state) => {
+			state.storage.sql.exec('DROP TRIGGER fail_profile_update');
+		});
 
 		const concurrentUpdates = collectMessages(
 			first.socket,

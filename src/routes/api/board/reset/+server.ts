@@ -6,6 +6,10 @@ import type { RequestHandler } from './$types';
 const resetBodySchema = z.strictObject({ token: z.string().min(1).max(1_024) });
 const MAX_BODY_BYTES = 2_048;
 
+interface ResetRoom {
+	fetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response>;
+}
+
 async function tokensMatch(provided: string, expected: string): Promise<boolean> {
 	const encoder = new TextEncoder();
 	const [providedHash, expectedHash] = await Promise.all([
@@ -33,6 +37,21 @@ async function readLimitedBody(request: Request): Promise<string | null> {
 			return null;
 		}
 		body += decoder.decode(value, { stream: true });
+	}
+}
+
+export async function _forwardReset(room: ResetRoom, token: string): Promise<Response> {
+	try {
+		const response = await room.fetch('https://portfolio-room/reset', {
+			method: 'POST',
+			headers: { 'x-board-reset-token': token }
+		});
+		if (!response.ok) {
+			return Response.json({ error: 'Reset unavailable' }, { status: 503 });
+		}
+		return Response.json({ ok: true });
+	} catch {
+		return Response.json({ error: 'Reset unavailable' }, { status: 503 });
 	}
 }
 
@@ -80,12 +99,5 @@ export const POST: RequestHandler = async ({ request, platform }) => {
 	}
 
 	const room = platform.env.PORTFOLIO_ROOMS.getByName('public');
-	const response = await room.fetch('https://portfolio-room/reset', {
-		method: 'POST',
-		headers: { 'x-board-reset-token': parsed.data.token }
-	});
-	if (!response.ok) {
-		return Response.json({ error: 'Reset unavailable' }, { status: 503 });
-	}
-	return Response.json({ ok: true });
+	return _forwardReset(room, parsed.data.token);
 };

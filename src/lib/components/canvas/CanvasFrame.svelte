@@ -11,7 +11,6 @@
 		height,
 		selected = false,
 		dragging = false,
-		disabled = false,
 		onpointerdown,
 		onfocus,
 		children
@@ -25,7 +24,6 @@
 		height: number;
 		selected?: boolean;
 		dragging?: boolean;
-		disabled?: boolean;
 		onpointerdown: (event: PointerEvent) => void;
 		onfocus: () => void;
 		children: Snippet;
@@ -36,7 +34,6 @@
 	class={['canvas-frame', selected && 'is-selected', dragging && 'is-dragging']}
 	data-frame-id={id}
 	aria-label={`${label}: ${title}`}
-	aria-disabled={disabled}
 	data-selected={selected ? '' : undefined}
 	role="group"
 	tabindex="-1"

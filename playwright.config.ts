@@ -10,18 +10,9 @@ export default defineConfig({
 		trace: 'retain-on-failure'
 	},
 	webServer: {
-		command:
-			'pnpm build && pnpm exec wrangler dev -c wrangler.jsonc -c workers/realtime/wrangler.jsonc --port 4173',
+		command: 'pnpm build && node tests/start-e2e-server.mjs',
 		url: 'http://127.0.0.1:4173',
-		env: {
-			BOARD_RESET_TOKEN: 'playwright-owner-key',
-			CHOKIDAR_USEPOLLING: 'true',
-			CLOUDFLARE_INCLUDE_PROCESS_ENV: 'true',
-			MINIFLARE_REGISTRY_PATH: '.wrangler/registry',
-			WRANGLER_LOG_PATH: '.wrangler/logs/playwright.log',
-			WRANGLER_REGISTRY_PATH: '.wrangler/registry'
-		},
-		reuseExistingServer: !process.env.CI,
+		reuseExistingServer: false,
 		timeout: 180_000
 	}
 });

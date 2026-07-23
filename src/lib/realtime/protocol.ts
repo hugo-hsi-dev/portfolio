@@ -4,11 +4,7 @@ import { FRAME_IDS, WORLD_COORDINATE_LIMIT, type FrameId } from './layout';
 
 const frameIdSchema = z.enum(FRAME_IDS as [FrameId, ...FrameId[]]);
 export const visitorIdSchema = z.uuid();
-const coordinateSchema = z
-	.number()
-	.finite()
-	.min(-WORLD_COORDINATE_LIMIT)
-	.max(WORLD_COORDINATE_LIMIT);
+const coordinateSchema = z.number().min(-WORLD_COORDINATE_LIMIT).max(WORLD_COORDINATE_LIMIT);
 const sequenceSchema = z.number().int().nonnegative().max(Number.MAX_SAFE_INTEGER);
 
 export const pointSchema = z.strictObject({

@@ -1,8 +1,9 @@
 import AxeBuilder from '@axe-core/playwright';
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type APIRequestContext, type Page } from '@playwright/test';
 
 const PROFILE_FRAME = '[data-frame-id="profile"]';
 const PROJECT_FRAME = '[data-frame-id="project-national-medal-of-honor-museum"]';
+const RESET_TOKEN = 'playwright-owner-key';
 
 async function openPortfolio(page: Page) {
 	await page.goto('/');
@@ -24,6 +25,13 @@ async function expectNoSeriousAccessibilityViolations(page: Page) {
 		['serious', 'critical'].includes(impact ?? '')
 	);
 	expect(seriousViolations).toEqual([]);
+}
+
+async function resetBoard(request: APIRequestContext) {
+	const response = await request.post('/api/board/reset', {
+		data: { token: RESET_TOKEN }
+	});
+	await expect(response).toBeOK();
 }
 
 test.describe('interactive portfolio canvas', () => {
@@ -82,33 +90,38 @@ test.describe('interactive portfolio canvas', () => {
 		await expect(page.locator(PROFILE_FRAME)).toBeInViewport();
 	});
 
-	test('zooms, fits, selects, and keyboard-nudges a frame', async ({ page }) => {
-		await openPortfolio(page);
-		await expect(page.locator('[data-connection-state="open"]')).toBeVisible();
-		const profile = page.locator(PROFILE_FRAME);
-		const initialBox = await profile.boundingBox();
-		expect(initialBox).not.toBeNull();
+	test('zooms, fits, selects, and keyboard-nudges a frame', async ({ page, request }) => {
+		await resetBoard(request);
+		try {
+			await openPortfolio(page);
+			await expect(page.locator('[data-connection-state="open"]')).toBeVisible();
+			const profile = page.locator(PROFILE_FRAME);
+			const initialBox = await profile.boundingBox();
+			expect(initialBox).not.toBeNull();
 
-		await page.getByRole('button', { name: 'Zoom in' }).click();
-		await expect
-			.poll(async () => (await profile.boundingBox())?.width ?? 0)
-			.toBeGreaterThan(initialBox?.width ?? 0);
+			await page.getByRole('button', { name: 'Zoom in' }).click();
+			await expect
+				.poll(async () => (await profile.boundingBox())?.width ?? 0)
+				.toBeGreaterThan(initialBox?.width ?? 0);
 
-		await page.getByRole('button', { name: 'Fit all' }).click();
-		await expect(profile).toBeInViewport();
-		await profile.click();
-		await expect(page.getByRole('button', { name: 'Fit selection' })).toBeEnabled();
+			await page.getByRole('button', { name: 'Fit all' }).click();
+			await expect(profile).toBeInViewport();
+			await profile.click();
+			await expect(page.getByRole('button', { name: 'Fit selection' })).toBeEnabled();
 
-		await page.getByRole('button', { name: 'Fit selection' }).click();
-		await expect(profile).toBeInViewport();
-		const beforeNudge = await profile.evaluate((element) => element.style.transform);
-		const canvas = page.locator('[data-canvas-viewport]');
-		await canvas.focus();
-		await expect(canvas).toBeFocused();
-		await page.keyboard.press('ArrowRight');
-		await expect
-			.poll(async () => profile.evaluate((element) => element.style.transform))
-			.not.toBe(beforeNudge);
+			await page.getByRole('button', { name: 'Fit selection' }).click();
+			await expect(profile).toBeInViewport();
+			const beforeNudge = await profile.evaluate((element) => element.style.transform);
+			const canvas = page.locator('[data-canvas-viewport]');
+			await canvas.focus();
+			await expect(canvas).toBeFocused();
+			await page.keyboard.press('ArrowRight');
+			await expect
+				.poll(async () => profile.evaluate((element) => element.style.transform))
+				.not.toBe(beforeNudge);
+		} finally {
+			await resetBoard(request);
+		}
 	});
 
 	test('offers an accessible browse mode and passes an axe audit', async ({ page }) => {
@@ -158,7 +171,7 @@ test.describe('mobile portfolio canvas', () => {
 test.describe('reduced motion', () => {
 	test.use({ viewport: { width: 1280, height: 800 } });
 
-	test('does not animate camera navigation or collaborator cursors', async ({ page }) => {
+	test('does not animate camera navigation or collaborator cursors', async ({ browser, page }) => {
 		await page.emulateMedia({ reducedMotion: 'reduce' });
 		await openPortfolio(page);
 		const layers = await openLayers(page);
@@ -173,13 +186,33 @@ test.describe('reduced motion', () => {
 				.locator('[data-canvas-world]')
 				.evaluate((element) => Number.parseFloat(getComputedStyle(element).transitionDuration))
 		).toBeLessThanOrEqual(0.001);
+
+		const peerContext = await browser.newContext({ viewport: { width: 1280, height: 800 } });
+		try {
+			const peerPage = await peerContext.newPage();
+			await openPortfolio(peerPage);
+			await expect(page.locator('[data-connection-state="open"]')).toBeVisible();
+			await expect(peerPage.locator('[data-connection-state="open"]')).toBeVisible();
+			await peerPage.mouse.move(620, 420);
+			const cursor = page.locator('[data-peer-cursor] .multiplayer-cursor');
+			await expect(cursor).toBeVisible();
+			expect(
+				await cursor.evaluate((element) =>
+					Number.parseFloat(getComputedStyle(element).transitionDuration)
+				)
+			).toBeLessThanOrEqual(0.001);
+		} finally {
+			await peerContext.close();
+		}
 	});
 });
 
 test.describe('multiplayer board', () => {
 	test('synchronizes cursors and frame positions, persists changes, and supports owner reset', async ({
-		browser
+		browser,
+		request
 	}) => {
+		await resetBoard(request);
 		const firstContext = await browser.newContext({ viewport: { width: 1280, height: 800 } });
 		const secondContext = await browser.newContext({ viewport: { width: 1280, height: 800 } });
 		const first = await firstContext.newPage();
@@ -224,7 +257,11 @@ test.describe('multiplayer board', () => {
 				.poll(async () => secondFrame.evaluate((element) => element.style.transform))
 				.toBe('translate3d(0px, 0px, 0px)');
 		} finally {
-			await Promise.all([firstContext.close(), secondContext.close()]);
+			try {
+				await resetBoard(request);
+			} finally {
+				await Promise.all([firstContext.close(), secondContext.close()]);
+			}
 		}
 	});
 });

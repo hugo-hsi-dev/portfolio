@@ -227,9 +227,9 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 			return;
 		}
 		if (parsed.data.seq <= attachment.lastSeq) return;
-		attachment.lastSeq = parsed.data.seq;
 
 		if (parsed.data.type === 'presence.update') {
+			attachment.lastSeq = parsed.data.seq;
 			attachment.cursor = parsed.data.cursor;
 			attachment.selectedFrameId = parsed.data.selectedFrameId;
 			socket.serializeAttachment(attachment);
@@ -273,6 +273,8 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 			this.sendError(socket, 'server-error', 'The frame could not be updated.');
 			return;
 		}
+		attachment.lastSeq = parsed.data.seq;
+		socket.serializeAttachment(attachment);
 		const frame: FrameState = {
 			id: parsed.data.frameId,
 			x: parsed.data.x,
