@@ -30,6 +30,12 @@ Run the complete local CI suite before submitting:
 pnpm verify
 ```
 
+Visual-regression baselines are platform-specific because Chromium text rasterization differs between macOS and Linux. When an intentional visual change affects them, run the visual suite with `--update-snapshots` on both platforms and review every changed image before committing:
+
+```sh
+pnpm exec playwright test tests/visual-regression.e2e.ts --update-snapshots
+```
+
 Explain the behavior change, test evidence, and any operational impact in the pull request. Include screenshots for visible interface changes.
 
 ## Report security issues

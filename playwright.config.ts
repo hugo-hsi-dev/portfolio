@@ -5,7 +5,7 @@ export default defineConfig({
 	testMatch: '**/*.e2e.ts',
 	fullyParallel: false,
 	workers: 1,
-	snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{arg}{ext}',
+	snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{platform}/{arg}{ext}',
 	reporter: [[process.env.CI ? 'dot' : 'list'], ['html', { open: 'never' }]],
 	use: {
 		baseURL: 'http://127.0.0.1:4173',

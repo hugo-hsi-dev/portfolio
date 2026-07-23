@@ -34,7 +34,7 @@
 		"gen": "pnpm gen:app && pnpm gen:realtime",
 		"gen:app": "node scripts/run-wrangler.mjs types",
 		"gen:realtime": "node scripts/run-wrangler.mjs types workers/realtime/worker-configuration.d.ts -c workers/realtime/wrangler.jsonc --env-interface RealtimeEnv --include-runtime false",
-		"gen:check": "node scripts/run-wrangler.mjs types --check && node scripts/run-wrangler.mjs types workers/realtime/worker-configuration.d.ts -c workers/realtime/wrangler.jsonc --env-interface RealtimeEnv --include-runtime false --check",
+		"gen:check": "pnpm build && node scripts/run-wrangler.mjs types --check && node scripts/run-wrangler.mjs types workers/realtime/worker-configuration.d.ts -c workers/realtime/wrangler.jsonc --env-interface RealtimeEnv --include-runtime false --check",
 		"verify": "pnpm lint && pnpm check && pnpm gen:check && pnpm test:unit:coverage && pnpm test:worker:coverage && pnpm build:all && pnpm test:e2e && pnpm audit --audit-level low"
 	},
 	"devDependencies": {
