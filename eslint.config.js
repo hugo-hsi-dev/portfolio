@@ -36,10 +36,8 @@ export default defineConfig(
 	},
 	{
 		files: [
-			'src/lib/components/InkLink.svelte',
-			'src/lib/components/ProjectCard.svelte',
-			'src/lib/components/SocialLink.svelte',
-			'src/routes/+page.svelte'
+			'src/lib/features/portfolio-board/components/BoardTopbar.svelte',
+			'src/lib/features/portfolio-board/components/BrowseDialog.svelte'
 		],
 		rules: {
 			// These components receive validated external URLs, not SvelteKit routes.
@@ -47,17 +45,17 @@ export default defineConfig(
 		}
 	},
 	{
-		files: ['src/lib/components/Timeline.svelte', 'src/routes/+page.svelte'],
+		files: ['src/lib/features/portfolio-board/components/PortfolioSeo.svelte'],
 		rules: {
-			// Timeline HTML is trusted repository Markdown; JSON-LD is generated and escaped.
-			'svelte/no-at-html-tags': 'off'
-		}
-	},
-	{
-		files: ['src/routes/+page.svelte'],
-		rules: {
-			// The Svelte parser treats application/ld+json contents as raw text.
-			'@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^structuredDataJson$' }]
+			// JSON-LD is generated from validated content and escapes "<" before injection.
+			'svelte/no-at-html-tags': 'off',
+			// The Svelte parser does not expose identifiers referenced only by the raw JSON-LD block.
+			'@typescript-eslint/no-unused-vars': [
+				'error',
+				{
+					varsIgnorePattern: '^(buildStructuredDataJson|projects|technologies|structuredDataJson)$'
+				}
+			]
 		}
 	},
 	{

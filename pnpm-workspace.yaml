@@ -1,5 +1,11 @@
 packages:
   - '.'
+  - 'packages/*'
+
+overrides:
+  'cookie@<0.7.0': '0.7.2'
+  'sharp@<0.35.3': '0.35.3'
+  'shell-quote@<=1.8.4': '1.10.0'
 
 allowBuilds:
   esbuild: true

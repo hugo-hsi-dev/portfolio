@@ -6,7 +6,15 @@ const runtimeDirectory = resolve('.wrangler/e2e');
 const varsPath = resolve(runtimeDirectory, 'playwright.vars');
 
 mkdirSync(runtimeDirectory, { recursive: true });
-writeFileSync(varsPath, 'BOARD_RESET_TOKEN=playwright-owner-key\n', { mode: 0o600 });
+writeFileSync(
+	varsPath,
+	[
+		'BOARD_RESET_TOKEN=playwright-owner-key-0123456789abcdef',
+		'ALLOWED_ORIGINS=http://127.0.0.1:4173,http://localhost:4173',
+		''
+	].join('\n'),
+	{ mode: 0o600 }
+);
 
 const child = spawn(
 	resolve('node_modules/.bin/wrangler'),
