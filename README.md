@@ -1,12 +1,27 @@
 # Hugo Hsi Portfolio
 
-A one-page SvelteKit portfolio backed by repository-authored Markdown and static media. Content is validated at build time and deployed through the Cloudflare adapter.
+A multiplayer, Figma-inspired portfolio canvas built with SvelteKit and Cloudflare Durable Objects. Portfolio content is authored in repository Markdown, while frame positions persist in a shared realtime room.
 
 ## Development
 
 ```sh
 pnpm install
+cp .dev.vars.example .dev.vars
+cp workers/realtime/.dev.vars.example workers/realtime/.dev.vars
+```
+
+Use the same owner-reset token in both local variable files. Start the application and realtime Worker in separate terminals:
+
+```sh
+pnpm dev:realtime
 pnpm dev
+```
+
+Vite serves the application at `http://127.0.0.1:5173`; the browser connects directly to the local realtime Worker on port `8788`. To exercise the production-shaped Worker binding instead, build and start the integrated preview:
+
+```sh
+pnpm build
+pnpm preview
 ```
 
 Quality checks:
@@ -15,11 +30,22 @@ Quality checks:
 pnpm lint
 pnpm check
 pnpm test:unit
+pnpm test:worker
 pnpm test:e2e
 pnpm build
+pnpm build:realtime
 ```
 
-`pnpm preview` serves the Cloudflare build on `http://localhost:4173`.
+`pnpm test` runs unit, Worker-runtime, and browser tests. The integrated preview is served at `http://127.0.0.1:4173`.
+
+## Realtime Architecture
+
+- The prerendered SvelteKit page owns content, SEO, and the interactive DOM canvas.
+- `workers/realtime` exports one SQLite-backed `PortfolioRoom` Durable Object per board.
+- Zod schemas in `src/lib/realtime` validate every client and server message.
+- Frame positions and room revisions persist in SQLite; cursors and selections are ephemeral WebSocket attachments.
+- The browser uses a native WebSocket controller with capped-jitter reconnection and no offline queue.
+- Production-shaped requests use `/api/board/ws` and `/api/board/reset`; Vite development connects directly to the local Worker.
 
 ## Content Workflow
 
@@ -193,15 +219,10 @@ static/
 
 Project hero images are 1600 by 900 pixels. Keep screenshots readable, crop them to 16:9, and avoid decorative or unrelated imagery. The content test verifies that every referenced media file exists.
 
-## Design System
+## Canvas Interface
 
-Foundations live in `src/routes/layout.css`: self-hosted Forum and Outfit fonts, the cream/charcoal/gold/sage palette, page gutters, section spacing, focus styles, and motion easing. Repeated interface behavior lives in `src/lib/components`:
+Foundations live in `src/routes/layout.css`: self-hosted Outfit and Forum fonts, Figma-inspired neutral surfaces, selection blue, focus treatment, and reduced-motion defaults. Canvas behavior is split between framework-independent modules in `src/lib/realtime` and semantic Svelte components in `src/lib/components/canvas`.
 
-- `InkLink` for primary and outline calls to action.
-- `ProjectCard` for selected work.
-- `Timeline` for experience and education.
-- `SectionHeader` for section titles and counts.
-- `Reveal` and `ScrollProgress` for reduced-motion-safe movement.
-- `SocialLink` and `BrandIcon` for accessible profile links.
+The interface intentionally renders ordinary DOM rather than Canvas or WebGL. Frames remain indexable and keyboard-accessible, Browse mode provides a conventional document view, and the Layers navigator can recover content moved anywhere in the shared world.
 
 The historical source design is recorded in `HOMEPAGE_REDO_DESIGN_RECORD.md`.

@@ -5,21 +5,28 @@
 	"type": "module",
 	"scripts": {
 		"dev": "vite dev",
+		"dev:realtime": "wrangler dev -c workers/realtime/wrangler.jsonc --port 8788",
 		"build": "vite build",
-		"deploy": "pnpm build && wrangler deploy",
-		"preview": "wrangler dev .svelte-kit/cloudflare/_worker.js --port 4173",
-		"prepare": "svelte-kit sync || echo ''",
+		"build:realtime": "wrangler deploy --dry-run -c workers/realtime/wrangler.jsonc --outdir .wrangler/build/realtime",
+		"deploy": "pnpm build && wrangler deploy -c workers/realtime/wrangler.jsonc && wrangler deploy",
+		"preview": "wrangler dev -c wrangler.jsonc -c workers/realtime/wrangler.jsonc --port 4173",
+		"prepare": "svelte-kit sync",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:unit": "vitest run",
 		"test:unit:watch": "vitest",
-		"test": "pnpm test:unit && pnpm test:e2e",
+		"test:worker": "vitest run --config vitest.worker.config.ts --maxWorkers=1 --no-isolate",
+		"test": "pnpm test:unit && pnpm test:worker && pnpm test:e2e",
 		"test:e2e": "playwright test",
-		"gen": "wrangler types"
+		"gen": "pnpm gen:app && pnpm gen:realtime",
+		"gen:app": "wrangler types",
+		"gen:realtime": "wrangler types workers/realtime/worker-configuration.d.ts -c workers/realtime/wrangler.jsonc --env-interface RealtimeEnv --include-runtime false"
 	},
 	"devDependencies": {
+		"@axe-core/playwright": "^4.12.1",
+		"@cloudflare/vitest-pool-workers": "^0.18.7",
 		"@eslint/js": "^10.0.1",
 		"@playwright/test": "^1.60.0",
 		"@sveltejs/adapter-cloudflare": "^7.2.8",
@@ -46,6 +53,8 @@
 	},
 	"dependencies": {
 		"@lucide/svelte": "^1.23.0",
-		"marked": "^18.0.5"
+		"bits-ui": "^2.18.1",
+		"marked": "^18.0.5",
+		"zod": "^4.4.3"
 	}
 }

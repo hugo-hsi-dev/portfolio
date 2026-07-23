@@ -10,4 +10,5 @@ bun.lockb
 /skills-lock.json
 /static/
 /worker-configuration.d.ts
+/workers/realtime/worker-configuration.d.ts
 src/content/**/*.md
