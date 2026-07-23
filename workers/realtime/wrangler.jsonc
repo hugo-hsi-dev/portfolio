@@ -1,0 +1,32 @@
+{
+	"$schema": "../../node_modules/wrangler/config-schema.json",
+	"name": "portfolio-realtime",
+	"main": "./index.ts",
+	"compatibility_date": "2026-07-09",
+	"compatibility_flags": ["nodejs_compat"],
+	"dev": {
+		"ip": "127.0.0.1",
+		"port": 8788,
+		"local_protocol": "http"
+	},
+	"durable_objects": {
+		"bindings": [{ "name": "PORTFOLIO_ROOMS", "class_name": "PortfolioRoom" }]
+	},
+	"exports": {
+		"PortfolioRoom": {
+			"type": "durable-object",
+			"storage": "sqlite"
+		}
+	},
+	"secrets": {
+		"required": ["BOARD_RESET_TOKEN"]
+	},
+	"vars": {
+		"ALLOWED_ORIGINS": "https://www.hugohsi.dev,https://hugohsi.dev,http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173"
+	},
+	"observability": {
+		"enabled": true,
+		"logs": { "head_sampling_rate": 1 },
+		"traces": { "enabled": true, "head_sampling_rate": 0.05 }
+	}
+}

@@ -2,11 +2,23 @@
 	"$schema": "./node_modules/wrangler/config-schema.json",
 	"name": "portfolio",
 	"compatibility_date": "2026-07-09",
-	"compatibility_flags": ["nodejs_als"],
+	"compatibility_flags": ["nodejs_compat"],
 	"main": ".svelte-kit/cloudflare/_worker.js",
 	"assets": {
 		"binding": "ASSETS",
 		"directory": ".svelte-kit/cloudflare"
+	},
+	"durable_objects": {
+		"bindings": [
+			{
+				"name": "PORTFOLIO_ROOMS",
+				"class_name": "PortfolioRoom",
+				"script_name": "portfolio-realtime"
+			}
+		]
+	},
+	"secrets": {
+		"required": ["BOARD_RESET_TOKEN"]
 	},
 	"workers_dev": true,
 	"preview_urls": true

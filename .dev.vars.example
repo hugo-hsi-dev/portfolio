@@ -1,0 +1,2 @@
+# Use the same long random value in both local Worker environments.
+BOARD_RESET_TOKEN=replace-with-a-long-random-value
