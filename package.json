@@ -72,7 +72,7 @@
 		"wrangler": "^4.113.0"
 	},
 	"dependencies": {
-		"@lucide/svelte": "^1.25.0",
+		"@lucide/svelte": "^1.26.0",
 		"@portfolio/realtime-contract": "workspace:*",
 		"bits-ui": "^2.18.1",
 		"zod": "^4.4.3"
