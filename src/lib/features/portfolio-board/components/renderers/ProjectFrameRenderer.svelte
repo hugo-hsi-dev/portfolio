@@ -148,7 +148,7 @@
 	.project-meta {
 		display: flex;
 		justify-content: space-between;
-		color: #767676;
+		color: #6d6d69;
 		font-size: 10px;
 		font-weight: 600;
 		letter-spacing: 0.08em;
@@ -174,7 +174,7 @@
 		gap: 0;
 		margin: 10px 0 0;
 		padding: 0;
-		color: #777772;
+		color: #6d6d69;
 		font-size: 10px;
 		font-weight: 500;
 		list-style: none;
