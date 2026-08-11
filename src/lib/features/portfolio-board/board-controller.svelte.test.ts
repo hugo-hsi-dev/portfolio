@@ -430,6 +430,39 @@ describe('PortfolioBoardController', () => {
 		viewport.remove();
 	});
 
+	it('uses physical shifted number keys for fit shortcuts', () => {
+		const harness = createHarness();
+		const { controller, socket, viewport } = harness;
+		socket.emit(snapshot());
+		const fitAll = vi.spyOn(controller, 'fitAll');
+		const fitSelection = vi.spyOn(controller, 'fitSelection');
+		const preventFitAll = vi.fn();
+		const preventFitSelection = vi.fn();
+
+		controller.onKeydown({
+			key: '!',
+			code: 'Digit1',
+			shiftKey: true,
+			target: viewport,
+			preventDefault: preventFitAll
+		} as unknown as KeyboardEvent);
+		controller.onKeydown({
+			key: '@',
+			code: 'Digit2',
+			shiftKey: true,
+			target: viewport,
+			preventDefault: preventFitSelection
+		} as unknown as KeyboardEvent);
+
+		expect(fitAll).toHaveBeenCalledOnce();
+		expect(fitSelection).toHaveBeenCalledOnce();
+		expect(preventFitAll).toHaveBeenCalledOnce();
+		expect(preventFitSelection).toHaveBeenCalledOnce();
+
+		harness.cleanup();
+		viewport.remove();
+	});
+
 	it('sends authoritative visibility and locking metadata and handles locked move rejection', () => {
 		const harness = createHarness();
 		const { controller, socket, viewport } = harness;
@@ -462,6 +495,54 @@ describe('PortfolioBoardController', () => {
 		socket.emit({ type: 'error', code: 'frame-locked', message: 'That frame is locked.' });
 		expect(controller.dragState).toBeNull();
 		expect(controller.editorNotice).toBe('That frame is locked.');
+
+		harness.cleanup();
+		viewport.remove();
+	});
+
+	it('cancels a local drag when a collaborator hides one of its frames', () => {
+		const harness = createHarness();
+		const { controller, socket, viewport } = harness;
+		socket.emit(snapshot());
+		socket.emitState('open');
+		controller.camera = { x: 0, y: 0, zoom: 1 };
+
+		const frameElement = document.createElement('article');
+		frameElement.dataset.frameId = 'profile';
+		Object.defineProperty(frameElement, 'setPointerCapture', { value: vi.fn() });
+		viewport.append(frameElement);
+
+		controller.onFramePointerDown(pointerEvent(frameElement), 'profile');
+		harness.advanceNow(60);
+		controller.onPointerMove(pointerEvent(frameElement, { clientX: 160, clientY: 180 }));
+		expect(controller.dragState?.frameIds).toContain('profile');
+		controller.snapGuides = [
+			{
+				orientation: 'vertical',
+				position: 160,
+				start: 0,
+				end: 580,
+				targetFrameId: 'contact',
+				movingAnchor: 'start',
+				targetAnchor: 'start'
+			}
+		];
+		const movesBeforeHide = socket.sent.filter((message) => message.type === 'frame.move');
+
+		socket.emit({
+			type: 'frame.update',
+			frame: { ...snapshot(2).frames[0], visible: false },
+			sourceSessionId: 'adf73f2f-f2d3-4246-9087-84a46bf665bd',
+			clientSeq: 1
+		});
+
+		expect(controller.selectedFrameIds).not.toContain('profile');
+		expect(controller.dragState).toBeNull();
+		expect(controller.snapGuides).toEqual([]);
+
+		controller.onPointerMove(pointerEvent(frameElement, { clientX: 220, clientY: 240 }));
+		controller.onPointerUp(pointerEvent(frameElement, { clientX: 220, clientY: 240 }));
+		expect(socket.sent.filter((message) => message.type === 'frame.move')).toEqual(movesBeforeHide);
 
 		harness.cleanup();
 		viewport.remove();

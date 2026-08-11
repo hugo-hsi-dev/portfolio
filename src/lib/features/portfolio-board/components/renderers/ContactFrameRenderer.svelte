@@ -37,9 +37,6 @@
 		color: #20201e;
 	}
 	.frame-eyebrow {
-		display: flex;
-		align-items: center;
-		gap: 6px;
 		color: #6f6f6a;
 		font-size: 11px;
 		font-weight: 600;

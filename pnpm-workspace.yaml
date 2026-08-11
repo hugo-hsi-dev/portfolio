@@ -4,11 +4,11 @@ packages:
 
 overrides:
   'brace-expansion@>=4.0.0 <5.0.9': '5.0.9'
-  'cookie@<0.7.0': '0.7.2'
+  '@sveltejs/kit@2.70.2>cookie': '0.7.2'
+  'concurrently@10.0.3>shell-quote': '1.10.0'
+  'miniflare@5.20260801.1-alpha>sharp': '0.35.3'
   'nanoid@<3.3.17': '3.3.17'
   'postcss@<=8.5.22': '8.5.23'
-  'sharp@<0.35.3': '0.35.3'
-  'shell-quote@<=1.8.4': '1.10.0'
   'undici@>=7.0.0 <7.29.0': '7.29.0'
 
 allowBuilds:

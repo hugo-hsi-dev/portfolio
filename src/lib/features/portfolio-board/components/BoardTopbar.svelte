@@ -212,6 +212,7 @@
 		<span
 			class={['connection-status', `is-${controller.connectionState}`]}
 			role="status"
+			aria-label={connectionLabels[controller.connectionState]}
 			data-connection-state={controller.connectionState}
 		>
 			<span class="connection-dot"></span>

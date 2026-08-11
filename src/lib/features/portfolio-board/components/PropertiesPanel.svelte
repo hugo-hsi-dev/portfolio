@@ -182,7 +182,7 @@
 							disabled={!controller.editingReady}
 							onclick={controller.toggleSelectionVisibility}
 						>
-							{#if controller.selectionAllVisible}<Eye size={14} /> Hide{:else}<EyeOff size={14} /> Show{/if}
+							{#if controller.selectionAllVisible}<EyeOff size={14} /> Hide{:else}<Eye size={14} /> Show{/if}
 						</button>
 						<button
 							type="button"

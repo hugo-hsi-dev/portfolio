@@ -37,10 +37,21 @@ test.describe('canvas interactions', () => {
 
 			await page.getByRole('button', { name: 'Fit selection' }).click();
 			await expect(profile).toBeInViewport();
+			const fitSelectionBox = await profile.boundingBox();
+			expect(fitSelectionBox).not.toBeNull();
 			const beforeNudge = await worldPosition(profile);
 			const canvas = page.locator('[data-canvas-viewport]');
 			await canvas.focus();
 			await expect(canvas).toBeFocused();
+			await page.keyboard.press('Shift+Digit1');
+			await expect
+				.poll(async () => (await profile.boundingBox())?.width ?? 0)
+				.toBeLessThan(fitSelectionBox?.width ?? 0);
+			const fitAllBox = await profile.boundingBox();
+			await page.keyboard.press('Shift+Digit2');
+			await expect
+				.poll(async () => (await profile.boundingBox())?.width ?? 0)
+				.toBeGreaterThan(fitAllBox?.width ?? 0);
 			await page.keyboard.press('ArrowRight');
 			await expect.poll(async () => (await worldPosition(profile)).x).toBe(beforeNudge.x + 1);
 		} finally {

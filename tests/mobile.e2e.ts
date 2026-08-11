@@ -24,6 +24,7 @@ test.describe('mobile portfolio canvas', () => {
 			browseDialog.getByRole('link', { name: /Download resume/ })
 		]) {
 			const box = await target.boundingBox();
+			expect(box?.width).toBeGreaterThanOrEqual(44);
 			expect(box?.height).toBeGreaterThanOrEqual(44);
 		}
 

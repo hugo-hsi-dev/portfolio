@@ -225,8 +225,10 @@
 		z-index: 160;
 		top: 50%;
 		left: 50%;
+		display: flex;
 		width: min(900px, calc(100vw - 32px));
 		max-height: min(820px, calc(100dvh - 36px));
+		flex-direction: column;
 		border: 1px solid #d7d7d7;
 		border-radius: 8px;
 		overflow: hidden;
@@ -237,6 +239,7 @@
 	}
 	.dialog-heading {
 		display: flex;
+		flex: 0 0 auto;
 		align-items: flex-start;
 		justify-content: space-between;
 		padding: 22px 28px 18px;
@@ -278,7 +281,8 @@
 		outline-offset: 1px;
 	}
 	.browse-content {
-		max-height: calc(100dvh - 146px);
+		min-height: 0;
+		flex: 1 1 auto;
 		padding: 0 44px 44px;
 		overflow: auto;
 		overscroll-behavior: contain;
@@ -544,7 +548,6 @@
 			height: 44px;
 		}
 		.browse-content {
-			max-height: calc(100dvh - 74px);
 			padding: 0 22px 36px;
 			scroll-behavior: auto;
 		}

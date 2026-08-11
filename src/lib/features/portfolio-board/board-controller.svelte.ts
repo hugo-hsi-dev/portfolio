@@ -648,12 +648,12 @@ export class PortfolioBoardController {
 			return;
 		}
 
-		if (event.shiftKey && event.key === '1') {
+		if (event.shiftKey && event.code === 'Digit1') {
 			event.preventDefault();
 			this.fitAll();
 			return;
 		}
-		if (event.shiftKey && event.key === '2') {
+		if (event.shiftKey && event.code === 'Digit2') {
 			event.preventDefault();
 			this.fitSelection();
 			return;
@@ -899,6 +899,10 @@ export class PortfolioBoardController {
 		}
 		if (message.type === 'frame.update' && !message.frame.visible) {
 			this.selectedFrameIds = this.selectedFrameIds.filter((id) => id !== message.frame.id);
+			if (this.dragState?.frameIds.includes(message.frame.id)) {
+				this.dragState = null;
+				this.snapGuides = [];
+			}
 		}
 
 		if (message.type === 'room.snapshot' && !wasSnapshot && !this.#didInitialFocus) {

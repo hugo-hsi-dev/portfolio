@@ -29,6 +29,8 @@
 	}
 </script>
 
+<!-- The application canvas uses window-level keyboard shortcuts while focus remains within the editor. -->
+<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <div
 	class={[
 		'canvas-viewport',
@@ -45,7 +47,7 @@
 	role="application"
 	aria-label="Interactive portfolio canvas"
 	aria-describedby="canvas-instructions"
-	tabindex="-1"
+	tabindex="0"
 	onpointerdown={controller.onViewportPointerDown}
 	onpointermove={controller.onPointerMove}
 	onpointerup={controller.onPointerUp}
@@ -150,21 +152,25 @@
 		</div>
 	{/each}
 
-	{#if !controller.editingReady}
-		<div class="offline-banner">
-			<span></span>{controller.connectionState === 'offline'
-				? 'You’re offline. Browsing is still available.'
-				: controller.connectionState === 'failed'
-					? 'The live canvas connection failed. Browsing is still available.'
-					: 'Connecting to the shared canvas…'}
-		</div>
-	{/if}
+	{#if !controller.editingReady || controller.followingPeer}
+		<div class="canvas-banner-stack">
+			{#if !controller.editingReady}
+				<div class="offline-banner">
+					<span></span>{controller.connectionState === 'offline'
+						? 'You’re offline. Browsing is still available.'
+						: controller.connectionState === 'failed'
+							? 'The live canvas connection failed. Browsing is still available.'
+							: 'Connecting to the shared canvas…'}
+				</div>
+			{/if}
 
-	{#if controller.followingPeer}
-		<div class="follow-banner" role="status">
-			<span style:background={controller.followingPeer.color}></span>
-			Following {controller.followingPeer.name}
-			<button type="button" onclick={controller.stopFollowing}>Stop</button>
+			{#if controller.followingPeer}
+				<div class="follow-banner" role="status">
+					<span style:background={controller.followingPeer.color}></span>
+					Following {controller.followingPeer.name}
+					<button type="button" onclick={controller.stopFollowing}>Stop</button>
+				</div>
+			{/if}
 		</div>
 	{/if}
 
@@ -265,11 +271,19 @@
 	.snap-guide.is-horizontal {
 		height: 1px;
 	}
-	.offline-banner {
+	.canvas-banner-stack {
 		position: absolute;
+		z-index: 30;
 		top: 12px;
-		bottom: auto;
 		left: 50%;
+		display: flex;
+		max-width: calc(100% - 24px);
+		flex-direction: column;
+		align-items: center;
+		gap: 8px;
+		transform: translateX(-50%);
+	}
+	.offline-banner {
 		display: flex;
 		align-items: center;
 		gap: 8px;
@@ -279,7 +293,6 @@
 		background: rgb(255 255 255 / 95%);
 		color: #565656;
 		font-size: 11px;
-		transform: translateX(-50%);
 		box-shadow: 0 2px 8px rgb(0 0 0 / 10%);
 	}
 	.offline-banner span {
@@ -290,10 +303,6 @@
 	}
 	.follow-banner,
 	.editor-notice {
-		position: absolute;
-		z-index: 30;
-		top: 12px;
-		left: 50%;
 		display: flex;
 		align-items: center;
 		gap: 8px;
@@ -305,7 +314,6 @@
 		color: #f5f5f5;
 		font-size: 11px;
 		box-shadow: 0 3px 12px rgb(0 0 0 / 18%);
-		transform: translateX(-50%);
 	}
 	.follow-banner > span {
 		width: 7px;
@@ -323,11 +331,14 @@
 		font-size: 11px;
 	}
 	.editor-notice {
-		top: auto;
+		position: absolute;
+		z-index: 30;
 		bottom: 64px;
+		left: 50%;
 		border-color: #d3d3d3;
 		background: white;
 		color: #333;
+		transform: translateX(-50%);
 	}
 	.editor-notice button {
 		padding: 0 7px;

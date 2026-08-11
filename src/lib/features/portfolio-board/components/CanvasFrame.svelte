@@ -49,7 +49,7 @@
 		remoteSelectionColor && 'is-remote-selected'
 	]}
 	data-frame-id={id}
-	aria-label={`${label}: ${title}`}
+	aria-label={`${label}: ${title}${locked ? ' (locked)' : ''}`}
 	data-selected={selected ? '' : undefined}
 	data-locked={locked ? '' : undefined}
 	role="group"

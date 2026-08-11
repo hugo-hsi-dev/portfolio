@@ -2,6 +2,7 @@
 
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
+import { createRawSnippet } from 'svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -15,6 +16,7 @@ import BoardControls from './BoardControls.svelte';
 import BoardTopbar from './BoardTopbar.svelte';
 import BoardViewport from './BoardViewport.svelte';
 import BrowseDialog from './BrowseDialog.svelte';
+import CanvasFrameComponent from './CanvasFrame.svelte';
 import LayersPanel from './LayersPanel.svelte';
 import PropertiesPanel from './PropertiesPanel.svelte';
 import ResetDialog from './ResetDialog.svelte';
@@ -141,6 +143,7 @@ describe('BoardTopbar', () => {
 
 		const status = screen.getByRole('status');
 		expect(status).toHaveTextContent(label);
+		expect(status).toHaveAccessibleName(label);
 		expect(status).toHaveAttribute('data-connection-state', connectionState);
 	});
 
@@ -221,6 +224,9 @@ describe('PropertiesPanel', () => {
 		expect(alignLeft).toBeEnabled();
 		await fireEvent.click(alignLeft);
 		expect(align).toHaveBeenCalledWith('left');
+		expect(
+			screen.getByRole('button', { name: 'Hide' }).querySelector('.lucide-eye-off')
+		).not.toBeNull();
 		await fireEvent.click(screen.getByRole('button', { name: 'Hide' }));
 		expect(hide).toHaveBeenCalledOnce();
 		await fireEvent.click(screen.getByRole('button', { name: 'Collapse properties' }));
@@ -258,6 +264,28 @@ describe('PropertiesPanel', () => {
 		await waitFor(() => expect(y).toHaveValue(before.y));
 		controller.undo();
 		await waitFor(() => expect(x).toHaveValue(before.x));
+	});
+});
+
+describe('CanvasFrame', () => {
+	it('includes its locked state in the accessible name', () => {
+		render(CanvasFrameComponent, {
+			id: 'locked-frame',
+			label: 'Project',
+			title: 'Locked case study',
+			x: 0,
+			y: 0,
+			width: 320,
+			height: 240,
+			locked: true,
+			onpointerdown: vi.fn(),
+			onfocus: vi.fn(),
+			children: createRawSnippet(() => ({ render: () => '<p>Portfolio content</p>' }))
+		});
+
+		expect(
+			screen.getByRole('group', { name: 'Project: Locked case study (locked)' })
+		).toBeInTheDocument();
 	});
 });
 
@@ -384,10 +412,34 @@ describe('BoardViewport', () => {
 		expect(controller.mount).toHaveBeenCalledOnce();
 	});
 
+	it('stacks connection and collaborator-following banners in one flow', () => {
+		const controller = createController();
+		const peer = {
+			sessionId: 'adf73f2f-f2d3-4246-9087-84a46bf665bd',
+			visitorId: '2ac3308f-a622-4b9b-9782-981d19ef943c',
+			name: 'Guest 2000',
+			color: '#0acf83',
+			cursor: null,
+			selectedFrameId: null,
+			view: { center: { x: 0, y: 0 }, zoom: 1 }
+		} as const;
+		controller.connectionState = 'offline';
+		controller.peerModel = { self: null, peers: [peer] };
+		controller.followingSessionId = peer.sessionId;
+		render(BoardViewport, { controller });
+
+		const offlineBanner = screen.getByText('You’re offline. Browsing is still available.');
+		const followBanner = screen.getByText(/Following Guest 2000/).closest('[role="status"]');
+		if (!followBanner) throw new Error('Expected the collaborator-following status banner.');
+		expect(offlineBanner.parentElement).toBe(followBanner.parentElement);
+		expect(offlineBanner.parentElement).toHaveClass('canvas-banner-stack');
+	});
+
 	it('wires pointer and wheel input to the board controller', async () => {
 		const controller = viewportController('offline');
 		render(BoardViewport, { controller });
 		const viewport = screen.getByRole('application', { name: 'Interactive portfolio canvas' });
+		expect(viewport).toHaveAttribute('tabindex', '0');
 
 		await fireEvent.pointerDown(viewport, { pointerId: 1, clientX: 10, clientY: 20 });
 		await fireEvent.pointerMove(viewport, { pointerId: 1, clientX: 20, clientY: 30 });
