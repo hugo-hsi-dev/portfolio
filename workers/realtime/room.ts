@@ -1,11 +1,18 @@
 import { DurableObject } from 'cloudflare:workers';
 import {
+	CURRENT_PROTOCOL_VERSION,
+	LEGACY_PROTOCOL_VERSION,
 	MAX_CLIENT_MESSAGE_BYTES,
 	clientMessageSchema,
 	identitySchema,
+	legacyClientMessageSchema,
+	normalizeLegacyClientMessage,
+	serverMessageForProtocol,
 	visitorIdSchema,
+	type ClientMessage,
 	type FrameState,
 	type Identity,
+	type ProtocolVersion,
 	type RoomSnapshot,
 	type ServerMessage
 } from '@portfolio/realtime-contract';
@@ -21,7 +28,15 @@ import {
 	tokensMatch,
 	type ConnectionAttachment
 } from './policy';
-import { PortfolioRoomStorage } from './storage';
+import { FrameLockedError, PortfolioRoomStorage } from './storage';
+
+function protocolVersionForUrl(url: URL): ProtocolVersion | null {
+	const requested = url.searchParams.get('protocol');
+	if (requested === null || requested === String(LEGACY_PROTOCOL_VERSION)) {
+		return LEGACY_PROTOCOL_VERSION;
+	}
+	return requested === String(CURRENT_PROTOCOL_VERSION) ? CURRENT_PROTOCOL_VERSION : null;
+}
 
 export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 	private readonly boardStorage: PortfolioRoomStorage;
@@ -51,6 +66,10 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 		if (!visitorIdResult.success) {
 			return new Response('Invalid visitor id', { status: 400 });
 		}
+		const protocolVersion = protocolVersionForUrl(url);
+		if (protocolVersion === null) {
+			return new Response('Unsupported realtime protocol', { status: 400 });
+		}
 		const activeConnections = this.ctx
 			.getWebSockets()
 			.filter((socket) => socket.readyState === WebSocket.OPEN).length;
@@ -64,6 +83,8 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 			...identity,
 			cursor: null,
 			selectedFrameId: null,
+			view: null,
+			protocolVersion,
 			lastSeq: -1,
 			rateWindowStartedAt: Date.now(),
 			rateWindowCount: 0,
@@ -72,7 +93,7 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 
 		this.ctx.acceptWebSocket(server);
 		server.serializeAttachment(attachment);
-		server.send(JSON.stringify(this.createSnapshot(identity, server)));
+		this.sendMessage(server, this.createSnapshot(identity, server));
 		this.broadcast({ type: 'peer.join', peer: toPeerState(attachment) }, server);
 		log('info', 'peer connected', {
 			sessionId: identity.sessionId,
@@ -115,19 +136,31 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 			this.sendError(socket, 'invalid-message', 'Message must be valid JSON.');
 			return;
 		}
-		const parsed = clientMessageSchema.safeParse(json);
-		if (!parsed.success) {
-			this.sendError(socket, 'invalid-message', 'Message does not match the realtime protocol.');
-			return;
+		let clientMessage: ClientMessage;
+		if (attachment.protocolVersion === CURRENT_PROTOCOL_VERSION) {
+			const parsed = clientMessageSchema.safeParse(json);
+			if (!parsed.success) {
+				this.sendError(socket, 'invalid-message', 'Message does not match the realtime protocol.');
+				return;
+			}
+			clientMessage = parsed.data;
+		} else {
+			const parsed = legacyClientMessageSchema.safeParse(json);
+			if (!parsed.success) {
+				this.sendError(socket, 'invalid-message', 'Message does not match the realtime protocol.');
+				return;
+			}
+			clientMessage = normalizeLegacyClientMessage(parsed.data);
 		}
-		if (parsed.data.seq <= attachment.lastSeq) return;
+		if (clientMessage.seq <= attachment.lastSeq) return;
 
-		if (parsed.data.type === 'presence.update') {
+		if (clientMessage.type === 'presence.update') {
 			const updatedAttachment: ConnectionAttachment = {
 				...attachment,
-				lastSeq: parsed.data.seq,
-				cursor: parsed.data.cursor,
-				selectedFrameId: parsed.data.selectedFrameId
+				lastSeq: clientMessage.seq,
+				cursor: clientMessage.cursor,
+				selectedFrameId: clientMessage.selectedFrameId,
+				view: clientMessage.view
 			};
 			socket.serializeAttachment(updatedAttachment);
 			this.broadcast(
@@ -135,7 +168,8 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 					type: 'peer.update',
 					sessionId: updatedAttachment.sessionId,
 					cursor: updatedAttachment.cursor,
-					selectedFrameId: updatedAttachment.selectedFrameId
+					selectedFrameId: updatedAttachment.selectedFrameId,
+					view: updatedAttachment.view
 				},
 				socket
 			);
@@ -144,29 +178,41 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 
 		let frame: FrameState;
 		try {
-			frame = this.boardStorage.moveFrame(
-				parsed.data.frameId,
-				parsed.data.x,
-				parsed.data.y,
-				Date.now(),
-				attachment.sessionId
-			);
+			frame =
+				clientMessage.type === 'frame.move'
+					? this.boardStorage.moveFrame(
+							clientMessage.frameId,
+							clientMessage.x,
+							clientMessage.y,
+							Date.now(),
+							attachment.sessionId
+						)
+					: this.boardStorage.updateFrameMetadata(
+							clientMessage.frameId,
+							{ visible: clientMessage.visible, locked: clientMessage.locked },
+							Date.now(),
+							attachment.sessionId
+						);
 		} catch (error) {
+			if (error instanceof FrameLockedError) {
+				this.sendError(socket, 'frame-locked', 'Unlock the frame before moving it.');
+				return;
+			}
 			log('error', 'frame update failed', {
 				sessionId: attachment.sessionId,
-				frameId: parsed.data.frameId,
+				frameId: clientMessage.frameId,
 				error: error instanceof Error ? error.message : String(error)
 			});
 			this.sendError(socket, 'server-error', 'The frame could not be updated.');
 			return;
 		}
 
-		socket.serializeAttachment({ ...attachment, lastSeq: parsed.data.seq });
+		socket.serializeAttachment({ ...attachment, lastSeq: clientMessage.seq });
 		this.broadcast({
 			type: 'frame.update',
 			frame,
 			sourceSessionId: attachment.sessionId,
-			clientSeq: parsed.data.seq
+			clientSeq: clientMessage.seq
 		});
 	}
 
@@ -207,11 +253,10 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 	}
 
 	private broadcast(message: ServerMessage, except?: WebSocket): void {
-		const payload = JSON.stringify(message);
 		for (const socket of this.ctx.getWebSockets()) {
 			if (socket === except || socket.readyState !== WebSocket.OPEN) continue;
 			try {
-				socket.send(payload);
+				this.sendMessage(socket, message);
 			} catch (error) {
 				log('warn', 'broadcast failed', {
 					error: error instanceof Error ? error.message : String(error)
@@ -220,13 +265,19 @@ export class PortfolioRoom extends DurableObject<RealtimeEnv> {
 		}
 	}
 
+	private sendMessage(socket: WebSocket, message: ServerMessage): void {
+		const protocolVersion = attachmentFor(socket)?.protocolVersion ?? LEGACY_PROTOCOL_VERSION;
+		socket.send(JSON.stringify(serverMessageForProtocol(message, protocolVersion)));
+	}
+
 	private sendError(
 		socket: WebSocket,
-		code: 'invalid-message' | 'message-too-large' | 'rate-limited' | 'server-error',
+		code:
+			'invalid-message' | 'message-too-large' | 'rate-limited' | 'frame-locked' | 'server-error',
 		message: string
 	): void {
 		if (socket.readyState === WebSocket.OPEN) {
-			socket.send(JSON.stringify({ type: 'error', code, message } satisfies ServerMessage));
+			this.sendMessage(socket, { type: 'error', code, message });
 		}
 	}
 

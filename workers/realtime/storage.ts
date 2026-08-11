@@ -5,12 +5,14 @@ import {
 	type FrameState
 } from '@portfolio/realtime-contract';
 
-export const CURRENT_SCHEMA_VERSION = 1;
+export const CURRENT_SCHEMA_VERSION = 2;
 
 export interface FrameRow {
 	frame_id: string;
 	x: number;
 	y: number;
+	visible: number;
+	locked: number;
 	revision: number;
 	updated_at: number;
 	updated_by: string | null;
@@ -52,6 +54,23 @@ const schemaMigrations: readonly SchemaMigration[] = [
 				);
 			}
 		}
+	},
+	{
+		version: 2,
+		apply(storage) {
+			const columns = new Set(
+				storage.sql
+					.exec<{ name: string }>('PRAGMA table_info(frames)')
+					.toArray()
+					.map(({ name }) => name)
+			);
+			if (!columns.has('visible')) {
+				storage.sql.exec('ALTER TABLE frames ADD COLUMN visible INTEGER NOT NULL DEFAULT 1');
+			}
+			if (!columns.has('locked')) {
+				storage.sql.exec('ALTER TABLE frames ADD COLUMN locked INTEGER NOT NULL DEFAULT 0');
+			}
+		}
 	}
 ];
 
@@ -83,6 +102,8 @@ export function frameFromRow(id: FrameId, row: FrameRow | undefined): FrameState
 		id,
 		x: row.x,
 		y: row.y,
+		visible: row.visible === 1,
+		locked: row.locked === 1,
 		revision: row.revision,
 		updatedAt: row.updated_at,
 		updatedBy: row.updated_by
@@ -102,6 +123,8 @@ export class PortfolioRoomStorage {
 
 	moveFrame(id: FrameId, x: number, y: number, updatedAt: number, updatedBy: string): FrameState {
 		return this.storage.transactionSync(() => {
+			const current = this.getFrame(id);
+			if (current.locked) throw new FrameLockedError(id);
 			const revision = this.nextRevision();
 			this.storage.sql.exec(
 				`UPDATE frames
@@ -114,7 +137,31 @@ export class PortfolioRoomStorage {
 				updatedBy,
 				id
 			);
-			return { id, x, y, revision, updatedAt, updatedBy };
+			return { ...current, x, y, revision, updatedAt, updatedBy };
+		});
+	}
+
+	updateFrameMetadata(
+		id: FrameId,
+		metadata: { visible?: boolean; locked?: boolean },
+		updatedAt: number,
+		updatedBy: string
+	): FrameState {
+		return this.storage.transactionSync(() => {
+			const revision = this.nextRevision();
+			this.storage.sql.exec(
+				`UPDATE frames
+				 SET visible = COALESCE(?, visible), locked = COALESCE(?, locked),
+				     revision = ?, updated_at = ?, updated_by = ?
+				 WHERE frame_id = ?`,
+				metadata.visible === undefined ? null : Number(metadata.visible),
+				metadata.locked === undefined ? null : Number(metadata.locked),
+				revision,
+				updatedAt,
+				updatedBy,
+				id
+			);
+			return this.getFrame(id);
 		});
 	}
 
@@ -124,7 +171,8 @@ export class PortfolioRoomStorage {
 			for (const frame of DEFAULT_FRAME_POSITIONS) {
 				this.storage.sql.exec(
 					`UPDATE frames
-					 SET x = ?, y = ?, revision = ?, updated_at = ?, updated_by = 'owner-reset'
+					 SET x = ?, y = ?, visible = 1, locked = 0,
+					     revision = ?, updated_at = ?, updated_by = 'owner-reset'
 					 WHERE frame_id = ?`,
 					frame.x,
 					frame.y,
@@ -153,5 +201,19 @@ export class PortfolioRoomStorage {
 		const rows = this.storage.sql.exec<FrameRow>('SELECT * FROM frames').toArray();
 		const byId = new Map(rows.map((row) => [row.frame_id, row]));
 		return FRAME_IDS.map((id) => frameFromRow(id, byId.get(id)));
+	}
+
+	private getFrame(id: FrameId): FrameState {
+		const row = this.storage.sql
+			.exec<FrameRow>('SELECT * FROM frames WHERE frame_id = ?', id)
+			.toArray()[0];
+		return frameFromRow(id, row);
+	}
+}
+
+export class FrameLockedError extends Error {
+	constructor(readonly frameId: FrameId) {
+		super(`Frame is locked: ${frameId}`);
+		this.name = 'FrameLockedError';
 	}
 }

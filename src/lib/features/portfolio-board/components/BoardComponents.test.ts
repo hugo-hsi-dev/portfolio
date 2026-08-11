@@ -2,6 +2,7 @@
 
 import { cleanup, fireEvent, render, screen, waitFor, within } from '@testing-library/svelte';
 import userEvent from '@testing-library/user-event';
+import { createRawSnippet } from 'svelte';
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import {
@@ -15,8 +16,11 @@ import BoardControls from './BoardControls.svelte';
 import BoardTopbar from './BoardTopbar.svelte';
 import BoardViewport from './BoardViewport.svelte';
 import BrowseDialog from './BrowseDialog.svelte';
+import CanvasFrameComponent from './CanvasFrame.svelte';
 import LayersPanel from './LayersPanel.svelte';
+import PropertiesPanel from './PropertiesPanel.svelte';
 import ResetDialog from './ResetDialog.svelte';
+import ShortcutDialog from './ShortcutDialog.svelte';
 
 const content = getPortfolioContent();
 const canvasDocument = buildCanvasDocument(content);
@@ -75,6 +79,29 @@ describe('LayersPanel', () => {
 		expect(toggle).toHaveAttribute('aria-expanded', 'false');
 		expect(screen.queryByRole('button', { name: /^Go to / })).not.toBeInTheDocument();
 	});
+
+	it('supports additive selection, hover highlighting, visibility, and locking actions', async () => {
+		const controller = createController();
+		controller.connectionState = 'open';
+		const toggleVisibility = vi.spyOn(controller, 'toggleFrameVisibility');
+		const toggleLock = vi.spyOn(controller, 'toggleFrameLock');
+		render(LayersPanel, { controller });
+		const target = controller.frames[1];
+		const layer = screen.getByRole('group', { name: `${target.title} layer` });
+
+		await fireEvent.pointerEnter(layer);
+		expect(controller.hoveredFrameId).toBe(target.id);
+		await fireEvent.click(within(layer).getByRole('button', { name: `Select ${target.title}` }), {
+			shiftKey: true
+		});
+		expect(controller.selectedFrameIds).toEqual(['profile', target.id]);
+		await fireEvent.click(within(layer).getByRole('button', { name: `Hide ${target.title}` }));
+		await fireEvent.click(within(layer).getByRole('button', { name: `Lock ${target.title}` }));
+		expect(toggleVisibility).toHaveBeenCalledWith(target.id);
+		expect(toggleLock).toHaveBeenCalledWith(target.id);
+		await fireEvent.pointerLeave(layer);
+		expect(controller.hoveredFrameId).toBeNull();
+	});
 });
 
 describe('BoardControls', () => {
@@ -116,6 +143,7 @@ describe('BoardTopbar', () => {
 
 		const status = screen.getByRole('status');
 		expect(status).toHaveTextContent(label);
+		expect(status).toHaveAccessibleName(label);
 		expect(status).toHaveAttribute('data-connection-state', connectionState);
 	});
 
@@ -131,6 +159,28 @@ describe('BoardTopbar', () => {
 			content.site.metadata.resumeUrl
 		);
 	});
+
+	it('offers collaborator following and Browse from the primary shell', async () => {
+		const controller = createController();
+		const peer = {
+			sessionId: 'adf73f2f-f2d3-4246-9087-84a46bf665bd',
+			visitorId: '2ac3308f-a622-4b9b-9782-981d19ef943c',
+			name: 'Guest 2000',
+			color: '#0acf83',
+			cursor: null,
+			selectedFrameId: null,
+			view: { center: { x: 0, y: 0 }, zoom: 1 }
+		} as const;
+		controller.peerModel = { self: null, peers: [peer] };
+		const follow = vi.spyOn(controller, 'followCollaborator');
+		const user = userEvent.setup();
+		render(BoardTopbar, { content, controller });
+
+		await user.click(screen.getByRole('button', { name: `Follow ${peer.name}` }));
+		expect(follow).toHaveBeenCalledWith(peer);
+		await user.click(screen.getByRole('button', { name: 'Browse portfolio' }));
+		expect(controller.browseOpen).toBe(true);
+	});
 });
 
 describe('BrowseDialog', () => {
@@ -141,7 +191,7 @@ describe('BrowseDialog', () => {
 		render(BrowseDialog, { content, controller });
 
 		const dialog = await screen.findByRole('dialog', { name: 'Browse portfolio' });
-		expect(dialog).toHaveAccessibleDescription('The same portfolio, arranged for reading.');
+		expect(dialog).toHaveAccessibleDescription('The same work, arranged for reading.');
 		await waitFor(() =>
 			expect(dialog).toContainElement(document.activeElement as HTMLElement | null)
 		);
@@ -155,6 +205,101 @@ describe('BrowseDialog', () => {
 			expect(screen.queryByRole('dialog', { name: 'Browse portfolio' })).not.toBeInTheDocument()
 		);
 		expect(controller.browseOpen).toBe(false);
+	});
+});
+
+describe('PropertiesPanel', () => {
+	it('exposes contextual geometry, alignment, layer metadata, and collapse controls', async () => {
+		const controller = createController();
+		controller.connectionState = 'open';
+		controller.selectedFrameIds = ['profile', 'contact'];
+		const align = vi.spyOn(controller, 'alignSelection');
+		const hide = vi.spyOn(controller, 'toggleSelectionVisibility');
+		render(PropertiesPanel, { controller });
+
+		expect(screen.getByRole('complementary', { name: 'Design properties' })).toBeInTheDocument();
+		expect(screen.getByText('2 frames selected')).toBeInTheDocument();
+		expect(screen.getByRole('spinbutton', { name: 'Selection width' })).toHaveValue(720);
+		const alignLeft = screen.getByRole('button', { name: 'Align left' });
+		expect(alignLeft).toBeEnabled();
+		await fireEvent.click(alignLeft);
+		expect(align).toHaveBeenCalledWith('left');
+		expect(
+			screen.getByRole('button', { name: 'Hide' }).querySelector('.lucide-eye-off')
+		).not.toBeNull();
+		await fireEvent.click(screen.getByRole('button', { name: 'Hide' }));
+		expect(hide).toHaveBeenCalledOnce();
+		await fireEvent.click(screen.getByRole('button', { name: 'Collapse properties' }));
+		expect(controller.propertiesOpen).toBe(false);
+		expect(screen.getByRole('button', { name: 'Expand properties' })).toBeInTheDocument();
+	});
+
+	it('commits exact X and Y coordinates on Enter or blur and reconciles after undo', async () => {
+		const user = userEvent.setup();
+		const controller = createController();
+		controller.connectionState = 'open';
+		controller.selectedFrameId = 'profile';
+		const before = controller.framePosition('profile');
+		render(PropertiesPanel, { controller });
+
+		const x = screen.getByRole('spinbutton', { name: 'X' });
+		await user.clear(x);
+		await user.type(x, '137.5');
+		await user.keyboard('{Enter}');
+
+		expect(controller.framePosition('profile')).toEqual({ x: 137.5, y: before.y });
+		expect(x).toHaveValue(137.5);
+		expect(x).toHaveFocus();
+		expect(controller.canUndo).toBe(true);
+
+		const y = screen.getByRole('spinbutton', { name: 'Y' });
+		await user.clear(y);
+		await user.type(y, '-42.25');
+		await user.tab();
+
+		expect(controller.framePosition('profile')).toEqual({ x: 137.5, y: -42.25 });
+		expect(y).toHaveValue(-42.25);
+
+		controller.undo();
+		await waitFor(() => expect(y).toHaveValue(before.y));
+		controller.undo();
+		await waitFor(() => expect(x).toHaveValue(before.x));
+	});
+});
+
+describe('CanvasFrame', () => {
+	it('includes its locked state in the accessible name', () => {
+		render(CanvasFrameComponent, {
+			id: 'locked-frame',
+			label: 'Project',
+			title: 'Locked case study',
+			x: 0,
+			y: 0,
+			width: 320,
+			height: 240,
+			locked: true,
+			onpointerdown: vi.fn(),
+			onfocus: vi.fn(),
+			children: createRawSnippet(() => ({ render: () => '<p>Portfolio content</p>' }))
+		});
+
+		expect(
+			screen.getByRole('group', { name: 'Project: Locked case study (locked)' })
+		).toBeInTheDocument();
+	});
+});
+
+describe('ShortcutDialog', () => {
+	it('documents the implemented keyboard model and closes accessibly', async () => {
+		const controller = createController();
+		controller.shortcutDialogOpen = true;
+		const user = userEvent.setup();
+		render(ShortcutDialog, { controller });
+		const dialog = await screen.findByRole('dialog', { name: 'Keyboard shortcuts' });
+		expect(dialog).toHaveAccessibleDescription('Move through Hugo’s portfolio like a design file.');
+		expect(within(dialog).getByText('Hide or show selection')).toBeInTheDocument();
+		await user.click(within(dialog).getByRole('button', { name: 'Close keyboard shortcuts' }));
+		await waitFor(() => expect(screen.queryByRole('dialog')).not.toBeInTheDocument());
 	});
 });
 
@@ -267,10 +412,34 @@ describe('BoardViewport', () => {
 		expect(controller.mount).toHaveBeenCalledOnce();
 	});
 
+	it('stacks connection and collaborator-following banners in one flow', () => {
+		const controller = createController();
+		const peer = {
+			sessionId: 'adf73f2f-f2d3-4246-9087-84a46bf665bd',
+			visitorId: '2ac3308f-a622-4b9b-9782-981d19ef943c',
+			name: 'Guest 2000',
+			color: '#0acf83',
+			cursor: null,
+			selectedFrameId: null,
+			view: { center: { x: 0, y: 0 }, zoom: 1 }
+		} as const;
+		controller.connectionState = 'offline';
+		controller.peerModel = { self: null, peers: [peer] };
+		controller.followingSessionId = peer.sessionId;
+		render(BoardViewport, { controller });
+
+		const offlineBanner = screen.getByText('You’re offline. Browsing is still available.');
+		const followBanner = screen.getByText(/Following Guest 2000/).closest('[role="status"]');
+		if (!followBanner) throw new Error('Expected the collaborator-following status banner.');
+		expect(offlineBanner.parentElement).toBe(followBanner.parentElement);
+		expect(offlineBanner.parentElement).toHaveClass('canvas-banner-stack');
+	});
+
 	it('wires pointer and wheel input to the board controller', async () => {
 		const controller = viewportController('offline');
 		render(BoardViewport, { controller });
 		const viewport = screen.getByRole('application', { name: 'Interactive portfolio canvas' });
+		expect(viewport).toHaveAttribute('tabindex', '0');
 
 		await fireEvent.pointerDown(viewport, { pointerId: 1, clientX: 10, clientY: 20 });
 		await fireEvent.pointerMove(viewport, { pointerId: 1, clientX: 20, clientY: 30 });

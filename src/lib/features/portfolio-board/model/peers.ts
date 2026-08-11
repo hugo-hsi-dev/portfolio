@@ -32,7 +32,8 @@ export function applyPeerServerMessage(model: PeerModel, message: ServerMessage)
 						? {
 								...peer,
 								cursor: message.cursor,
-								selectedFrameId: message.selectedFrameId
+								selectedFrameId: message.selectedFrameId,
+								view: message.view
 							}
 						: peer
 				)

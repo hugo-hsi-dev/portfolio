@@ -57,4 +57,20 @@ test.describe('portfolio content and navigation', () => {
 		await layers.getByRole('button', { name: 'Go to Hugo Hsi' }).click();
 		await expect(page.locator(PROFILE_FRAME)).toBeInViewport();
 	});
+
+	test('keeps the complete Browse portfolio reachable in a tall viewport', async ({ page }) => {
+		await page.setViewportSize({ width: 1440, height: 1100 });
+		await openPortfolio(page);
+		await page.getByRole('button', { name: 'Browse portfolio' }).first().click();
+
+		const dialog = page.getByRole('dialog', { name: 'Browse portfolio' });
+		const content = dialog.locator('.browse-content');
+		await expect(dialog).toBeVisible();
+		expect(await content.evaluate((element) => element.scrollHeight > element.clientHeight)).toBe(
+			true
+		);
+
+		await content.evaluate((element) => element.scrollTo(0, element.scrollHeight));
+		await expect(dialog.getByRole('link', { name: 'hugohsidev@gmail.com' })).toBeInViewport();
+	});
 });

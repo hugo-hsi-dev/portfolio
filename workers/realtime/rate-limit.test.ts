@@ -27,18 +27,17 @@ describe('PortfolioRoom rate limiting', () => {
 					type: 'presence.update',
 					seq,
 					cursor: null,
-					selectedFrameId: null
+					selectedFrameId: null,
+					view: null
 				})
 			);
 		}
 		socket.send(
 			JSON.stringify({
-				type: 'frame.move',
+				type: 'frame.metadata',
 				seq: 62,
 				frameId: 'profile',
-				x: 900,
-				y: 900,
-				final: true
+				locked: true
 			})
 		);
 

@@ -7,7 +7,7 @@
 </script>
 
 <section class="profile-frame">
-	<div class="profile-kicker"><span></span> Full-stack developer · NYC</div>
+	<div class="profile-kicker">Full-stack developer <span aria-hidden="true">·</span> NYC</div>
 	<h1>{frame.site.metadata.hero.firstName}<br />{frame.site.metadata.hero.lastName}</h1>
 	<p class="profile-tagline">{frame.site.metadata.hero.tagline}</p>
 	{#if frame.site.metadata.hero.intro}
@@ -33,73 +33,75 @@
 		height: 100%;
 		flex-direction: column;
 		justify-content: center;
-		padding: 52px 58px;
-		background: #f8f8f6;
+		padding: 58px 64px;
+		background: #fafaf8;
+		color: #20201e;
 	}
 	.profile-kicker {
 		display: flex;
 		align-items: center;
-		gap: 8px;
-		color: #6d6d6d;
+		gap: 7px;
+		color: #6f6f6a;
 		font-size: 11px;
 		font-weight: 600;
-		letter-spacing: 0.05em;
+		letter-spacing: 0.075em;
 		text-transform: uppercase;
 	}
 	.profile-kicker span {
-		width: 22px;
-		height: 1px;
-		background: #1e1e1e;
+		color: #a0a09a;
 	}
 	.profile-frame h1 {
-		margin: 22px 0 12px;
+		margin: 20px 0 14px;
 		font-family: var(--font-serif);
-		font-size: 78px;
+		font-size: 76px;
 		font-weight: 400;
-		letter-spacing: -0.045em;
-		line-height: 0.76;
+		letter-spacing: -0.035em;
+		line-height: 0.88;
 	}
 	.profile-tagline {
 		max-width: 470px;
-		margin: 12px 0 0;
-		font-size: 20px;
+		margin: 8px 0 0;
+		font-size: 21px;
 		font-weight: 500;
-		line-height: 1.25;
+		letter-spacing: -0.012em;
+		line-height: 1.3;
 	}
 	.profile-intro {
-		max-width: 510px;
-		margin: 10px 0 0;
-		color: #646464;
-		font-size: 12px;
-		line-height: 1.55;
+		max-width: 500px;
+		margin: 12px 0 0;
+		color: #656560;
+		font-size: 14px;
+		line-height: 1.5;
 	}
 	.profile-actions {
 		display: flex;
-		gap: 18px;
+		gap: 20px;
 		align-items: center;
-		margin-top: 22px;
+		margin-top: 24px;
 	}
 	.profile-actions button,
 	.profile-actions a {
 		border: 0;
 		background: transparent;
 		color: #202020;
-		font-size: 11px;
+		font: inherit;
+		font-size: 12px;
 		font-weight: 600;
 		text-decoration: none;
 	}
 	.profile-actions button {
-		padding: 8px 13px;
+		padding: 9px 14px;
 		border-radius: 4px;
 		background: #1e1e1e;
 		color: #fff;
+		cursor: pointer;
 	}
 	.profile-actions a {
-		border-bottom: 1px solid #999;
+		border-bottom: 1px solid #8e8e89;
 	}
-	@media (max-width: 800px) {
-		.profile-frame {
-			padding: 46px;
-		}
+	.profile-actions button:focus-visible,
+	.profile-actions a:focus-visible {
+		outline: 2px solid #2868d8;
+		outline-offset: 3px;
 	}
 </style>

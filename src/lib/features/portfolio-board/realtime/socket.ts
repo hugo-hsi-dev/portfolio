@@ -1,4 +1,5 @@
 import {
+	CURRENT_PROTOCOL_VERSION,
 	clientMessageSchema,
 	serverMessageSchema,
 	type ClientMessage,
@@ -71,6 +72,7 @@ export function createBoardWebSocketUrl(
 		: `${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}/api/board/ws`;
 	const url = new URL(base);
 	url.searchParams.set('visitorId', visitorId);
+	url.searchParams.set('protocol', String(CURRENT_PROTOCOL_VERSION));
 	return url.toString();
 }
 

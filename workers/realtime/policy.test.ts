@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 
 import { MAX_MESSAGES_PER_SECOND } from './constants';
 import {
+	attachmentSchema,
 	identityForVisitor,
 	isAllowedOrigin,
 	recordMessage,
@@ -15,6 +16,8 @@ function attachment(): ConnectionAttachment {
 		...identityForVisitor(VISITOR_A, 'adf73f2f-f2d3-4246-9087-84a46bf665bd'),
 		cursor: null,
 		selectedFrameId: null,
+		view: null,
+		protocolVersion: 2,
 		lastSeq: -1,
 		rateWindowStartedAt: 1_000,
 		rateWindowCount: 0,
@@ -23,6 +26,13 @@ function attachment(): ConnectionAttachment {
 }
 
 describe('realtime policies', () => {
+	it('defaults legacy hibernated attachments to protocol v1 with no shared view', () => {
+		const legacy = Object.fromEntries(
+			Object.entries(attachment()).filter(([key]) => key !== 'view' && key !== 'protocolVersion')
+		);
+		expect(attachmentSchema.parse(legacy)).toMatchObject({ protocolVersion: 1, view: null });
+	});
+
 	it('creates a stable public identity without exposing the visitor id', () => {
 		const first = identityForVisitor(VISITOR_A, 'adf73f2f-f2d3-4246-9087-84a46bf665bd');
 		const second = identityForVisitor(VISITOR_A, 'd71ac75c-08cc-427d-bdc8-eaca7f7a70f7');

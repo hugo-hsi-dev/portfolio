@@ -24,6 +24,11 @@ export interface FramePosition {
 	y: number;
 }
 
+export interface FrameMetadata {
+	visible: boolean;
+	locked: boolean;
+}
+
 function frameRecord(frames: FrameState[]): Record<FrameId, FrameState> {
 	return Object.fromEntries(frames.map((frame) => [frame.id, frame])) as Record<
 		FrameId,
@@ -38,7 +43,16 @@ export function createInitialBoardModel(positions: readonly FramePosition[]): Bo
 		frames: Object.fromEntries(
 			positions.map(({ id, x, y }) => [
 				id,
-				{ id, x, y, revision: 0, updatedAt: 0, updatedBy: null }
+				{
+					id,
+					x,
+					y,
+					visible: true,
+					locked: false,
+					revision: 0,
+					updatedAt: 0,
+					updatedBy: null
+				}
 			])
 		) as Record<FrameId, FrameState>,
 		pendingMoves: {}
@@ -55,6 +69,7 @@ export function boardModelFromSnapshot(snapshot: RoomSnapshot): BoardModel {
 }
 
 export function moveFrameLocally(model: BoardModel, frameId: FrameId, position: Point): BoardModel {
+	if (model.frames[frameId].locked) return model;
 	const existing = model.pendingMoves[frameId];
 	return {
 		...model,
@@ -97,6 +112,11 @@ export function visibleFramePositions(model: BoardModel): Record<FrameId, Point>
 	) as Record<FrameId, Point>;
 }
 
+export function visibleFrameMetadata(model: BoardModel, frameId: FrameId): FrameMetadata {
+	const { visible, locked } = model.frames[frameId];
+	return { visible, locked };
+}
+
 export function applyBoardServerMessage(
 	model: BoardModel,
 	message: ServerMessage,
@@ -124,7 +144,7 @@ export function applyBoardServerMessage(
 	const acknowledgesLatestMove =
 		message.sourceSessionId === selfSessionId && pending?.latestSentSequence === message.clientSeq;
 	const pendingMoves = { ...model.pendingMoves };
-	if (acknowledgesLatestMove) delete pendingMoves[message.frame.id];
+	if (acknowledgesLatestMove || message.frame.locked) delete pendingMoves[message.frame.id];
 
 	return {
 		...model,

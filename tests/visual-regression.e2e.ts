@@ -22,7 +22,7 @@ test.describe('portfolio visual regression', () => {
 					stableScreenshotOptions(page)
 				);
 
-				await page.getByRole('button', { name: 'Browse portfolio' }).click();
+				await page.getByRole('button', { name: 'Browse portfolio' }).first().click();
 				await expect(page.getByRole('dialog', { name: 'Browse portfolio' })).toBeVisible();
 				await expect(page).toHaveScreenshot(
 					'desktop-browse-mode.png',
@@ -37,21 +37,24 @@ test.describe('portfolio visual regression', () => {
 	test.describe('mobile', () => {
 		test.use({ viewport: { width: 390, height: 844 }, hasTouch: true });
 
-		test('matches the initial canvas and Browse mode', async ({ page, request }) => {
+		test('matches the Browse-first entry and optional canvas', async ({ page, request }) => {
 			await resetBoard(request);
 			try {
 				await openPortfolio(page);
+				const browseDialog = page.getByRole('dialog', { name: 'Browse portfolio' });
+				await expect(browseDialog).toBeVisible();
 				await waitForVisualStability(page);
 
 				await expect(page).toHaveScreenshot(
-					'mobile-initial-canvas.png',
+					'mobile-browse-mode.png',
 					stableScreenshotOptions(page)
 				);
 
-				await page.getByRole('button', { name: 'Browse portfolio' }).click();
-				await expect(page.getByRole('dialog', { name: 'Browse portfolio' })).toBeVisible();
+				await browseDialog.getByRole('button', { name: 'Close browse mode' }).click();
+				await expect(browseDialog).toBeHidden();
+				await waitForVisualStability(page);
 				await expect(page).toHaveScreenshot(
-					'mobile-browse-mode.png',
+					'mobile-canvas-mode.png',
 					stableScreenshotOptions(page)
 				);
 			} finally {
