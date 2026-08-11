@@ -1,31 +1,28 @@
 <script lang="ts">
 	/* eslint-disable svelte/no-navigation-without-resolve -- Validated external URLs and mailto links are not SvelteKit routes. */
-	import { ExternalLink, Mail, UsersRound } from '@lucide/svelte';
-
 	import type { ContactCanvasFrame } from '$lib/features/portfolio-content';
-	import BrandIcon from '$lib/ui/BrandIcon.svelte';
 
 	let { frame }: { frame: ContactCanvasFrame } = $props();
 </script>
 
 <section class="contact-frame">
-	<div class="frame-eyebrow"><UsersRound size={14} /> Open to opportunities</div>
+	<div class="frame-eyebrow">Open to opportunities</div>
 	<h2>{frame.site.metadata.footer.heading}</h2>
 	<p>{frame.site.metadata.footer.intro}</p>
-	<a class="email-card" href={`mailto:${frame.site.metadata.contact.email}`}>
-		<Mail size={18} /><span>Email me<small>{frame.site.metadata.contact.email}</small></span
-		><ExternalLink size={15} />
+	<a class="email-link" href={`mailto:${frame.site.metadata.contact.email}`}>
+		<span>Email me</span>
+		<strong>{frame.site.metadata.contact.email}</strong>
 	</a>
 	<div class="contact-links">
 		{#if frame.site.metadata.contact.github}<a
 				href={frame.site.metadata.contact.github}
 				target="_blank"
-				rel="noopener noreferrer"><BrandIcon name="github" /> GitHub</a
+				rel="noopener noreferrer">GitHub</a
 			>{/if}
 		{#if frame.site.metadata.contact.linkedin}<a
 				href={frame.site.metadata.contact.linkedin}
 				target="_blank"
-				rel="noopener noreferrer"><BrandIcon name="linkedin" /> LinkedIn</a
+				rel="noopener noreferrer">LinkedIn</a
 			>{/if}
 	</div>
 </section>
@@ -35,76 +32,70 @@
 		display: flex;
 		height: 100%;
 		flex-direction: column;
-		padding: 46px 38px;
-		background: #242424;
-		color: white;
+		padding: 42px 48px;
+		background: #fafaf8;
+		color: #20201e;
 	}
 	.frame-eyebrow {
 		display: flex;
 		align-items: center;
 		gap: 6px;
-		color: #8b8b8b;
-		font-size: 10px;
+		color: #6f6f6a;
+		font-size: 11px;
 		font-weight: 600;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 	}
-	.contact-frame .frame-eyebrow {
-		color: #84d39b;
-	}
 	.contact-frame h2 {
-		max-width: 270px;
-		margin: 34px 0 12px;
+		max-width: 360px;
+		margin: 28px 0 10px;
 		font-family: var(--font-serif);
-		font-size: 42px;
+		font-size: 44px;
 		font-weight: 400;
-		line-height: 0.95;
+		letter-spacing: -0.022em;
+		line-height: 0.98;
 	}
 	.contact-frame > p {
-		color: #aaa;
-		font-size: 12px;
+		max-width: 390px;
+		margin: 0;
+		color: #62625d;
+		font-size: 14px;
 		line-height: 1.5;
 	}
-	.email-card {
+	.email-link {
 		display: flex;
 		align-items: center;
-		gap: 10px;
-		margin-top: auto;
-		padding: 11px 0;
-		border-block: 1px solid #454545;
-		color: white;
+		gap: 8px;
+		align-self: flex-start;
+		margin-top: 24px;
+		color: #20201e;
+		font-size: 12px;
 		text-decoration: none;
 	}
-	.email-card > span {
-		display: flex;
-		min-width: 0;
-		flex: 1;
-		flex-direction: column;
-		font-size: 11px;
+	.email-link span {
 		font-weight: 600;
 	}
-	.email-card small {
-		overflow: hidden;
-		color: #aaa;
-		font-size: 10px;
-		font-weight: 400;
-		text-overflow: ellipsis;
+	.email-link strong {
+		border-bottom: 1px solid #9a9a95;
+		font-weight: 500;
 	}
 	.contact-links {
 		display: flex;
-		gap: 18px;
-		margin-top: 18px;
+		gap: 20px;
+		margin-top: auto;
+		padding-top: 16px;
+		border-top: 1px solid #dcdcd7;
 	}
 	.contact-links a {
-		display: flex;
-		align-items: center;
-		gap: 6px;
-		color: #b9b9b9;
-		font-size: 10px;
-		text-decoration: none;
+		color: #555550;
+		font-size: 12px;
+		font-weight: 600;
+		text-decoration-color: #9a9a95;
+		text-underline-offset: 3px;
 	}
-	.contact-links :global(svg) {
-		width: 13px;
-		height: 13px;
+	.email-link:focus-visible,
+	.contact-links a:focus-visible {
+		outline: 2px solid #2868d8;
+		outline-offset: 3px;
 	}
 </style>

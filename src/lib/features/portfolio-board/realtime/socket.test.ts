@@ -103,6 +103,8 @@ function createSnapshot(): RoomSnapshot {
 		revision: 0,
 		frames: DEFAULT_FRAME_POSITIONS.map((frame) => ({
 			...frame,
+			visible: true,
+			locked: false,
 			revision: 0,
 			updatedAt: 0,
 			updatedBy: null
@@ -139,19 +141,37 @@ describe('BoardSocketController', () => {
 		expect(FakeWebSocket.instances).toHaveLength(1);
 		expect(controller.state).toBe('connecting');
 		expect(
-			controller.send({ type: 'presence.update', seq: 1, cursor: null, selectedFrameId: null })
+			controller.send({
+				type: 'presence.update',
+				seq: 1,
+				cursor: null,
+				selectedFrameId: null,
+				view: null
+			})
 		).toBe(false);
 
 		FakeWebSocket.instances[0].emitSnapshot();
 		expect(controller.state).toBe('open');
 		expect(initialConnectionOrder).toEqual(['snapshot-applied', 'open']);
 		expect(
-			controller.send({ type: 'presence.update', seq: 1, cursor: null, selectedFrameId: null })
+			controller.send({
+				type: 'presence.update',
+				seq: 1,
+				cursor: null,
+				selectedFrameId: null,
+				view: null
+			})
 		).toBe(true);
 		expect(FakeWebSocket.instances[0].sent).toHaveLength(1);
 		FakeWebSocket.instances[0].throwOnSend = true;
 		expect(
-			controller.send({ type: 'presence.update', seq: 2, cursor: null, selectedFrameId: null })
+			controller.send({
+				type: 'presence.update',
+				seq: 2,
+				cursor: null,
+				selectedFrameId: null,
+				view: null
+			})
 		).toBe(false);
 		controller.close();
 		expect(controller.state).toBe('closed');
@@ -309,14 +329,14 @@ describe('BoardSocketController', () => {
 	it('builds direct-development and same-origin production URLs', () => {
 		const visitorId = '2ac3308f-a622-4b9b-9782-981d19ef943c';
 		expect(createBoardWebSocketUrl(visitorId, { dev: true })).toBe(
-			`ws://127.0.0.1:8788/ws?visitorId=${visitorId}`
+			`ws://127.0.0.1:8788/ws?visitorId=${visitorId}&protocol=2`
 		);
 		expect(
 			createBoardWebSocketUrl(visitorId, {
 				dev: false,
 				location: { protocol: 'https:', host: 'www.hugohsi.dev' }
 			})
-		).toBe(`wss://www.hugohsi.dev/api/board/ws?visitorId=${visitorId}`);
+		).toBe(`wss://www.hugohsi.dev/api/board/ws?visitorId=${visitorId}&protocol=2`);
 	});
 
 	it('classifies only protocol and policy violations as terminal', () => {

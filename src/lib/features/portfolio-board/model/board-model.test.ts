@@ -6,6 +6,7 @@ import {
 	createInitialBoardModel,
 	markFrameMoveSent,
 	moveFrameLocally,
+	visibleFrameMetadata,
 	visibleFramePosition
 } from './board-model';
 
@@ -22,6 +23,8 @@ function snapshot(revision = 1) {
 			id,
 			x,
 			y,
+			visible: true,
+			locked: false,
 			revision,
 			updatedAt: revision,
 			updatedBy: null
@@ -42,6 +45,7 @@ describe('board model', () => {
 
 		expect(model.hasSnapshot).toBe(false);
 		expect(visibleFramePosition(model, 'profile')).toEqual({ x: 10, y: 20 });
+		expect(visibleFrameMetadata(model, 'profile')).toEqual({ visible: true, locked: false });
 	});
 
 	it('uses the latest optimistic position until its server acknowledgement arrives', () => {
@@ -55,6 +59,8 @@ describe('board model', () => {
 				id: 'profile' as const,
 				x: 15,
 				y: 25,
+				visible: true,
+				locked: false,
 				revision: 2,
 				updatedAt: 2,
 				updatedBy: 'another-session'
@@ -92,6 +98,8 @@ describe('board model', () => {
 					id: 'profile',
 					x: 0,
 					y: 0,
+					visible: true,
+					locked: false,
 					revision: 2,
 					updatedAt: 2,
 					updatedBy: null
@@ -135,5 +143,29 @@ describe('board model', () => {
 		expect(reconnected.revision).toBe(7);
 		expect(reconnected.pendingMoves).toEqual({});
 		expect(visibleFramePosition(reconnected, 'profile')).toEqual({ x: 70, y: 80 });
+	});
+
+	it('applies authoritative visibility and locking metadata and blocks optimistic locked moves', () => {
+		let model = boardModelFromSnapshot(snapshot(1));
+		model = applyBoardServerMessage(
+			model,
+			{
+				type: 'frame.update',
+				frame: {
+					...model.frames.profile,
+					visible: false,
+					locked: true,
+					revision: 2,
+					updatedAt: 2,
+					updatedBy: '71a623f8-da62-4c6a-9b24-ee7fa45eff05'
+				},
+				sourceSessionId: '71a623f8-da62-4c6a-9b24-ee7fa45eff05',
+				clientSeq: 1
+			},
+			null
+		);
+
+		expect(visibleFrameMetadata(model, 'profile')).toEqual({ visible: false, locked: true });
+		expect(moveFrameLocally(model, 'profile', { x: 500, y: 600 })).toBe(model);
 	});
 });

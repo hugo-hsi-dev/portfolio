@@ -1,9 +1,20 @@
-import { peerStateSchema, type Identity, type PeerState } from '@portfolio/realtime-contract';
+import {
+	LEGACY_PROTOCOL_VERSION,
+	peerStateSchema,
+	protocolVersionSchema,
+	viewStateSchema,
+	type Identity,
+	type PeerState
+} from '@portfolio/realtime-contract';
 import { z } from 'zod';
 
 import { CURSOR_COLORS, MAX_MESSAGES_PER_SECOND } from './constants';
 
 export const attachmentSchema = peerStateSchema.extend({
+	// Connections accepted before protocol negotiation are legacy wire clients.
+	protocolVersion: protocolVersionSchema.default(LEGACY_PROTOCOL_VERSION),
+	// Older hibernated connections predate shared view presence.
+	view: viewStateSchema.nullable().default(null),
 	lastSeq: z.number().int().min(-1).max(Number.MAX_SAFE_INTEGER),
 	rateWindowStartedAt: z.number().int().nonnegative(),
 	rateWindowCount: z.number().int().nonnegative(),
@@ -92,6 +103,7 @@ export function toPeerState(attachment: ConnectionAttachment): PeerState {
 		name: attachment.name,
 		color: attachment.color,
 		cursor: attachment.cursor,
-		selectedFrameId: attachment.selectedFrameId
+		selectedFrameId: attachment.selectedFrameId,
+		view: attachment.view
 	};
 }

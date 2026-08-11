@@ -60,6 +60,8 @@ function snapshot(revision = 1): Extract<ServerMessage, { type: 'room.snapshot' 
 		revision,
 		frames: DEFAULT_FRAME_POSITIONS.map((frame) => ({
 			...frame,
+			visible: true,
+			locked: false,
 			revision,
 			updatedAt: revision,
 			updatedBy: null
@@ -74,7 +76,10 @@ function snapshot(revision = 1): Extract<ServerMessage, { type: 'room.snapshot' 
 	};
 }
 
-function createHarness(fetchImpl: typeof fetch = vi.fn()) {
+function createHarness(
+	fetchImpl: typeof fetch = vi.fn(),
+	viewportSize: { width: number; height: number } = { width: 1000, height: 700 }
+) {
 	const socket = new FakeSocket();
 	const focusedFrames: string[] = [];
 	let now = 100;
@@ -97,10 +102,10 @@ function createHarness(fetchImpl: typeof fetch = vi.fn()) {
 				y: 0,
 				top: 0,
 				left: 0,
-				right: 1000,
-				bottom: 700,
-				width: 1000,
-				height: 700,
+				right: viewportSize.width,
+				bottom: viewportSize.height,
+				width: viewportSize.width,
+				height: viewportSize.height,
 				toJSON: () => ({})
 			})
 		},
@@ -151,14 +156,16 @@ describe('PortfolioBoardController', () => {
 			name: 'Guest 2000',
 			color: '#0acf83',
 			cursor: null,
-			selectedFrameId: null
+			selectedFrameId: null,
+			view: null
 		};
 		socket.emit({ type: 'peer.join', peer });
 		socket.emit({
 			type: 'peer.update',
 			sessionId: peer.sessionId,
 			cursor: { x: 10, y: 20 },
-			selectedFrameId: 'profile'
+			selectedFrameId: 'profile',
+			view: { center: { x: 400, y: 300 }, zoom: 1.25 }
 		});
 		expect(controller.peerScreenPosition(controller.peerModel.peers[0])).toEqual(
 			expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) })
@@ -308,5 +315,206 @@ describe('PortfolioBoardController', () => {
 		expect(denied.controller.resetPending).toBe(false);
 		denied.cleanup();
 		denied.viewport.remove();
+	});
+
+	it('multi-selects, moves a group, and replays position history', () => {
+		const harness = createHarness();
+		const { controller, socket, viewport } = harness;
+		socket.emit(snapshot());
+		socket.emitState('open');
+		controller.camera = { x: 0, y: 0, zoom: 1 };
+		controller.selectedFrameIds = ['profile', 'contact'];
+
+		const frameElement = document.createElement('article');
+		frameElement.dataset.frameId = 'profile';
+		Object.defineProperty(frameElement, 'setPointerCapture', { value: vi.fn() });
+		viewport.append(frameElement);
+		const before = controller.selectedFrameIds.map((id) => ({
+			id,
+			...controller.framePosition(id)
+		}));
+
+		controller.onFramePointerDown(pointerEvent(frameElement), 'profile');
+		harness.advanceNow(120);
+		controller.onPointerMove(pointerEvent(frameElement, { clientX: 150, clientY: 160 }));
+		controller.onPointerUp(pointerEvent(frameElement, { clientX: 150, clientY: 160 }));
+
+		expect(controller.framePosition('profile')).toEqual({ x: 50, y: 40 });
+		expect(controller.framePosition('contact')).toEqual({ x: 50, y: 620 });
+		expect(controller.canUndo).toBe(true);
+		expect(
+			socket.sent.filter((message) => message.type === 'frame.move' && message.final)
+		).toHaveLength(2);
+
+		controller.undo();
+		expect(controller.framePosition('profile')).toEqual({ x: before[0].x, y: before[0].y });
+		expect(controller.framePosition('contact')).toEqual({ x: before[1].x, y: before[1].y });
+		expect(controller.canRedo).toBe(true);
+		controller.redo();
+		expect(controller.framePosition('profile')).toEqual({ x: 50, y: 40 });
+
+		harness.cleanup();
+		viewport.remove();
+	});
+
+	it('commits precise inspector coordinates through realtime and position history', () => {
+		const harness = createHarness();
+		const { controller, socket, viewport } = harness;
+		socket.emit(snapshot());
+		socket.emitState('open');
+		controller.selectedFrameId = 'profile';
+		const before = controller.framePosition('profile');
+
+		controller.setSelectionAxis('x', 137.5);
+		controller.setSelectionAxis('y', -42.25);
+
+		expect(controller.framePosition('profile')).toEqual({ x: 137.5, y: -42.25 });
+		expect(controller.canUndo).toBe(true);
+		expect(socket.sent.filter((message) => message.type === 'frame.move')).toEqual(
+			expect.arrayContaining([
+				expect.objectContaining({
+					type: 'frame.move',
+					frameId: 'profile',
+					x: 137.5,
+					y: before.y,
+					final: true
+				}),
+				expect.objectContaining({
+					type: 'frame.move',
+					frameId: 'profile',
+					x: 137.5,
+					y: -42.25,
+					final: true
+				})
+			])
+		);
+
+		controller.undo();
+		expect(controller.framePosition('profile')).toEqual({ x: 137.5, y: before.y });
+		controller.undo();
+		expect(controller.framePosition('profile')).toEqual(before);
+
+		harness.cleanup();
+		viewport.remove();
+	});
+
+	it('marquee-selects intersecting visible unlocked frames and supports selection shortcuts', () => {
+		const harness = createHarness();
+		const { controller, socket, viewport } = harness;
+		socket.emit(snapshot());
+		socket.emitState('open');
+		controller.camera = { x: 0, y: 0, zoom: 1 };
+
+		controller.onViewportPointerDown(
+			pointerEvent(viewport, { pointerId: 7, clientX: -10, clientY: -10 })
+		);
+		controller.onPointerMove(pointerEvent(viewport, { pointerId: 7, clientX: 760, clientY: 500 }));
+		expect(controller.selectedFrameIds).toEqual(['profile']);
+		expect(controller.marqueeBounds).toEqual({ x: -10, y: -10, width: 770, height: 510 });
+		controller.onPointerUp(pointerEvent(viewport, { pointerId: 7, clientX: 760, clientY: 500 }));
+		expect(controller.marqueeBounds).toBeNull();
+
+		controller.onKeydown({
+			key: 'a',
+			metaKey: true,
+			target: viewport,
+			preventDefault: vi.fn()
+		} as unknown as KeyboardEvent);
+		expect(controller.selectedFrameIds).toHaveLength(DEFAULT_FRAME_POSITIONS.length);
+		controller.onKeydown({ key: 'h', target: viewport } as unknown as KeyboardEvent);
+		expect(controller.tool).toBe('hand');
+		controller.onKeydown({ key: 'v', target: viewport } as unknown as KeyboardEvent);
+		expect(controller.tool).toBe('move');
+
+		harness.cleanup();
+		viewport.remove();
+	});
+
+	it('sends authoritative visibility and locking metadata and handles locked move rejection', () => {
+		const harness = createHarness();
+		const { controller, socket, viewport } = harness;
+		socket.emit(snapshot());
+		socket.emitState('open');
+		controller.selectedFrameId = 'profile';
+
+		controller.toggleFrameVisibility('profile');
+		expect(socket.sent.at(-1)).toMatchObject({
+			type: 'frame.metadata',
+			frameId: 'profile',
+			visible: false
+		});
+		expect(controller.selectedFrameIds).toEqual([]);
+
+		socket.emit({
+			type: 'frame.update',
+			frame: { ...snapshot(2).frames[0], locked: true },
+			sourceSessionId: snapshot().self.sessionId,
+			clientSeq: 1
+		});
+		expect(controller.frameMetadata('profile').locked).toBe(true);
+		controller.toggleFrameLock('profile');
+		expect(socket.sent.at(-1)).toMatchObject({
+			type: 'frame.metadata',
+			frameId: 'profile',
+			locked: false
+		});
+
+		socket.emit({ type: 'error', code: 'frame-locked', message: 'That frame is locked.' });
+		expect(controller.dragState).toBeNull();
+		expect(controller.editorNotice).toBe('That frame is locked.');
+
+		harness.cleanup();
+		viewport.remove();
+	});
+
+	it('follows collaborator views, stops on local navigation, and opens Browse on mobile', () => {
+		const mobile = createHarness(vi.fn(), { width: 390, height: 844 });
+		const { controller, socket, viewport } = mobile;
+		expect(controller.mobileViewport).toBe(true);
+		expect(controller.browseOpen).toBe(true);
+		socket.emit(snapshot());
+		socket.emitState('open');
+		const peer = {
+			sessionId: 'adf73f2f-f2d3-4246-9087-84a46bf665bd',
+			visitorId: '2ac3308f-a622-4b9b-9782-981d19ef943c',
+			name: 'Guest 2000',
+			color: '#0acf83',
+			cursor: null,
+			selectedFrameId: null,
+			view: { center: { x: 120, y: 80 }, zoom: 1.5 }
+		} as const;
+		socket.emit({ type: 'peer.join', peer });
+
+		controller.followCollaborator(peer);
+		expect(controller.followingSessionId).toBe(peer.sessionId);
+		expect(controller.camera).toEqual({ x: 15, y: 302, zoom: 1.5 });
+		controller.setZoom(2);
+		expect(controller.followingSessionId).toBeNull();
+		expect(socket.sent.find((message) => message.type === 'presence.update')).toMatchObject({
+			type: 'presence.update',
+			view: expect.objectContaining({ zoom: expect.any(Number) })
+		});
+
+		mobile.cleanup();
+		viewport.remove();
+	});
+
+	it('sends the first real cursor immediately after connection presence', () => {
+		const harness = createHarness();
+		const { controller, socket, viewport } = harness;
+		socket.emit(snapshot());
+		socket.emitState('open');
+		expect(socket.sent.at(-1)).toMatchObject({ type: 'presence.update', cursor: null });
+
+		controller.onPointerMove(pointerEvent(viewport, { clientX: 620, clientY: 420 }));
+
+		expect(socket.sent.at(-1)).toMatchObject({
+			type: 'presence.update',
+			cursor: expect.objectContaining({ x: expect.any(Number), y: expect.any(Number) })
+		});
+		expect(socket.sent.filter((message) => message.type === 'presence.update')).toHaveLength(2);
+
+		harness.cleanup();
+		viewport.remove();
 	});
 });

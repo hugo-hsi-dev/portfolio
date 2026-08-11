@@ -10,14 +10,16 @@ describe('peer transitions', () => {
 			name: 'Guest 1234',
 			color: '#0acf83',
 			cursor: null,
-			selectedFrameId: null
+			selectedFrameId: null,
+			view: null
 		};
 		const joined = applyPeerServerMessage(EMPTY_PEER_MODEL, { type: 'peer.join', peer });
 		const updated = applyPeerServerMessage(joined, {
 			type: 'peer.update',
 			sessionId: peer.sessionId,
 			cursor: { x: 1, y: 2 },
-			selectedFrameId: 'profile'
+			selectedFrameId: 'profile',
+			view: { center: { x: 320, y: 240 }, zoom: 1.25 }
 		});
 		const left = applyPeerServerMessage(updated, {
 			type: 'peer.leave',
@@ -25,7 +27,11 @@ describe('peer transitions', () => {
 		});
 
 		expect(EMPTY_PEER_MODEL.peers).toEqual([]);
-		expect(updated.peers[0]).toMatchObject({ cursor: { x: 1, y: 2 } });
+		expect(updated.peers[0]).toMatchObject({
+			cursor: { x: 1, y: 2 },
+			selectedFrameId: 'profile',
+			view: { center: { x: 320, y: 240 }, zoom: 1.25 }
+		});
 		expect(left.peers).toEqual([]);
 	});
 
@@ -44,7 +50,8 @@ describe('peer transitions', () => {
 					name: 'Guest 2',
 					color: '#ff7262',
 					cursor: null,
-					selectedFrameId: null
+					selectedFrameId: null,
+					view: null
 				}
 			]
 		};

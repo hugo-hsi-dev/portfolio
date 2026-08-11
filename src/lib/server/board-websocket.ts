@@ -31,6 +31,8 @@ export async function handleBoardWebSocket({
 	const internalUrl = new URL('https://portfolio-room/ws');
 	const visitorId = url.searchParams.get('visitorId');
 	if (visitorId) internalUrl.searchParams.set('visitorId', visitorId);
+	const protocol = url.searchParams.get('protocol');
+	if (protocol) internalUrl.searchParams.set('protocol', protocol);
 
 	const proxyRequest = new Request(internalUrl, {
 		method: 'GET',

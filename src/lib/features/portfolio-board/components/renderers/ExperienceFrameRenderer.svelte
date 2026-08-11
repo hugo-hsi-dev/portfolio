@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { BriefcaseBusiness } from '@lucide/svelte';
-
 	import type { ExperienceCanvasFrame } from '$lib/features/portfolio-content';
 	import { formatPortfolioDate } from '$lib/features/portfolio-content/date';
 
@@ -8,23 +6,24 @@
 </script>
 
 <section class="story-frame">
-	<div class="story-icon"><BriefcaseBusiness size={18} /></div>
 	<div class="frame-eyebrow">Experience</div>
-	<h2>{frame.experience.metadata.role}</h2>
-	<p class="story-place">{frame.experience.metadata.company}</p>
-	<p class="story-date">
-		{formatPortfolioDate(
-			frame.experience.metadata.startDate,
-			frame.experience.metadata.startDatePrecision
-		)} — {frame.experience.metadata.isCurrent
-			? 'Present'
-			: frame.experience.metadata.endDate
-				? formatPortfolioDate(
-						frame.experience.metadata.endDate,
-						frame.experience.metadata.endDatePrecision
-					)
-				: ''}
-	</p>
+	<header>
+		<p class="story-date">
+			{formatPortfolioDate(
+				frame.experience.metadata.startDate,
+				frame.experience.metadata.startDatePrecision
+			)} — {frame.experience.metadata.isCurrent
+				? 'Present'
+				: frame.experience.metadata.endDate
+					? formatPortfolioDate(
+							frame.experience.metadata.endDate,
+							frame.experience.metadata.endDatePrecision
+						)
+					: ''}
+		</p>
+		<h2>{frame.experience.metadata.role}</h2>
+		<p class="story-place">{frame.experience.metadata.company}</p>
+	</header>
 	<ul class="rich-copy">
 		{#each frame.experience.metadata.highlights as item (item)}<li>{item}</li>{/each}
 	</ul>
@@ -33,51 +32,61 @@
 <style>
 	.story-frame {
 		height: 100%;
-		padding: 38px 42px;
-	}
-	.story-icon {
-		display: grid;
-		width: 36px;
-		height: 36px;
-		margin-bottom: 28px;
-		place-items: center;
-		border-radius: 8px;
-		background: #292929;
-		color: white;
+		padding: 46px 52px;
+		background: #fafaf8;
+		color: #20201e;
 	}
 	.frame-eyebrow {
 		display: flex;
 		align-items: center;
 		gap: 6px;
 		color: #8b8b8b;
-		font-size: 10px;
+		font-size: 11px;
 		font-weight: 600;
 		letter-spacing: 0.08em;
 		text-transform: uppercase;
 	}
+	.story-frame header {
+		max-width: 590px;
+		margin-top: 36px;
+		padding-bottom: 22px;
+		border-bottom: 1px solid #dcdcd7;
+	}
 	.story-frame h2 {
-		margin: 9px 0 3px;
+		margin: 8px 0 6px;
 		font-family: var(--font-serif);
-		font-size: 33px;
+		font-size: 38px;
 		font-weight: 400;
-		line-height: 1;
+		letter-spacing: -0.02em;
+		line-height: 1.04;
 	}
 	.story-place {
 		margin: 0;
-		font-size: 12px;
+		font-size: 14px;
 		font-weight: 600;
 	}
 	.story-date {
-		margin: 4px 0 18px;
-		color: #888;
-		font-size: 10px;
+		margin: 0;
+		color: #73736e;
+		font-size: 11px;
+		font-weight: 500;
+		letter-spacing: 0.045em;
+		text-transform: uppercase;
 	}
 	.rich-copy {
-		color: #5f5f5f;
-		font-size: 10px;
-		line-height: 1.45;
+		max-width: 590px;
+		margin: 24px 0 0;
+		padding-left: 19px;
+		color: #54544f;
+		font-size: 14px;
+		line-height: 1.5;
+		list-style: disc;
 	}
 	.rich-copy li {
-		margin-bottom: 7px;
+		padding-left: 5px;
+		margin-bottom: 11px;
+	}
+	.rich-copy li::marker {
+		color: #20201e;
 	}
 </style>

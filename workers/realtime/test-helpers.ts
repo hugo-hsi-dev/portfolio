@@ -1,6 +1,10 @@
 import { exports } from 'cloudflare:workers';
 import {
+	CURRENT_PROTOCOL_VERSION,
+	legacyServerMessageSchema,
 	serverMessageSchema,
+	type LegacyRoomSnapshot,
+	type LegacyServerMessage,
 	type RoomSnapshot,
 	type ServerMessage
 } from '@portfolio/realtime-contract';
@@ -47,6 +51,32 @@ export function nextMessage(
 		const listener = (event: MessageEvent) => {
 			try {
 				const message = serverMessageSchema.parse(JSON.parse(String(event.data)));
+				if (!accept(message)) return;
+				clearTimeout(timeout);
+				socket.removeEventListener('message', listener);
+				resolve(message);
+			} catch (error) {
+				clearTimeout(timeout);
+				socket.removeEventListener('message', listener);
+				reject(error);
+			}
+		};
+		socket.addEventListener('message', listener);
+	});
+}
+
+export function nextLegacyMessage(
+	socket: WebSocket,
+	accept: (message: LegacyServerMessage) => boolean = () => true
+): Promise<LegacyServerMessage> {
+	return new Promise((resolve, reject) => {
+		const timeout = setTimeout(() => {
+			socket.removeEventListener('message', listener);
+			reject(new Error('Timed out waiting for legacy WebSocket message'));
+		}, MESSAGE_TIMEOUT_MS);
+		const listener = (event: MessageEvent) => {
+			try {
+				const message = legacyServerMessageSchema.parse(JSON.parse(String(event.data)));
 				if (!accept(message)) return;
 				clearTimeout(timeout);
 				socket.removeEventListener('message', listener);
@@ -110,17 +140,43 @@ export async function connect(
 	visitorId: string
 ): Promise<{ socket: WebSocket; snapshot: RoomSnapshot }> {
 	const response = await exports.default.fetch(
+		new Request(
+			`http://realtime.test/ws?visitorId=${visitorId}&protocol=${CURRENT_PROTOCOL_VERSION}`,
+			{
+				headers: { Upgrade: 'websocket', Origin: ALLOWED_ORIGIN }
+			}
+		)
+	);
+	expect(response.status).toBe(101);
+	const socket = acceptSocket(response);
+	const message = await nextMessage(socket, (candidate) => candidate.type === 'room.snapshot');
+	if (message.type !== 'room.snapshot') throw new Error('Expected a room snapshot');
+	return { socket, snapshot: message };
+}
+
+export async function connectLegacy(
+	visitorId: string
+): Promise<{ socket: WebSocket; snapshot: LegacyRoomSnapshot }> {
+	const response = await exports.default.fetch(
 		new Request(`http://realtime.test/ws?visitorId=${visitorId}`, {
 			headers: { Upgrade: 'websocket', Origin: ALLOWED_ORIGIN }
 		})
 	);
 	expect(response.status).toBe(101);
+	const socket = acceptSocket(response);
+	const message = await nextLegacyMessage(
+		socket,
+		(candidate) => candidate.type === 'room.snapshot'
+	);
+	if (message.type !== 'room.snapshot') throw new Error('Expected a legacy room snapshot');
+	return { socket, snapshot: message };
+}
+
+function acceptSocket(response: Response): WebSocket {
 	const socket = response.webSocket;
 	if (!socket) throw new Error('Expected a WebSocket response');
 	openSockets.add(socket);
 	socket.addEventListener('close', () => openSockets.delete(socket));
 	socket.accept();
-	const message = await nextMessage(socket, (candidate) => candidate.type === 'room.snapshot');
-	if (message.type !== 'room.snapshot') throw new Error('Expected a room snapshot');
-	return { socket, snapshot: message };
+	return socket;
 }

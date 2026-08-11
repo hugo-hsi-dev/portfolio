@@ -78,7 +78,9 @@ describe('board WebSocket route', () => {
 				};
 			}
 		};
-		const request = webSocketRequest(`${ENDPOINT}?visitorId=visitor%2Fone&ignored=value`);
+		const request = webSocketRequest(
+			`${ENDPOINT}?visitorId=visitor%2Fone&protocol=2&ignored=value`
+		);
 
 		const response = await handleBoardWebSocket({
 			request,
@@ -89,7 +91,7 @@ describe('board WebSocket route', () => {
 		expect(response.status).toBe(200);
 		expect(await response.text()).toBe('proxied');
 		expect(roomName).toBe('public');
-		expect(proxyRequest?.url).toBe('https://portfolio-room/ws?visitorId=visitor%2Fone');
+		expect(proxyRequest?.url).toBe('https://portfolio-room/ws?visitorId=visitor%2Fone&protocol=2');
 		expect(proxyRequest?.headers.get('origin')).toBe('https://portfolio.test');
 		expect(proxyRequest?.headers.get('upgrade')).toBe('websocket');
 	});

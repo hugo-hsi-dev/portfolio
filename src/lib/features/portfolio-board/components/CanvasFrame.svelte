@@ -10,7 +10,11 @@
 		width,
 		height,
 		selected = false,
+		multipleSelection = false,
 		dragging = false,
+		hovered = false,
+		locked = false,
+		remoteSelectionColor = null,
 		onpointerdown,
 		onfocus,
 		children
@@ -23,7 +27,11 @@
 		width: number;
 		height: number;
 		selected?: boolean;
+		multipleSelection?: boolean;
 		dragging?: boolean;
+		hovered?: boolean;
+		locked?: boolean;
+		remoteSelectionColor?: string | null;
 		onpointerdown: (event: PointerEvent) => void;
 		onfocus: () => void;
 		children: Snippet;
@@ -31,26 +39,37 @@
 </script>
 
 <article
-	class={['canvas-frame', selected && 'is-selected', dragging && 'is-dragging']}
+	class={[
+		'canvas-frame',
+		selected && 'is-selected',
+		multipleSelection && 'is-multi-selected',
+		dragging && 'is-dragging',
+		hovered && 'is-hovered',
+		locked && 'is-locked',
+		remoteSelectionColor && 'is-remote-selected'
+	]}
 	data-frame-id={id}
 	aria-label={`${label}: ${title}`}
 	data-selected={selected ? '' : undefined}
+	data-locked={locked ? '' : undefined}
 	role="group"
 	tabindex="-1"
 	style:width={`${width}px`}
 	style:height={`${height}px`}
 	style:transform={`translate3d(${x}px, ${y}px, 0)`}
+	style:--remote-selection-color={remoteSelectionColor ?? 'transparent'}
 	{onpointerdown}
 	{onfocus}
 >
 	<div class="frame-label" aria-hidden="true">
 		<span>{label}</span>
 		<span class="frame-label__name">{title}</span>
+		{#if locked}<span class="frame-label__state">Locked</span>{/if}
 	</div>
 	<div class="frame-content">
 		{@render children()}
 	</div>
-	{#if selected}
+	{#if selected && !multipleSelection}
 		<span class="selection-handle selection-handle--nw" aria-hidden="true"></span>
 		<span class="selection-handle selection-handle--ne" aria-hidden="true"></span>
 		<span class="selection-handle selection-handle--sw" aria-hidden="true"></span>
@@ -65,7 +84,7 @@
 		left: 0;
 		margin: 0;
 		background: var(--canvas-surface, #fff);
-		box-shadow: 0 1px 2px rgb(0 0 0 / 8%);
+		box-shadow: 0 1px 2px rgb(0 0 0 / 7%);
 		outline: 0 solid transparent;
 		transform-origin: top left;
 		user-select: none;
@@ -78,10 +97,23 @@
 		content: '';
 		pointer-events: none;
 	}
+	.canvas-frame.is-hovered:not(.is-selected) {
+		outline: 1px solid var(--figma-blue, #0d99ff);
+	}
 	.canvas-frame.is-selected {
 		z-index: 2;
-		box-shadow: 0 8px 30px rgb(0 0 0 / 13%);
-		outline: 2px solid var(--figma-blue, #0d99ff);
+		box-shadow: 0 5px 18px rgb(0 0 0 / 10%);
+		outline: 1.5px solid var(--figma-blue, #0d99ff);
+	}
+	.canvas-frame.is-multi-selected {
+		box-shadow: 0 1px 2px rgb(0 0 0 / 7%);
+		outline-width: 1px;
+	}
+	.canvas-frame.is-remote-selected:not(.is-selected) {
+		outline: 1.5px solid var(--remote-selection-color);
+	}
+	.canvas-frame.is-locked {
+		cursor: default;
 	}
 	.canvas-frame.is-dragging {
 		z-index: 3;
@@ -112,6 +144,13 @@
 		overflow: hidden;
 		font-weight: 400;
 		text-overflow: ellipsis;
+	}
+	.frame-label__state {
+		padding-left: 7px;
+		border-left: 1px solid currentColor;
+		font-size: 10px;
+		font-weight: 400;
+		opacity: 0.72;
 	}
 	.frame-content {
 		height: 100%;
