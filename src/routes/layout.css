@@ -1,14 +1,6 @@
 @import 'tailwindcss';
 
 @font-face {
-	font-family: 'Forum';
-	font-style: normal;
-	font-weight: 400;
-	font-display: swap;
-	src: url('/fonts/forum-latin-400-normal.woff2') format('woff2');
-}
-
-@font-face {
 	font-family: 'Outfit';
 	font-style: normal;
 	font-weight: 400;
@@ -32,102 +24,78 @@
 	src: url('/fonts/outfit-latin-600-normal.woff2') format('woff2');
 }
 
-:root {
-	font-family:
-		Outfit,
-		ui-sans-serif,
-		system-ui,
-		-apple-system,
-		BlinkMacSystemFont,
-		sans-serif;
-	font-synthesis: none;
-	color: #1e1e1e;
-	background: #e5e5e5;
-	--font-sans: Outfit, ui-sans-serif, system-ui, sans-serif;
-	--font-serif: Forum, ui-serif, georgia, serif;
-	--figma-dark: #1e1e1e;
-	--figma-panel: #2c2c2c;
-	--figma-border-dark: #454545;
-	--figma-blue: #0d99ff;
-	--canvas-background: #e5e5e5;
-	--canvas-surface: #ffffff;
-	--text-primary: #1e1e1e;
-	--text-secondary: #6b6b6b;
-	--panel-border: #d5d5d5;
+@font-face {
+	font-family: 'Forum';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/forum-latin-400-normal.woff2') format('woff2');
 }
 
-html,
-body {
-	width: 100%;
-	height: 100%;
-	margin: 0;
-	overflow: hidden;
-	background: var(--canvas-background);
+@theme {
+	--color-field: #f1f4ef;
+	--color-surface: #fafcf8;
+	--color-ink: #15262b;
+	--color-muted: #5b696b;
+	--color-diagnose: #b3482a;
+	--color-build: #4057c8;
+	--color-proof: #36715e;
+	--color-proof-light: #9ad0bd;
+	--color-rule: #c6d2ce;
+
+	--font-display: 'Forum', ui-serif, Georgia, serif;
+	--font-body: 'Outfit', ui-sans-serif, system-ui, sans-serif;
+	--font-utility: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+	--radius-control: 0.375rem;
 }
 
-body {
-	font-family: var(--font-sans);
-	text-rendering: optimizeLegibility;
-	-webkit-font-smoothing: antialiased;
-}
+@layer base {
+	:root {
+		font-family: var(--font-body);
+		color: var(--color-ink);
+		background: var(--color-field);
+		font-synthesis: none;
+		text-rendering: optimizeLegibility;
+	}
 
-*,
-*::before,
-*::after {
-	box-sizing: border-box;
-	letter-spacing: 0;
-}
+	html {
+		scroll-behavior: smooth;
+		scroll-padding-top: 5rem;
+		background: var(--color-field);
+	}
 
-button,
-input,
-textarea,
-select {
-	font: inherit;
-}
+	body {
+		min-height: 100vh;
+		margin: 0;
+		overflow-x: hidden;
+		background: var(--color-field);
+		color: var(--color-ink);
+	}
 
-button,
-a {
-	-webkit-tap-highlight-color: transparent;
-}
+	button,
+	a {
+		-webkit-tap-highlight-color: transparent;
+	}
 
-a {
-	color: inherit;
-}
+	a:focus-visible,
+	button:focus-visible {
+		border-radius: var(--radius-control);
+		outline: 2px solid var(--color-build);
+		outline-offset: 4px;
+	}
 
-img,
-svg {
-	display: block;
-}
-
-:focus-visible {
-	outline: 2px solid var(--figma-blue);
-	outline-offset: 2px;
-}
-
-::selection {
-	background: rgb(13 153 255 / 25%);
-	color: var(--text-primary);
-}
-
-.skip-link {
-	position: fixed;
-	z-index: 1000;
-	top: 8px;
-	left: 8px;
-	padding: 9px 12px;
-	border-radius: 4px;
-	background: white;
-	color: #1e1e1e;
-	font-size: 13px;
-	font-weight: 600;
-	transform: translateY(-160%);
-}
-
-.skip-link:focus {
-	transform: translateY(0);
+	::selection {
+		background: color-mix(in srgb, var(--color-build) 22%, transparent);
+		color: var(--color-ink);
+	}
 }
 
 @media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+
 	*,
 	*::before,
 	*::after {
