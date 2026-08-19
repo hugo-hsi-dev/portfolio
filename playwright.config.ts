@@ -1,21 +1,23 @@
-import { defineConfig } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
 	testDir: './tests',
 	testMatch: '**/*.e2e.ts',
-	fullyParallel: false,
-	workers: 1,
-	snapshotPathTemplate: '{testDir}/{testFilePath}-snapshots/{platform}/{arg}{ext}',
-	reporter: [[process.env.CI ? 'dot' : 'list'], ['html', { open: 'never' }]],
+	fullyParallel: true,
+	reporter: process.env.CI ? 'dot' : 'list',
 	use: {
 		baseURL: 'http://127.0.0.1:4173',
 		screenshot: 'only-on-failure',
 		trace: 'retain-on-failure'
 	},
+	projects: [
+		{ name: 'desktop', use: { ...devices['Desktop Chrome'] } },
+		{ name: 'mobile', use: { ...devices['iPhone 13'], browserName: 'chromium' } }
+	],
 	webServer: {
-		command: 'pnpm build && node tests/start-e2e-server.mjs',
+		command: 'pnpm build && pnpm preview',
 		url: 'http://127.0.0.1:4173',
-		reuseExistingServer: false,
+		reuseExistingServer: !process.env.CI,
 		timeout: 180_000
 	}
 });
