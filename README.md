@@ -15,9 +15,10 @@ The local site runs at http://localhost:5173.
     pnpm check
     pnpm test:unit
     pnpm build
+    pnpm deploy:dry-run
     pnpm test:e2e
 
-The build command validates generated Cloudflare types and produces the Worker bundle under .svelte-kit/cloudflare.
+The build command produces the Worker bundle under .svelte-kit/cloudflare. CI also performs a Wrangler deployment dry run against that bundle.
 
 ## Deploy
 

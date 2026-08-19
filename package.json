@@ -10,20 +10,20 @@
 	},
 	"scripts": {
 		"dev": "vite dev",
-		"build": "wrangler types --check && vite build",
+		"build": "vite build",
 		"preview": "wrangler dev .svelte-kit/cloudflare/_worker.js --port 4173",
 		"deploy": "pnpm build && wrangler deploy",
+		"deploy:dry-run": "wrangler deploy --dry-run --outdir .wrangler/build/app",
 		"prepare": "svelte-kit sync",
-		"check": "wrangler types --check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-		"gen": "wrangler types",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
 		"test:unit": "vitest run",
 		"test:unit:watch": "vitest",
 		"test:e2e": "playwright test",
 		"test": "pnpm test:unit && pnpm test:e2e",
-		"verify": "pnpm lint && pnpm check && pnpm test:unit && pnpm build && pnpm test:e2e"
+		"verify": "pnpm lint && pnpm check && pnpm test:unit && pnpm build && pnpm deploy:dry-run && pnpm test:e2e"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.12.1",

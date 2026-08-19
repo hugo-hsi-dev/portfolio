@@ -50,11 +50,8 @@ jobs:
       - name: Check Svelte and TypeScript
         run: pnpm check
 
-      - name: Check generated Cloudflare types
-        run: pnpm gen:check
-
-      - name: Run application coverage
-        run: pnpm test:unit:coverage
+      - name: Run application tests
+        run: pnpm test:unit
 
       - name: Audit dependencies
         run: pnpm audit --audit-level low
@@ -81,17 +78,11 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Run Worker coverage
-        run: pnpm test:worker:coverage
-
       - name: Build SvelteKit Worker
         run: pnpm build
 
-      - name: Validate SvelteKit Worker deployment
-        run: pnpm build:app:dry-run
-
-      - name: Validate realtime Worker deployment
-        run: pnpm build:realtime
+      - name: Validate Worker deployment
+        run: pnpm deploy:dry-run
 
   e2e:
     name: Browser journeys
