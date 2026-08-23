@@ -1,33 +1,37 @@
 # Hugo Hsi portfolio
 
-A focused one-page portfolio built with SvelteKit 3, Svelte 5, TypeScript, Tailwind CSS, and the Cloudflare adapter.
+A hiring-focused, one-page portfolio built with SvelteKit, Svelte 5, TypeScript, Tailwind CSS, and Cloudflare Workers.
 
 ## Develop
 
-    pnpm install
-    pnpm dev
+```sh
+pnpm install
+pnpm dev
+```
 
-The local site runs at http://localhost:5173.
+The local site runs at `http://localhost:5173`.
 
 ## Verify
 
-    pnpm lint
-    pnpm check
-    pnpm test:unit
-    pnpm build
-    pnpm deploy:dry-run
-    pnpm test:e2e
+```sh
+pnpm lint
+pnpm check
+pnpm build
+pnpm deploy:dry-run
+```
 
-The build command produces the Worker bundle under .svelte-kit/cloudflare. CI also performs a Wrangler deployment dry run against that bundle.
+The dry run validates the generated Worker and static-asset bundle without changing the live deployment.
 
 ## Deploy
 
-Authenticate Wrangler with your Cloudflare account, then run:
+Authenticate Wrangler with the intended Cloudflare account, then run:
 
-    pnpm deploy
+```sh
+pnpm deploy
+```
 
-Project screenshots live under static/media/projects, and the downloadable résumé lives under static/media/resume.
+Pull requests and pushes to `main` are also validated by GitHub Actions and Cloudflare Workers Builds.
 
 ## License
 
-Source code is available under the MIT license. Personal content, media, résumé files, and branding are excluded. Bundled fonts retain their SIL Open Font License terms. See LICENSE.md.
+Source code is available under the MIT license. Personal content and branding are excluded. See `LICENSE.md`.

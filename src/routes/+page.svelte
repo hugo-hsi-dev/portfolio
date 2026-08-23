@@ -1,390 +1,373 @@
 <script lang="ts">
-	import { contact, experience, principles, projects } from '#lib/portfolio.js';
-	import BrandIcon from '#lib/ui/BrandIcon.svelte';
-	import ProjectStory from '#lib/ui/ProjectStory.svelte';
+	const projects = [
+		{
+			id: 'museum',
+			context: 'Praxis Loop · Production platform',
+			title: 'Rebuilding a museum site around its editors.',
+			intro:
+				'I helped replatform a 3,500+ page public website from WordPress to Prismic, shaping the content system around how an editorial team actually publishes.',
+			proof: [
+				'Created reusable, editor-friendly content models',
+				'Helped consolidate three UI approaches into one Tailwind system',
+				'Built visual regression coverage for changes ordinary tests could miss'
+			],
+			outcome: 'A clearer publishing system, a more consistent interface, and safer releases.',
+			stack: ['Prismic', 'Tailwind CSS', 'Playwright', 'GitHub Actions'],
+			link: 'https://mohmuseum.org',
+			linkLabel: 'Visit the museum site',
+			code: undefined
+		},
+		{
+			id: 'minecentral',
+			context: 'Independent product · Full stack',
+			title: 'One product from checkout to server control.',
+			intro:
+				'MineCentral turns Minecraft hosting into a product experience: choose a plan, manage a subscription, and monitor the running instance from one place.',
+			proof: [
+				'Connected account and subscription flows through Stripe',
+				'Integrated Pterodactyl for live instance monitoring and control',
+				'Designed across marketing, checkout, dashboard, and operations'
+			],
+			outcome: 'A complete product path across interface, billing, and infrastructure.',
+			stack: ['TypeScript', 'Next.js', 'PostgreSQL', 'Stripe', 'Pterodactyl'],
+			link: 'https://www.minecentral.net',
+			linkLabel: 'Open MineCentral',
+			code: 'https://github.com/Minecentral-Official/Minecentral-Dashboard'
+		},
+		{
+			id: 'budget',
+			context: 'Independent product · SvelteKit PWA',
+			title: 'A weekly budget you can see moving.',
+			intro:
+				'Me Save Money reduces budgeting to one useful answer: what can I still spend? Purchases update the remaining amount without turning money into a spreadsheet chore.',
+			proof: [
+				'Designed a mobile-first purchase flow for everyday use',
+				'Used experimental remote functions for a typed server-client boundary',
+				'Built the experience as an installable progressive web app'
+			],
+			outcome: 'A focused financial tool built around one legible decision.',
+			stack: ['SvelteKit', 'TypeScript', 'PWA', 'Remote functions'],
+			link: undefined,
+			linkLabel: '',
+			code: 'https://github.com/hugo-hsi-dev/expense-tracker'
+		}
+	] as const;
+
+	const capabilities = [
+		{
+			label: 'Product UI',
+			items: ['SvelteKit', 'React', 'Next.js', 'Tailwind CSS', 'MUI', 'shadcn/ui']
+		},
+		{
+			label: 'Systems',
+			items: ['TypeScript', 'Node.js', 'PostgreSQL', 'Prismic', 'WordPress', 'Stripe']
+		},
+		{
+			label: 'Practice',
+			items: [
+				'Content modeling',
+				'Design systems',
+				'Playwright',
+				'Visual QA',
+				'Motion design',
+				'AI workflows'
+			]
+		}
+	] as const;
+
+	const experience = [
+		{
+			company: 'Praxis Loop',
+			role: 'Full-stack developer · Contract',
+			period: '2025—Now',
+			description:
+				'I work on the seams that determine whether a product holds together: content architecture, component systems, test coverage, and more reliable AI-assisted development workflows.',
+			tags: ['CMS architecture', 'Design systems', 'Visual regression', 'Context engineering']
+		},
+		{
+			company: 'Lookout',
+			role: 'Design production intern',
+			period: '2022—2023',
+			description:
+				'I helped bring motion production in-house and created reusable brand assets for marketing. Work produced for RSAC was recognized with a GDUSA American Inhouse Design Award.',
+			tags: ['Motion graphics', 'Brand systems', 'Production design']
+		}
+	] as const;
 </script>
 
 <svelte:head>
-	<title>Hugo Hsi | Full-Stack Developer</title>
+	<title>Hugo Hsi — Design-trained full-stack developer</title>
 	<meta
 		name="description"
-		content="Hugo Hsi is a New York City full-stack developer who brings design judgment to content systems, product engineering, and production tooling."
+		content="Hugo Hsi is a Brooklyn-based full-stack developer with a communication design background, building clear interfaces and durable web systems."
 	/>
-	<link rel="canonical" href="https://www.hugohsi.dev/" />
-	<meta property="og:type" content="website" />
-	<meta property="og:title" content="Hugo Hsi | Full-Stack Developer" />
+	<meta property="og:title" content="Hugo Hsi — Design-trained full-stack developer" />
 	<meta
 		property="og:description"
-		content="Design taught me to find the right problem. Engineering taught me how to solve it."
+		content="Selected work across content systems, product interfaces, design systems, and visual QA."
 	/>
-	<meta property="og:url" content="https://www.hugohsi.dev/" />
-	<meta name="twitter:card" content="summary" />
-	<meta name="theme-color" content="#f1f4ef" />
+	<meta property="og:type" content="website" />
+	<meta name="theme-color" content="#f2f5f3" />
 </svelte:head>
 
-<a
-	href="#main"
-	class="fixed top-3 left-3 z-50 -translate-y-24 rounded-control bg-ink px-4 py-3 text-sm font-semibold text-field transition-transform focus:translate-y-0"
->
-	Skip to content
-</a>
+<a class="skip-link" href="#work">Skip to work</a>
 
-<header class="sticky top-0 z-40 border-b border-rule bg-field/95 backdrop-blur-sm">
-	<div class="mx-auto flex h-16 max-w-[80rem] items-center justify-between px-5 sm:px-8 lg:px-10">
-		<a href="#top" class="inline-flex min-h-11 items-center text-sm font-semibold tracking-tight"
-			>Hugo Hsi</a
-		>
-		<nav aria-label="Primary" class="flex items-center gap-5 text-sm sm:gap-7">
-			<a
-				href="#work"
-				class="inline-flex min-h-11 items-center px-1.5 transition-colors hover:text-build">Work</a
-			>
-			<a
-				href="#approach"
-				class="hidden min-h-11 items-center px-1.5 transition-colors hover:text-build sm:inline-flex"
-				>Approach</a
-			>
-			<a
-				href="#contact"
-				class="inline-flex min-h-11 items-center px-1.5 transition-colors hover:text-build"
-				>Contact</a
-			>
-			<a
-				href={contact.resume}
-				target="_blank"
-				rel="noreferrer"
-				class="hidden min-h-11 items-center rounded-control border border-ink px-3.5 py-2 font-semibold transition-colors hover:bg-ink hover:text-field md:inline-flex"
-			>
-				Résumé ↗
-			</a>
-		</nav>
-	</div>
+<header class="site-header" id="top">
+	<a class="identity" href="#top" aria-label="Hugo Hsi, back to top"
+		><span aria-hidden="true">HH</span> Hugo Hsi</a
+	>
+	<nav aria-label="Primary navigation">
+		<a href="#work">Work</a><a href="#experience">Experience</a><a href="#about">About</a>
+	</nav>
+	<span class="location"><i aria-hidden="true"></i>Brooklyn, NY</span>
 </header>
 
-<main id="main">
-	<section
-		id="top"
-		aria-labelledby="hero-title"
-		class="mx-auto grid min-h-[calc(100svh-4rem)] max-w-[80rem] content-between px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24"
-	>
-		<div class="grid items-start gap-16 lg:grid-cols-12 lg:gap-8">
-			<div class="lg:col-span-8">
-				<p
-					class="mb-8 flex flex-wrap items-center gap-3 text-xs font-semibold tracking-[0.13em] uppercase"
-				>
-					<span class="text-diagnose">Full-stack developer</span>
-					<span aria-hidden="true" class="h-px w-8 bg-rule"></span>
-					<span class="text-muted">New York City</span>
-				</p>
-
-				<h1 id="hero-title">
-					<span
-						class="block max-w-[15ch] font-display text-[clamp(3.3rem,7.3vw,7rem)] leading-[0.88] tracking-[-0.025em]"
-					>
-						Design taught me to find the right problem.
-					</span>
-					<span
-						class="mt-5 block max-w-[14ch] font-body text-[clamp(2.75rem,6.3vw,6rem)] leading-[0.91] font-semibold tracking-[-0.055em]"
-					>
-						Engineering taught me how to solve it.
-					</span>
-				</h1>
-
-				<p class="mt-9 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
-					I build maintainable products by following the real problem through interface, content,
-					code, and infrastructure.
-				</p>
-
-				<div class="mt-9 flex flex-wrap gap-3">
-					<a
-						href="#work"
-						class="inline-flex min-h-11 items-center gap-3 rounded-control bg-ink px-5 py-3 text-sm font-semibold text-field transition-colors hover:bg-build"
-					>
-						See selected work <span aria-hidden="true">↓</span>
-					</a>
-					<a
-						href={contact.resume}
-						target="_blank"
-						rel="noreferrer"
-						class="inline-flex min-h-11 items-center rounded-control border border-ink px-5 py-3 text-sm font-semibold transition-colors hover:bg-ink hover:text-field"
-					>
-						Download résumé
-					</a>
-				</div>
+<main>
+	<section class="hero" aria-labelledby="hero-title">
+		<div class="hero-copy">
+			<p class="eyebrow">Full-stack developer · Communication designer</p>
+			<h1 id="hero-title">I make complex systems <em>feel simple.</em></h1>
+			<p class="hero-summary">
+				I work across content architecture, product interfaces, and the engineering systems that
+				keep both reliable.
+			</p>
+			<div class="hero-links">
+				<a class="button" href="#work">See selected work <span aria-hidden="true">↓</span></a>
+				<a href="mailto:hugohsidev@gmail.com">Email</a>
+				<a href="https://www.linkedin.com/in/hugo-hsi" rel="noreferrer">LinkedIn</a>
+				<a href="https://github.com/hugo-hsi-dev" rel="noreferrer">GitHub</a>
 			</div>
-
-			<aside class="lg:col-span-4 lg:mt-11 lg:pl-8" aria-label="Hugo's working trace">
-				<p class="mb-7 font-utility text-[0.68rem] tracking-[0.12em] text-muted uppercase">
-					The working trace
-				</p>
-				<ol>
-					<li class="hero-stage relative grid grid-cols-[1.25rem_1fr] gap-4 pb-9">
-						<div class="relative flex justify-center" aria-hidden="true">
-							<span
-								class="hero-marker z-10 mt-1 size-3 rounded-full border-2 border-diagnose bg-field"
-							></span>
-							<span class="absolute top-4 bottom-[-0.55rem] w-px bg-rule">
-								<span class="hero-segment absolute inset-0 origin-top bg-diagnose"></span>
-							</span>
-						</div>
-						<div>
-							<p class="text-xs font-semibold tracking-[0.12em] text-diagnose uppercase">Find</p>
-							<p class="mt-2 leading-relaxed text-muted">
-								Look past the requested output to the person and constraint behind it.
-							</p>
-						</div>
-					</li>
-					<li class="hero-stage relative grid grid-cols-[1.25rem_1fr] gap-4 pb-9">
-						<div class="relative flex justify-center" aria-hidden="true">
-							<span class="hero-marker z-10 mt-1 size-3 rounded-full border-2 border-build bg-field"
-							></span>
-							<span class="absolute top-4 bottom-[-0.55rem] w-px bg-rule">
-								<span class="hero-segment absolute inset-0 origin-top bg-build"></span>
-							</span>
-						</div>
-						<div>
-							<p class="text-xs font-semibold tracking-[0.12em] text-build uppercase">Build</p>
-							<p class="mt-2 leading-relaxed text-muted">
-								Follow the answer through every layer it requires.
-							</p>
-						</div>
-					</li>
-					<li class="hero-stage relative grid grid-cols-[1.25rem_1fr] gap-4">
-						<div class="relative flex justify-center" aria-hidden="true">
-							<span class="hero-marker z-10 mt-1 size-3 rounded-full border-2 border-proof bg-field"
-							></span>
-						</div>
-						<div>
-							<p class="text-xs font-semibold tracking-[0.12em] text-proof uppercase">Prove</p>
-							<p class="mt-2 leading-relaxed text-muted">
-								Show what became clearer, faster, or easier to own.
-							</p>
-						</div>
-					</li>
-				</ol>
-			</aside>
 		</div>
 
-		<ul
-			class="mt-16 grid gap-4 border-t border-rule pt-5 font-utility text-[0.68rem] tracking-[0.08em] text-muted uppercase sm:grid-cols-3"
-			aria-label="Selected outcomes"
+		<div
+			class="build-trace"
+			aria-label="A working path from content model to design system to visual quality assurance"
 		>
-			<li><strong class="font-medium text-ink">3,500+</strong> pages migrated</li>
-			<li><strong class="font-medium text-ink">3 systems</strong> unified</li>
-			<li><strong class="font-medium text-ink">Visual QA</strong> automated</li>
-		</ul>
+			<div class="trace-header">
+				<span>How the work holds together</span><span>HH / TRACE</span>
+			</div>
+			<div class="trace-canvas">
+				<svg
+					viewBox="0 0 460 310"
+					role="img"
+					aria-label="Content model connects to design system, which connects to visual quality assurance"
+				>
+					<path class="trace-path" d="M72 68 C210 68 164 155 250 155 S288 242 388 242" />
+					<circle cx="72" cy="68" r="11" /><circle cx="250" cy="155" r="11" /><circle
+						cx="388"
+						cy="242"
+						r="11"
+					/>
+				</svg>
+				<div class="trace-node node-one">
+					<b>01</b><strong>Content model</strong><small>People can publish</small>
+				</div>
+				<div class="trace-node node-two">
+					<b>02</b><strong>Design system</strong><small>Products stay coherent</small>
+				</div>
+				<div class="trace-node node-three">
+					<b>03</b><strong>Visual QA</strong><small>Changes ship safely</small>
+				</div>
+			</div>
+			<div class="trace-footer">
+				<span>Clear for people</span><span>Durable in production</span>
+			</div>
+		</div>
 	</section>
 
-	<section id="work" aria-labelledby="work-title" class="border-t border-rule">
-		<div class="mx-auto max-w-[80rem] px-5 sm:px-8 lg:px-10">
-			<div class="grid gap-6 py-16 sm:py-20 lg:grid-cols-12 lg:py-24">
-				<div class="lg:col-span-7">
-					<p class="mb-4 text-xs font-semibold tracking-[0.14em] text-build uppercase">
-						Selected work
-					</p>
-					<h2
-						id="work-title"
-						class="max-w-[12ch] font-display text-5xl leading-[0.95] sm:text-6xl lg:text-7xl"
-					>
-						The work starts before the code.
-					</h2>
-				</div>
-				<p
-					class="max-w-xl self-end text-lg leading-relaxed text-muted lg:col-span-4 lg:col-start-9"
-				>
-					The brief is the visible request. These projects show what it became after I looked
-					closer.
-				</p>
-			</div>
+	<section class="proof-strip" aria-label="Selected evidence">
+		<div><strong>3,500+</strong><span>pages replatformed</span></div>
+		<div><strong>3 → 1</strong><span>styling systems unified</span></div>
+		<div><strong>Visual QA</strong><span>added to release checks</span></div>
+		<div><strong>Motion</strong><span>brought in-house</span></div>
+	</section>
 
-			{#each projects as project, index (project.slug)}
-				<ProjectStory {project} {index} />
+	<section class="work-section" id="work" aria-labelledby="work-title">
+		<header class="section-heading">
+			<div>
+				<p class="eyebrow">Selected work</p>
+				<h2 id="work-title">Proof, not a project grid.</h2>
+			</div>
+			<p>
+				Three projects that show how I move between content, interface, application logic, and
+				infrastructure.
+			</p>
+		</header>
+
+		<div class="project-list">
+			{#each projects as project, index (project.id)}
+				<article class="project">
+					<div class="project-visual {project.id}" aria-hidden="true">
+						<div class="visual-bar">
+							<span>{String(index + 1).padStart(2, '0')} / 03</span><span>System view</span>
+						</div>
+						{#if project.id === 'museum'}
+							<div class="museum-ui">
+								<aside><i></i><i></i><i></i><i></i></aside>
+								<div class="content-tree">
+									<b>Page</b><span class="connector"></span>
+									<div><span>Hero</span><span>Story</span><span>Related</span></div>
+									<div class="subnodes"><span>Image</span><span>Quote</span><span>CTA</span></div>
+								</div>
+							</div>
+						{:else if project.id === 'minecentral'}
+							<div class="server-ui">
+								<header>
+									<i></i><span><small>SERVER 01</small><b>Online</b></span><em>48 ms</em>
+								</header>
+								<svg viewBox="0 0 400 150" preserveAspectRatio="none"
+									><path d="M0 112 C55 105 50 42 105 68 S190 124 224 72 S310 31 400 45" /></svg
+								>
+								<div class="metrics">
+									<span><small>CPU</small><b>32%</b></span><span
+										><small>MEMORY</small><b>4.8 GB</b></span
+									><span><small>PLAYERS</small><b>12 / 40</b></span>
+								</div>
+							</div>
+						{:else}
+							<div class="budget-ui">
+								<div>
+									<small>LEFT THIS WEEK</small><b>$184<sup>.60</sup></b><i><span></span></i>
+								</div>
+								<ul>
+									<li><span>GR</span><b>Groceries</b><em>− $42.18</em></li>
+									<li><span>TR</span><b>Transit</b><em>− $2.90</em></li>
+									<li><span>CF</span><b>Coffee</b><em>− $5.25</em></li>
+								</ul>
+							</div>
+						{/if}
+					</div>
+
+					<div class="project-copy">
+						<p class="eyebrow">{project.context}</p>
+						<h3>{project.title}</h3>
+						<p class="intro">{project.intro}</p>
+						<div class="contributions">
+							<span>What I did</span>
+							<ul>
+								{#each project.proof as item (item)}<li>{item}</li>{/each}
+							</ul>
+						</div>
+						<p class="outcome">{project.outcome}</p>
+						<ul class="tags" aria-label="Technologies used">
+							{#each project.stack as item (item)}<li>{item}</li>{/each}
+						</ul>
+						<div class="project-links">
+							{#if project.link}
+								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external URL -->
+								<a href={project.link} rel="noreferrer"
+									>{project.linkLabel}<span aria-hidden="true">↗</span></a
+								>{/if}
+							{#if project.code}
+								<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- external URL -->
+								<a class="secondary" href={project.code} rel="noreferrer"
+									>View code<span aria-hidden="true">↗</span></a
+								>{/if}
+						</div>
+					</div>
+				</article>
 			{/each}
 		</div>
 	</section>
 
-	<section id="approach" aria-labelledby="approach-title" class="border-t border-rule bg-surface">
-		<div class="mx-auto max-w-[80rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-28">
-			<div class="grid gap-14 lg:grid-cols-12 lg:gap-8">
-				<div class="lg:col-span-5">
-					<p class="mb-4 text-xs font-semibold tracking-[0.14em] text-diagnose uppercase">
-						Approach
-					</p>
-					<h2
-						id="approach-title"
-						class="max-w-[11ch] font-display text-5xl leading-[0.95] sm:text-6xl"
-					>
-						I came to engineering through communication design.
-					</h2>
-					<p class="mt-7 max-w-xl text-lg leading-relaxed text-muted">
-						That background taught me to look beneath the requested deliverable. Engineering gave me
-						the range to carry the answer through code, testing, and production.
-					</p>
-				</div>
-
-				<div class="lg:col-span-6 lg:col-start-7">
-					<ol class="border-t border-rule">
-						{#each principles as principle, index (principle.title)}
-							<li class="grid gap-3 border-b border-rule py-6 sm:grid-cols-[2rem_1fr]">
-								<span
-									class={[
-										'font-utility text-xs',
-										index === 0 && 'text-diagnose',
-										index === 1 && 'text-build',
-										index === 2 && 'text-proof'
-									]}
-								>
-									{String(index + 1).padStart(2, '0')}
-								</span>
-								<div>
-									<h3 class="text-lg font-semibold">{principle.title}</h3>
-									<p class="mt-2 leading-relaxed text-muted">{principle.text}</p>
-								</div>
-							</li>
-						{/each}
-					</ol>
-				</div>
+	<section class="experience-section" id="experience" aria-labelledby="experience-title">
+		<header class="section-heading compact">
+			<div>
+				<p class="eyebrow">Experience</p>
+				<h2 id="experience-title">Where the work happened.</h2>
 			</div>
-
-			<div class="mt-20 grid gap-10 border-t border-rule pt-10 lg:grid-cols-12">
-				<div class="lg:col-span-3">
-					<p class="text-xs font-semibold tracking-[0.14em] text-build uppercase">
-						Where I have done it
-					</p>
-				</div>
-				<div class="lg:col-span-8 lg:col-start-5">
-					<div class="divide-y divide-rule border-y border-rule">
-						{#each experience as item (item.company)}
-							<article class="grid gap-3 py-6 sm:grid-cols-[7rem_1fr]">
-								<p class="font-utility text-xs text-muted">{item.period}</p>
-								<div>
-									<h3 class="font-semibold">{item.company} · {item.role}</h3>
-									<p class="mt-2 max-w-2xl leading-relaxed text-muted">{item.summary}</p>
-								</div>
-							</article>
-						{/each}
+		</header>
+		<div class="experience-list">
+			{#each experience as item (item.company)}
+				<article>
+					<div>
+						<h3>{item.company}</h3>
+						<p>{item.role}</p>
 					</div>
-					<p class="mt-7 max-w-2xl leading-relaxed text-muted">
-						BFA, Communication Design at The New School. Full Stack Web Development at Columbia
-						University.
-					</p>
-				</div>
-			</div>
+					<time>{item.period}</time>
+					<div>
+						<p>{item.description}</p>
+						<ul class="tags">
+							{#each item.tags as tag (tag)}<li>{tag}</li>{/each}
+						</ul>
+					</div>
+				</article>
+			{/each}
 		</div>
 	</section>
 
-	<section id="contact" aria-labelledby="contact-title" class="bg-ink text-field">
-		<div class="mx-auto max-w-[80rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-32">
-			<p class="mb-5 text-xs font-semibold tracking-[0.14em] text-proof-light uppercase">
-				Open to the next problem
+	<section class="capabilities-section" aria-labelledby="capabilities-title">
+		<div>
+			<p class="eyebrow">Capabilities</p>
+			<h2 id="capabilities-title">A searchable index of how I build.</h2>
+			<p class="section-copy">
+				Tools change. The through-line is moving from a fuzzy problem to a clear, maintainable
+				product.
 			</p>
-			<h2
-				id="contact-title"
-				class="max-w-[17ch] font-display text-5xl leading-[0.96] sm:text-6xl lg:text-7xl"
-			>
-				Looking for someone who can understand the product and build the system behind it?
+		</div>
+		<div class="capability-list">
+			{#each capabilities as group (group.label)}<div>
+					<h3>{group.label}</h3>
+					<ul>
+						{#each group.items as item (item)}<li>{item}</li>{/each}
+					</ul>
+				</div>{/each}
+		</div>
+	</section>
+
+	<section class="about-section" id="about" aria-labelledby="about-title">
+		<div class="about-heading">
+			<p class="eyebrow">About</p>
+			<h2 id="about-title">
+				I learned to design how things communicate. Then I learned to build how they work.
 			</h2>
-			<p class="mt-7 max-w-2xl text-lg leading-relaxed text-field/70">
-				I am available for full-time engineering roles. Based in New York City and open to remote
-				opportunities.
+		</div>
+		<div class="about-copy">
+			<p>
+				That combination shapes how I approach software. I care about the visible layer—type,
+				motion, hierarchy, interaction—but also the content model, component system, and test
+				coverage that keep it coherent after launch.
 			</p>
-			<a
-				href={'mailto:' + contact.email}
-				class="mt-10 inline-flex min-h-11 items-center gap-3 rounded-control bg-field px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-proof hover:text-field"
+			<p>
+				I’m based in Brooklyn and do my best work where design and engineering talk to each other
+				early.
+			</p>
+		</div>
+		<div class="education">
+			<span>Education</span>
+			<article>
+				<time>2024</time><strong>Columbia University</strong>
+				<p>Full-stack web development</p>
+			</article>
+			<article>
+				<time>2023</time><strong>The New School</strong>
+				<p>BFA, Communication Design</p>
+			</article>
+		</div>
+	</section>
+
+	<section class="contact-section" aria-labelledby="contact-title">
+		<p class="eyebrow">Details</p>
+		<div class="contact-heading">
+			<h2 id="contact-title">Everything you came looking for.</h2>
+			<span>Brooklyn, New York</span>
+		</div>
+		<div class="contact-links">
+			<a href="mailto:hugohsidev@gmail.com"
+				><span>Email</span><strong>hugohsidev@gmail.com</strong><i aria-hidden="true">↗</i></a
 			>
-				Email Hugo <span aria-hidden="true">↗</span>
-			</a>
+			<a href="https://www.linkedin.com/in/hugo-hsi" rel="noreferrer"
+				><span>LinkedIn</span><strong>/in/hugo-hsi</strong><i aria-hidden="true">↗</i></a
+			>
+			<a href="https://github.com/hugo-hsi-dev" rel="noreferrer"
+				><span>GitHub</span><strong>@hugo-hsi-dev</strong><i aria-hidden="true">↗</i></a
+			>
 		</div>
 	</section>
 </main>
 
-<footer class="border-t border-field/15 bg-ink text-field">
-	<div
-		class="mx-auto flex max-w-[80rem] flex-col gap-6 px-5 py-8 text-sm text-field/65 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10"
-	>
-		<p>Built with SvelteKit, TypeScript, and attention to detail.</p>
-		<nav aria-label="Elsewhere" class="flex flex-wrap items-center gap-6">
-			<a
-				href={contact.github}
-				target="_blank"
-				rel="noreferrer"
-				aria-label="Hugo Hsi on GitHub"
-				class="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-field"
-			>
-				<BrandIcon name="github" size={16} />
-				GitHub
-			</a>
-			<a
-				href={contact.linkedin}
-				target="_blank"
-				rel="noreferrer"
-				aria-label="Hugo Hsi on LinkedIn"
-				class="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-field"
-			>
-				<BrandIcon name="linkedin" size={16} />
-				LinkedIn
-			</a>
-			<a
-				href={contact.resume}
-				target="_blank"
-				rel="noreferrer"
-				class="inline-flex min-h-11 items-center transition-colors hover:text-field"
-			>
-				Résumé
-			</a>
-		</nav>
-	</div>
+<footer>
+	<span>© {new Date().getFullYear()} Hugo Hsi</span><span
+		>Designed in Brooklyn · Built with SvelteKit</span
+	><a href="#top">Back to top ↑</a>
 </footer>
-
-<style>
-	.hero-segment {
-		transform: scaleY(0);
-		animation: draw-trace 360ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-	}
-
-	.hero-stage:nth-child(2) .hero-segment {
-		animation-delay: 300ms;
-	}
-
-	.hero-marker {
-		opacity: 0;
-		transform: scale(0.65);
-		animation: resolve-marker 240ms ease-out forwards;
-	}
-
-	.hero-stage:nth-child(1) .hero-marker {
-		animation-delay: 80ms;
-	}
-
-	.hero-stage:nth-child(2) .hero-marker {
-		animation-delay: 360ms;
-	}
-
-	.hero-stage:nth-child(3) .hero-marker {
-		animation-delay: 680ms;
-	}
-
-	@keyframes draw-trace {
-		to {
-			transform: scaleY(1);
-		}
-	}
-
-	@keyframes resolve-marker {
-		to {
-			opacity: 1;
-			transform: scale(1);
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.hero-segment {
-			transform: scaleY(1);
-		}
-
-		.hero-marker {
-			opacity: 1;
-			transform: scale(1);
-		}
-	}
-</style>
