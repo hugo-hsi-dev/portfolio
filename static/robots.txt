@@ -1,4 +1,3 @@
+# allow crawling everything by default
 User-agent: *
-Allow: /
-
-Sitemap: https://www.hugohsi.dev/sitemap.xml
+Disallow:
