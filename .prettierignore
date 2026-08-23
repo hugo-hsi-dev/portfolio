@@ -1,6 +1,7 @@
 # Package Managers
 package-lock.json
 pnpm-lock.yaml
+worker-configuration.d.ts
 yarn.lock
 bun.lock
 bun.lockb
@@ -9,6 +10,3 @@ bun.lockb
 /.agents/
 /skills-lock.json
 /static/
-/worker-configuration.d.ts
-/workers/realtime/worker-configuration.d.ts
-src/content/**/*.md
