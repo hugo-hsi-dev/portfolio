@@ -1,4 +1,5 @@
 node_modules
+.pnpm-store
 
 # Output
 .output
@@ -7,6 +8,8 @@ node_modules
 .wrangler
 /.svelte-kit
 /build
+/playwright-report
+/test-results
 
 # OS
 .DS_Store

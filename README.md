@@ -1,42 +1,36 @@
-# sv
+# Hugo Hsi portfolio
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+A minimal, single-page developer portfolio built with SvelteKit, Svelte 5, TypeScript,
+Tailwind CSS, and the Cloudflare adapter.
 
-## Creating a project
+## Develop
 
-If you're seeing this, you've probably already done this step. Congrats!
+    pnpm install
+    pnpm dev
 
-```sh
-# create a new project
-npx sv create my-app
-```
+The local site runs at http://localhost:5173.
 
-To recreate this project with the same configuration:
+## Verify
 
-```sh
-# recreate this project
-pnpm dlx sv@0.17.0 create --template minimal --types ts --add prettier eslint tailwindcss="plugins:none" sveltekit-adapter="adapter:cloudflare+cfTarget:workers" experimental="versions:kit+features:async,remoteFunctions,explicitEnvironmentVariables,handleRenderingErrors,forkPreloads" --install pnpm .
-```
+    pnpm lint
+    pnpm check
+    pnpm build
+    pnpm deploy:dry-run
+    pnpm test:e2e
 
-## Developing
+The build command produces the Worker bundle under .svelte-kit/cloudflare. CI also performs a Wrangler deployment dry run against that bundle.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Deploy
 
-```sh
-npm run dev
+Authenticate Wrangler with your Cloudflare account, then run:
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+    pnpm deploy
 
-## Building
+Brand, content, design-system, and motion decisions are documented under `docs/`.
+Bundled fonts live under `static/fonts`, and public product evidence lives under
+`static/images`.
 
-To create a production version of your app:
+## Font license
 
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+The bundled Recursive font retains its SIL Open Font License terms. See
+`static/fonts/recursive-OFL.txt`.
