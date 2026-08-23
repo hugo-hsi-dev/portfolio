@@ -50,9 +50,6 @@ jobs:
       - name: Check Svelte and TypeScript
         run: pnpm check
 
-      - name: Run application tests
-        run: pnpm test:unit
-
       - name: Audit dependencies
         run: pnpm audit --audit-level low
 

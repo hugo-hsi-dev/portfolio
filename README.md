@@ -1,6 +1,7 @@
 # Hugo Hsi portfolio
 
-A focused one-page portfolio built with SvelteKit 3, Svelte 5, TypeScript, Tailwind CSS, and the Cloudflare adapter.
+A minimal, single-page developer portfolio built with SvelteKit, Svelte 5, TypeScript,
+Tailwind CSS, and the Cloudflare adapter.
 
 ## Develop
 
@@ -13,7 +14,6 @@ The local site runs at http://localhost:5173.
 
     pnpm lint
     pnpm check
-    pnpm test:unit
     pnpm build
     pnpm deploy:dry-run
     pnpm test:e2e
@@ -26,8 +26,11 @@ Authenticate Wrangler with your Cloudflare account, then run:
 
     pnpm deploy
 
-Project screenshots live under static/media/projects, and the downloadable résumé lives under static/media/resume.
+Brand, content, design-system, and motion decisions are documented under `docs/`.
+Bundled fonts live under `static/fonts`, and public product evidence lives under
+`static/images`.
 
-## License
+## Font license
 
-Source code is available under the MIT license. Personal content, media, résumé files, and branding are excluded. Bundled fonts retain their SIL Open Font License terms. See LICENSE.md.
+The bundled Recursive font retains its SIL Open Font License terms. See
+`static/fonts/recursive-OFL.txt`.

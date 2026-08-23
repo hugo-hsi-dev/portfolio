@@ -1,390 +1,388 @@
 <script lang="ts">
-	import { contact, experience, principles, projects } from '#lib/portfolio.js';
-	import BrandIcon from '#lib/ui/BrandIcon.svelte';
-	import ProjectStory from '#lib/ui/ProjectStory.svelte';
+	import { onMount } from 'svelte';
+
+	const systems = [
+		{
+			index: '01',
+			label: 'Content architecture',
+			claim: 'A 3,500+ page migration designed for the people editing it.',
+			description:
+				'I migrated a museum site from WordPress to Prismic and designed editor-friendly content models for the new system.',
+			evidence: ['WordPress', 'Prismic'],
+			measure: '3,500+ pages'
+		},
+		{
+			index: '02',
+			label: 'Interface systems',
+			claim: 'Three styling systems brought into one shared language.',
+			description:
+				'I unified MUI, Styled Components, and shadcn/ui into one Tailwind system for interface work.',
+			evidence: ['3 systems', 'Tailwind'],
+			measure: '3 → 1'
+		},
+		{
+			index: '03',
+			label: 'Visual verification',
+			claim: 'A repeatable check for regressions people can see.',
+			description:
+				'I built a Playwright and GitHub Actions visual-regression pipeline that puts reviewable UI comparisons into CI.',
+			evidence: ['Change', 'Compare', 'Review'],
+			measure: 'Playwright + GitHub Actions'
+		}
+	];
+
+	const products = [
+		{
+			index: '01',
+			name: 'MineCentral',
+			type: 'Minecraft server hosting platform',
+			url: 'https://minecentral.net',
+			artifact: '/images/minecentral-console.png',
+			artifactAlt:
+				'MineCentral server console showing instance status, live logs, memory, and CPU usage',
+			description:
+				'Built a platform where users can create servers, manage Stripe subscriptions, and monitor instances in real time through the Pterodactyl dashboard.',
+			steps: ['Create', 'Subscribe', 'Monitor'],
+			stepNotes: ['Configure a server', 'Manage access with Stripe', 'Read instance state']
+		},
+		{
+			index: '02',
+			name: 'Me Save Money',
+			type: 'Budgeting PWA',
+			url: null,
+			artifact: null,
+			artifactAlt: '',
+			description:
+				'Built a SvelteKit PWA for recording purchases, setting a weekly budget, and seeing remaining spending update in real time.',
+			steps: ['Record', 'Budget', 'Remaining'],
+			stepNotes: ['Add a purchase', 'Set the week’s limit', 'See spending update']
+		}
+	];
+
+	const experience = [
+		{
+			company: 'Praxis Loop',
+			role: 'Full-stack developer (contractor)',
+			period: 'Oct 2025 — present',
+			description:
+				'Content architecture, interface-system consolidation, and visual-regression tooling for complex digital products.'
+		},
+		{
+			company: 'Lookout',
+			role: 'Design production intern',
+			period: '2022 — 2023',
+			description:
+				'Brought motion production in-house and created reusable brand assets. Motion work shown at the RSAC booth contributed to a GDUSA American Inhouse Design Award for the booth.'
+		}
+	];
+
+	const education = [
+		{
+			school: 'Columbia University',
+			program: 'Full Stack Web Development Bootcamp',
+			date: 'May 2024'
+		},
+		{ school: 'The New School', program: 'BFA, Communication Design', date: 'May 2023' }
+	];
+
+	let page: HTMLElement;
+	let hero: HTMLElement;
+	let systemsChapter: HTMLElement;
+	let contact: HTMLElement;
+	let productList: HTMLElement;
+	let productElements: HTMLElement[] = [];
+
+	onMount(() => {
+		const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+		const wideViewport = window.matchMedia('(min-width: 761px)');
+		let frame = 0;
+		productElements = Array.from(productList.querySelectorAll<HTMLElement>('.product-record'));
+
+		if (!reducedMotion.matches && !sessionStorage.getItem('hugo-intro-seen')) {
+			page.dataset.intro = 'play';
+			sessionStorage.setItem('hugo-intro-seen', 'true');
+			window.setTimeout(() => delete page.dataset.intro, 1200);
+		}
+
+		const clamp = (value: number) => Math.min(1, Math.max(0, value));
+
+		const update = () => {
+			frame = 0;
+			if (reducedMotion.matches) return;
+
+			const viewport = window.innerHeight;
+			const heroRect = hero.getBoundingClientRect();
+			const heroProgress = clamp(-heroRect.top / Math.max(heroRect.height * 0.7, 1));
+			hero.style.setProperty('--hero-progress', heroProgress.toFixed(3));
+
+			if (wideViewport.matches) {
+				const systemsRect = systemsChapter.getBoundingClientRect();
+				const systemsProgress = clamp(
+					-systemsRect.top / Math.max(systemsRect.height - viewport, 1)
+				);
+				systemsChapter.style.setProperty('--systems-progress', systemsProgress.toFixed(3));
+				systemsChapter.dataset.active = String(Math.min(2, Math.floor(systemsProgress * 3)));
+			}
+
+			productElements.forEach((element) => {
+				const rect = element.getBoundingClientRect();
+				const progress = clamp((viewport * 0.82 - rect.top) / Math.max(rect.height * 0.76, 1));
+				element.style.setProperty('--product-progress', progress.toFixed(3));
+				element.dataset.active = String(Math.min(2, Math.floor(progress * 3)));
+			});
+
+			const contactRect = contact.getBoundingClientRect();
+			const contactProgress = clamp((viewport * 0.88 - contactRect.top) / (viewport * 0.55));
+			contact.style.setProperty('--contact-progress', contactProgress.toFixed(3));
+		};
+
+		const requestUpdate = () => {
+			if (!frame) frame = requestAnimationFrame(update);
+		};
+
+		update();
+		window.addEventListener('scroll', requestUpdate, { passive: true });
+		window.addEventListener('resize', requestUpdate);
+		reducedMotion.addEventListener('change', requestUpdate);
+
+		return () => {
+			if (frame) cancelAnimationFrame(frame);
+			window.removeEventListener('scroll', requestUpdate);
+			window.removeEventListener('resize', requestUpdate);
+			reducedMotion.removeEventListener('change', requestUpdate);
+		};
+	});
 </script>
 
 <svelte:head>
-	<title>Hugo Hsi | Full-Stack Developer</title>
+	<title>Hugo Hsi — Full-stack developer</title>
 	<meta
 		name="description"
-		content="Hugo Hsi is a New York City full-stack developer who brings design judgment to content systems, product engineering, and production tooling."
+		content="Hugo Hsi is a full-stack developer making complex products clearer to use and more coherent to change."
 	/>
-	<link rel="canonical" href="https://www.hugohsi.dev/" />
-	<meta property="og:type" content="website" />
-	<meta property="og:title" content="Hugo Hsi | Full-Stack Developer" />
+	<meta property="og:title" content="Hugo Hsi — Full-stack developer" />
 	<meta
 		property="og:description"
-		content="Design taught me to find the right problem. Engineering taught me how to solve it."
+		content="Complex products, made clearer to use and more coherent to change."
 	/>
-	<meta property="og:url" content="https://www.hugohsi.dev/" />
-	<meta name="twitter:card" content="summary" />
-	<meta name="theme-color" content="#f1f4ef" />
+	<meta name="theme-color" content="#f2efe7" />
 </svelte:head>
 
-<a
-	href="#main"
-	class="fixed top-3 left-3 z-50 -translate-y-24 rounded-control bg-ink px-4 py-3 text-sm font-semibold text-field transition-transform focus:translate-y-0"
->
-	Skip to content
-</a>
-
-<header class="sticky top-0 z-40 border-b border-rule bg-field/95 backdrop-blur-sm">
-	<div class="mx-auto flex h-16 max-w-[80rem] items-center justify-between px-5 sm:px-8 lg:px-10">
-		<a href="#top" class="inline-flex min-h-11 items-center text-sm font-semibold tracking-tight"
-			>Hugo Hsi</a
-		>
-		<nav aria-label="Primary" class="flex items-center gap-5 text-sm sm:gap-7">
-			<a
-				href="#work"
-				class="inline-flex min-h-11 items-center px-1.5 transition-colors hover:text-build">Work</a
+<div class="page" bind:this={page}>
+	<a class="skip-link" href="#main-content">Skip to content</a>
+	<header class="site-header">
+		<a class="wordmark" href="#main-content" aria-label="Hugo Hsi, back to top">Hugo Hsi</a>
+		<nav class="site-nav" aria-label="Primary navigation">
+			<a href="#systems">Systems</a><a href="#products">Products</a><a href="#background"
+				>Background</a
 			>
-			<a
-				href="#approach"
-				class="hidden min-h-11 items-center px-1.5 transition-colors hover:text-build sm:inline-flex"
-				>Approach</a
-			>
-			<a
-				href="#contact"
-				class="inline-flex min-h-11 items-center px-1.5 transition-colors hover:text-build"
-				>Contact</a
-			>
-			<a
-				href={contact.resume}
-				target="_blank"
-				rel="noreferrer"
-				class="hidden min-h-11 items-center rounded-control border border-ink px-3.5 py-2 font-semibold transition-colors hover:bg-ink hover:text-field md:inline-flex"
-			>
-				Résumé ↗
-			</a>
 		</nav>
-	</div>
-</header>
-
-<main id="main">
-	<section
-		id="top"
-		aria-labelledby="hero-title"
-		class="mx-auto grid min-h-[calc(100svh-4rem)] max-w-[80rem] content-between px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-24"
-	>
-		<div class="grid items-start gap-16 lg:grid-cols-12 lg:gap-8">
-			<div class="lg:col-span-8">
-				<p
-					class="mb-8 flex flex-wrap items-center gap-3 text-xs font-semibold tracking-[0.13em] uppercase"
-				>
-					<span class="text-diagnose">Full-stack developer</span>
-					<span aria-hidden="true" class="h-px w-8 bg-rule"></span>
-					<span class="text-muted">New York City</span>
-				</p>
-
-				<h1 id="hero-title">
-					<span
-						class="block max-w-[15ch] font-display text-[clamp(3.3rem,7.3vw,7rem)] leading-[0.88] tracking-[-0.025em]"
-					>
-						Design taught me to find the right problem.
-					</span>
-					<span
-						class="mt-5 block max-w-[14ch] font-body text-[clamp(2.75rem,6.3vw,6rem)] leading-[0.91] font-semibold tracking-[-0.055em]"
-					>
-						Engineering taught me how to solve it.
-					</span>
-				</h1>
-
-				<p class="mt-9 max-w-2xl text-lg leading-relaxed text-muted sm:text-xl">
-					I build maintainable products by following the real problem through interface, content,
-					code, and infrastructure.
-				</p>
-
-				<div class="mt-9 flex flex-wrap gap-3">
-					<a
-						href="#work"
-						class="inline-flex min-h-11 items-center gap-3 rounded-control bg-ink px-5 py-3 text-sm font-semibold text-field transition-colors hover:bg-build"
-					>
-						See selected work <span aria-hidden="true">↓</span>
-					</a>
-					<a
-						href={contact.resume}
-						target="_blank"
-						rel="noreferrer"
-						class="inline-flex min-h-11 items-center rounded-control border border-ink px-5 py-3 text-sm font-semibold transition-colors hover:bg-ink hover:text-field"
-					>
-						Download résumé
-					</a>
-				</div>
-			</div>
-
-			<aside class="lg:col-span-4 lg:mt-11 lg:pl-8" aria-label="Hugo's working trace">
-				<p class="mb-7 font-utility text-[0.68rem] tracking-[0.12em] text-muted uppercase">
-					The working trace
-				</p>
-				<ol>
-					<li class="hero-stage relative grid grid-cols-[1.25rem_1fr] gap-4 pb-9">
-						<div class="relative flex justify-center" aria-hidden="true">
-							<span
-								class="hero-marker z-10 mt-1 size-3 rounded-full border-2 border-diagnose bg-field"
-							></span>
-							<span class="absolute top-4 bottom-[-0.55rem] w-px bg-rule">
-								<span class="hero-segment absolute inset-0 origin-top bg-diagnose"></span>
-							</span>
-						</div>
-						<div>
-							<p class="text-xs font-semibold tracking-[0.12em] text-diagnose uppercase">Find</p>
-							<p class="mt-2 leading-relaxed text-muted">
-								Look past the requested output to the person and constraint behind it.
-							</p>
-						</div>
-					</li>
-					<li class="hero-stage relative grid grid-cols-[1.25rem_1fr] gap-4 pb-9">
-						<div class="relative flex justify-center" aria-hidden="true">
-							<span class="hero-marker z-10 mt-1 size-3 rounded-full border-2 border-build bg-field"
-							></span>
-							<span class="absolute top-4 bottom-[-0.55rem] w-px bg-rule">
-								<span class="hero-segment absolute inset-0 origin-top bg-build"></span>
-							</span>
-						</div>
-						<div>
-							<p class="text-xs font-semibold tracking-[0.12em] text-build uppercase">Build</p>
-							<p class="mt-2 leading-relaxed text-muted">
-								Follow the answer through every layer it requires.
-							</p>
-						</div>
-					</li>
-					<li class="hero-stage relative grid grid-cols-[1.25rem_1fr] gap-4">
-						<div class="relative flex justify-center" aria-hidden="true">
-							<span class="hero-marker z-10 mt-1 size-3 rounded-full border-2 border-proof bg-field"
-							></span>
-						</div>
-						<div>
-							<p class="text-xs font-semibold tracking-[0.12em] text-proof uppercase">Prove</p>
-							<p class="mt-2 leading-relaxed text-muted">
-								Show what became clearer, faster, or easier to own.
-							</p>
-						</div>
-					</li>
-				</ol>
-			</aside>
-		</div>
-
-		<ul
-			class="mt-16 grid gap-4 border-t border-rule pt-5 font-utility text-[0.68rem] tracking-[0.08em] text-muted uppercase sm:grid-cols-3"
-			aria-label="Selected outcomes"
+		<a class="header-email action-link" href="mailto:hugohsidev@gmail.com"
+			><span>Email Hugo</span><span aria-hidden="true">↗</span></a
 		>
-			<li><strong class="font-medium text-ink">3,500+</strong> pages migrated</li>
-			<li><strong class="font-medium text-ink">3 systems</strong> unified</li>
-			<li><strong class="font-medium text-ink">Visual QA</strong> automated</li>
-		</ul>
-	</section>
+	</header>
 
-	<section id="work" aria-labelledby="work-title" class="border-t border-rule">
-		<div class="mx-auto max-w-[80rem] px-5 sm:px-8 lg:px-10">
-			<div class="grid gap-6 py-16 sm:py-20 lg:grid-cols-12 lg:py-24">
-				<div class="lg:col-span-7">
-					<p class="mb-4 text-xs font-semibold tracking-[0.14em] text-build uppercase">
-						Selected work
-					</p>
-					<h2
-						id="work-title"
-						class="max-w-[12ch] font-display text-5xl leading-[0.95] sm:text-6xl lg:text-7xl"
-					>
-						The work starts before the code.
-					</h2>
-				</div>
-				<p
-					class="max-w-xl self-end text-lg leading-relaxed text-muted lg:col-span-4 lg:col-start-9"
-				>
-					The brief is the visible request. These projects show what it became after I looked
-					closer.
+	<main id="main-content">
+		<section class="hero" bind:this={hero} aria-labelledby="hero-title">
+			<div class="hero-eyebrow system-label">
+				<span>Full-stack developer</span><span aria-hidden="true">·</span><span>Brooklyn, NY</span>
+			</div>
+			<h1 id="hero-title">
+				<span class="hero-line hero-line-one">Design taught me to read systems.</span>
+				<span class="hero-line hero-line-two">Engineering taught me to rewrite them.</span>
+				<span class="intro-caret" aria-hidden="true"></span>
+			</h1>
+			<div class="hero-lower">
+				<p class="hero-summary">
+					I’m Hugo Hsi, a full-stack developer making complex products clearer for the people who
+					use them—and more coherent for the teams who change them.
 				</p>
-			</div>
-
-			{#each projects as project, index (project.slug)}
-				<ProjectStory {project} {index} />
-			{/each}
-		</div>
-	</section>
-
-	<section id="approach" aria-labelledby="approach-title" class="border-t border-rule bg-surface">
-		<div class="mx-auto max-w-[80rem] px-5 py-16 sm:px-8 sm:py-20 lg:px-10 lg:py-28">
-			<div class="grid gap-14 lg:grid-cols-12 lg:gap-8">
-				<div class="lg:col-span-5">
-					<p class="mb-4 text-xs font-semibold tracking-[0.14em] text-diagnose uppercase">
-						Approach
-					</p>
-					<h2
-						id="approach-title"
-						class="max-w-[11ch] font-display text-5xl leading-[0.95] sm:text-6xl"
+				<div class="hero-actions">
+					<a class="action-link" href="#systems"
+						><span>See selected work</span><span aria-hidden="true">↓</span></a
 					>
-						I came to engineering through communication design.
-					</h2>
-					<p class="mt-7 max-w-xl text-lg leading-relaxed text-muted">
-						That background taught me to look beneath the requested deliverable. Engineering gave me
-						the range to carry the answer through code, testing, and production.
-					</p>
-				</div>
-
-				<div class="lg:col-span-6 lg:col-start-7">
-					<ol class="border-t border-rule">
-						{#each principles as principle, index (principle.title)}
-							<li class="grid gap-3 border-b border-rule py-6 sm:grid-cols-[2rem_1fr]">
-								<span
-									class={[
-										'font-utility text-xs',
-										index === 0 && 'text-diagnose',
-										index === 1 && 'text-build',
-										index === 2 && 'text-proof'
-									]}
-								>
-									{String(index + 1).padStart(2, '0')}
-								</span>
-								<div>
-									<h3 class="text-lg font-semibold">{principle.title}</h3>
-									<p class="mt-2 leading-relaxed text-muted">{principle.text}</p>
-								</div>
-							</li>
-						{/each}
-					</ol>
+					<a class="action-link" href="mailto:hugohsidev@gmail.com"
+						><span>Email me</span><span aria-hidden="true">↗</span></a
+					>
 				</div>
 			</div>
+		</section>
 
-			<div class="mt-20 grid gap-10 border-t border-rule pt-10 lg:grid-cols-12">
-				<div class="lg:col-span-3">
-					<p class="text-xs font-semibold tracking-[0.14em] text-build uppercase">
-						Where I have done it
-					</p>
+		<section
+			class="systems-chapter"
+			id="systems"
+			bind:this={systemsChapter}
+			aria-labelledby="systems-title"
+			data-active="0"
+		>
+			<header class="chapter-intro">
+				<p class="system-label">Praxis Loop · Systems</p>
+				<h2 id="systems-title">Clear on the surface.<br />Coherent underneath.</h2>
+				<p class="chapter-description">
+					At Praxis Loop, I work across content architecture, interface systems, and the checks that
+					keep visual intent intact.
+				</p>
+				<p class="chapter-scope system-type">Role: full-stack developer (contractor)</p>
+			</header>
+			<div class="systems-layout">
+				<div class="system-records">
+					{#each systems as system, index (system.label)}
+						<article class="system-record" data-index={index}>
+							<div class="record-heading">
+								<span class="system-label">{system.index}</span>
+								<p class="system-label">{system.label}</p>
+							</div>
+							<h3>{system.claim}</h3>
+							<p class="record-description">{system.description}</p>
+							<p class="record-evidence system-type">{system.measure}</p>
+							<div class="mobile-proof" aria-hidden="true">
+								{#each system.evidence as item, itemIndex (item)}
+									<span>{item}</span>{#if itemIndex < system.evidence.length - 1}<i>→</i>{/if}
+								{/each}
+							</div>
+						</article>
+					{/each}
 				</div>
-				<div class="lg:col-span-8 lg:col-start-5">
-					<div class="divide-y divide-rule border-y border-rule">
-						{#each experience as item (item.company)}
-							<article class="grid gap-3 py-6 sm:grid-cols-[7rem_1fr]">
-								<p class="font-utility text-xs text-muted">{item.period}</p>
-								<div>
-									<h3 class="font-semibold">{item.company} · {item.role}</h3>
-									<p class="mt-2 max-w-2xl leading-relaxed text-muted">{item.summary}</p>
+				<div class="proof-column" aria-hidden="true">
+					<div class="proof-field">
+						<p class="proof-status system-label"><span></span>Relationship under inspection</p>
+						<div class="proof-scenes">
+							{#each systems as system, index (system.label)}
+								<div class="proof-scene" data-index={index}>
+									<p class="proof-measure system-type">{system.measure}</p>
+									<div class="proof-flow">
+										{#each system.evidence as item, itemIndex (item)}
+											<span>{item}</span>{#if itemIndex < system.evidence.length - 1}<i>→</i>{/if}
+										{/each}
+									</div>
 								</div>
-							</article>
-						{/each}
+							{/each}
+						</div>
+						<div class="proof-progress"><span></span></div>
+						<p class="proof-count system-type">01 — 03</p>
 					</div>
-					<p class="mt-7 max-w-2xl leading-relaxed text-muted">
-						BFA, Communication Design at The New School. Full Stack Web Development at Columbia
-						University.
-					</p>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
 
-	<section id="contact" aria-labelledby="contact-title" class="bg-ink text-field">
-		<div class="mx-auto max-w-[80rem] px-5 py-16 sm:px-8 sm:py-24 lg:px-10 lg:py-32">
-			<p class="mb-5 text-xs font-semibold tracking-[0.14em] text-proof-light uppercase">
-				Open to the next problem
-			</p>
-			<h2
-				id="contact-title"
-				class="max-w-[17ch] font-display text-5xl leading-[0.96] sm:text-6xl lg:text-7xl"
+		<section class="products-section" id="products" aria-labelledby="products-title">
+			<header class="section-intro">
+				<p class="system-label">Independent products</p>
+				<h2 id="products-title">Products that make<br />state understandable.</h2>
+				<p>
+					Independent builds focused on technical and financial systems people need to read at a
+					glance.
+				</p>
+			</header>
+			<div class="product-list" bind:this={productList}>
+				{#each products as product (product.name)}
+					<article class="product-record" data-active="0">
+						<header class="product-copy">
+							<div class="product-index system-label">{product.index} / 02</div>
+							<div class="product-title-block">
+								<p class="product-type system-label">{product.type}</p>
+								<div class="product-title-row">
+									<h3>{product.name}</h3>
+									{#if product.url}
+										<a class="action-link" href={product.url} target="_blank" rel="noreferrer">
+											<span>Visit site</span><span aria-hidden="true">↗</span>
+										</a>
+									{/if}
+								</div>
+							</div>
+							<p>{product.description}</p>
+						</header>
+						{#if product.artifact}
+							<figure class="product-artifact">
+								<img src={product.artifact} alt={product.artifactAlt} loading="lazy" />
+								<figcaption>
+									<span class="system-label">Live product interface</span>
+									<ol aria-label={`${product.name} functional sequence`}>
+										{#each product.steps as step, stepIndex (step)}
+											<li data-step={stepIndex}>{step}</li>
+										{/each}
+									</ol>
+								</figcaption>
+							</figure>
+						{:else}
+							<div class="product-sequence" aria-label={`${product.name} functional sequence`}>
+								<div class="sequence-line" aria-hidden="true"><span></span></div>
+								<ol>
+									{#each product.steps as step, stepIndex (step)}
+										<li data-step={stepIndex}>
+											<span class="step-marker system-type">0{stepIndex + 1}</span>
+											<div><strong>{step}</strong><span>{product.stepNotes[stepIndex]}</span></div>
+										</li>
+									{/each}
+								</ol>
+							</div>
+						{/if}
+					</article>
+				{/each}
+			</div>
+		</section>
+
+		<section class="background-section" id="background" aria-labelledby="background-title">
+			<header class="background-intro">
+				<p class="system-label">Background</p>
+				<h2 id="background-title">One practice,<br />trained from two directions.</h2>
+				<p class="background-lead">
+					Communication design trained my attention to hierarchy, language, and coherence.
+					Engineering lets me carry that attention into content models, interface rules, tooling,
+					and tests.
+				</p>
+			</header>
+			<div class="background-records">
+				<section aria-labelledby="experience-label">
+					<h3 class="system-label" id="experience-label">Experience</h3>
+					{#each experience as item (item.company)}
+						<article class="history-record">
+							<div>
+								<h4>{item.company}</h4>
+								<p>{item.role}</p>
+							</div>
+							<p class="system-type">{item.period}</p>
+							<p>{item.description}</p>
+						</article>
+					{/each}
+				</section>
+				<section aria-labelledby="education-label">
+					<h3 class="system-label" id="education-label">Education</h3>
+					{#each education as item (item.school)}
+						<article class="education-record">
+							<div>
+								<h4>{item.school}</h4>
+								<p>{item.program}</p>
+							</div>
+							<p class="system-type">{item.date}</p>
+						</article>
+					{/each}
+				</section>
+			</div>
+		</section>
+
+		<section
+			class="contact-section"
+			id="contact"
+			bind:this={contact}
+			aria-labelledby="contact-title"
+		>
+			<p class="system-label">Contact</p>
+			<div class="contact-heading">
+				<h2 id="contact-title">What needs to<br />become clearer?</h2>
+				<p>Tell me about the product, system, or next change.</p>
+			</div>
+			<a class="contact-link" href="mailto:hugohsidev@gmail.com"
+				><span class="contact-rule" aria-hidden="true"><i></i></span><span
+					>hugohsidev@gmail.com</span
+				><span class="contact-arrow" aria-hidden="true">↗</span></a
 			>
-				Looking for someone who can understand the product and build the system behind it?
-			</h2>
-			<p class="mt-7 max-w-2xl text-lg leading-relaxed text-field/70">
-				I am available for full-time engineering roles. Based in New York City and open to remote
-				opportunities.
-			</p>
-			<a
-				href={'mailto:' + contact.email}
-				class="mt-10 inline-flex min-h-11 items-center gap-3 rounded-control bg-field px-5 py-3 text-sm font-semibold text-ink transition-colors hover:bg-proof hover:text-field"
-			>
-				Email Hugo <span aria-hidden="true">↗</span>
-			</a>
-		</div>
-	</section>
-</main>
+		</section>
+	</main>
 
-<footer class="border-t border-field/15 bg-ink text-field">
-	<div
-		class="mx-auto flex max-w-[80rem] flex-col gap-6 px-5 py-8 text-sm text-field/65 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10"
-	>
-		<p>Built with SvelteKit, TypeScript, and attention to detail.</p>
-		<nav aria-label="Elsewhere" class="flex flex-wrap items-center gap-6">
-			<a
-				href={contact.github}
-				target="_blank"
-				rel="noreferrer"
-				aria-label="Hugo Hsi on GitHub"
-				class="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-field"
-			>
-				<BrandIcon name="github" size={16} />
-				GitHub
-			</a>
-			<a
-				href={contact.linkedin}
-				target="_blank"
-				rel="noreferrer"
-				aria-label="Hugo Hsi on LinkedIn"
-				class="inline-flex min-h-11 items-center gap-2 transition-colors hover:text-field"
-			>
-				<BrandIcon name="linkedin" size={16} />
-				LinkedIn
-			</a>
-			<a
-				href={contact.resume}
-				target="_blank"
-				rel="noreferrer"
-				class="inline-flex min-h-11 items-center transition-colors hover:text-field"
-			>
-				Résumé
-			</a>
-		</nav>
-	</div>
-</footer>
-
-<style>
-	.hero-segment {
-		transform: scaleY(0);
-		animation: draw-trace 360ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
-	}
-
-	.hero-stage:nth-child(2) .hero-segment {
-		animation-delay: 300ms;
-	}
-
-	.hero-marker {
-		opacity: 0;
-		transform: scale(0.65);
-		animation: resolve-marker 240ms ease-out forwards;
-	}
-
-	.hero-stage:nth-child(1) .hero-marker {
-		animation-delay: 80ms;
-	}
-
-	.hero-stage:nth-child(2) .hero-marker {
-		animation-delay: 360ms;
-	}
-
-	.hero-stage:nth-child(3) .hero-marker {
-		animation-delay: 680ms;
-	}
-
-	@keyframes draw-trace {
-		to {
-			transform: scaleY(1);
-		}
-	}
-
-	@keyframes resolve-marker {
-		to {
-			opacity: 1;
-			transform: scale(1);
-		}
-	}
-
-	@media (prefers-reduced-motion: reduce) {
-		.hero-segment {
-			transform: scaleY(1);
-		}
-
-		.hero-marker {
-			opacity: 1;
-			transform: scale(1);
-		}
-	}
-</style>
+	<footer class="site-footer">
+		<span>Hugo Hsi</span><a href="https://linkedin.com/in/hugo-hsi" target="_blank" rel="noreferrer"
+			>LinkedIn ↗</a
+		><span>Brooklyn, NY</span>
+	</footer>
+</div>

@@ -1,7 +1,7 @@
 import adapter from '@sveltejs/adapter-cloudflare';
 import { sveltekit } from '@sveltejs/kit/vite';
 import tailwindcss from '@tailwindcss/vite';
-import { defineConfig } from 'vitest/config';
+import { defineConfig } from 'vite';
 
 export default defineConfig({
 	plugins: [
@@ -13,11 +13,5 @@ export default defineConfig({
 			},
 			adapter: adapter()
 		})
-	],
-	test: {
-		expect: { requireAssertions: true },
-		environment: 'node',
-		include: ['src/**/*.{test,spec}.{js,ts}'],
-		restoreMocks: true
-	}
+	]
 });

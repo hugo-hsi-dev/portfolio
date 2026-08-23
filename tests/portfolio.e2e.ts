@@ -9,13 +9,18 @@ test('presents a focused one-page hiring narrative', async ({ page }) => {
 	await expect(
 		page.getByRole('heading', {
 			level: 1,
-			name: 'Design taught me to find the right problem. Engineering taught me how to solve it.'
+			name: 'Design taught me to read systems. Engineering taught me to rewrite them.'
 		})
 	).toBeVisible();
 	await expect(
-		page.getByRole('heading', { level: 2, name: 'The work starts before the code.' })
+		page.getByRole('heading', { level: 2, name: 'Clear on the surface. Coherent underneath.' })
 	).toBeVisible();
-	await expect(page.getByRole('article')).toHaveCount(5);
+	await expect(page.locator('.system-record')).toHaveCount(3);
+	await expect(page.locator('.product-record')).toHaveCount(2);
+	await expect(page.getByRole('link', { name: 'Visit site' })).toHaveAttribute(
+		'href',
+		'https://minecentral.net'
+	);
 	await expect(page.getByRole('link', { name: 'Email Hugo' })).toHaveAttribute(
 		'href',
 		'mailto:hugohsidev@gmail.com'

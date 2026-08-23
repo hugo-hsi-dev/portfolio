@@ -6,9 +6,7 @@ bun.lock
 bun.lockb
 
 # Miscellaneous
-/.agents/
-/skills-lock.json
 /static/
-/worker-configuration.d.ts
-/workers/realtime/worker-configuration.d.ts
-src/content/**/*.md
+.pnpm-store/
+/playwright-report/
+/test-results/
