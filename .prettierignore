@@ -7,6 +7,4 @@ bun.lock
 bun.lockb
 
 # Miscellaneous
-/.agents/
-/skills-lock.json
 /static/
