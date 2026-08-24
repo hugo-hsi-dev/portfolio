@@ -13,7 +13,7 @@
 		"dev": "portless run vite dev",
 		"build": "vite build",
 		"deploy": "pnpm build && wrangler deploy",
-		"deploy:dry-run": "pnpm build && wrangler deploy --dry-run --outdir .wrangler/build/app",
+		"deploy:dry-run": "pnpm build && wrangler deploy --dry-run",
 		"preview": "wrangler dev .svelte-kit/cloudflare/_worker.js --port 4173",
 		"prepare": "svelte-kit sync",
 		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
