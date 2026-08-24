@@ -32,7 +32,7 @@ Authenticate Wrangler with the intended Cloudflare account, then run:
 pnpm deploy
 ```
 
-Pull requests and pushes to `main` are also validated by GitHub Actions and Cloudflare Workers Builds.
+Pull requests and pushes to `main` are validated by Cloudflare Workers Builds.
 
 ## License
 
