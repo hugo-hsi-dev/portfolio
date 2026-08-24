@@ -4,16 +4,10 @@ Unless noted below, software source code in this repository is Copyright (c) 202
 
 The MIT License does not apply to these materials:
 
-- Portfolio content under `src/content/`
-- Personal media, screenshots, photographs, and résumé files under `static/media/`
+- Portfolio copy, personal information, and case-study content in `src/routes/+page.svelte`
 - The Hugo Hsi name, likeness, logos, visual identity, and other branding
 
 Those excluded materials are Copyright (c) Hugo Hsi. All rights are reserved.
-
-Bundled fonts remain subject to their SIL Open Font License terms:
-
-- `static/fonts/forum-OFL.txt`
-- `static/fonts/outfit-OFL.txt`
 
 ## MIT License
 

@@ -10,6 +10,6 @@ Include enough detail to reproduce and assess the issue:
 - Potential impact
 - Any temporary mitigation you have tested
 
-Do not include reset tokens, Cloudflare credentials, personal data, or other secrets. If a secret was exposed, revoke it before sending the report and state that you rotated it.
+Do not include Cloudflare credentials, personal data, or other secrets. If a secret was exposed, revoke it before sending the report and state that you rotated it.
 
 Security fixes target the current `main` branch and production deployment. Older commits and local forks do not receive separate security updates.
