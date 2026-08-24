@@ -9,7 +9,9 @@ pnpm install
 pnpm dev
 ```
 
-The local site runs at `http://localhost:5173`.
+The local site runs with [Portless](https://portless.sh). The first run may ask to trust Portless's local
+certificate authority and authorize its HTTPS proxy. Linked Git worktrees get a
+branch-prefixed URL automatically.
 
 ## Verify
 

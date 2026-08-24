@@ -8,8 +8,9 @@
 		"node": ">=24 <25",
 		"pnpm": ">=11 <12"
 	},
+	"portless": "portfolio",
 	"scripts": {
-		"dev": "vite dev",
+		"dev": "portless run vite dev",
 		"build": "vite build",
 		"deploy": "pnpm build && wrangler deploy",
 		"deploy:dry-run": "pnpm build && wrangler deploy --dry-run --outdir .wrangler/build/app",
@@ -31,6 +32,7 @@
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-plugin-svelte": "^3.19.0",
 		"globals": "^17.6.0",
+		"portless": "0.15.5",
 		"prettier": "^3.8.3",
 		"prettier-plugin-svelte": "^4.1.0",
 		"prettier-plugin-tailwindcss": "^0.8.0",
