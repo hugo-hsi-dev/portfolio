@@ -124,16 +124,6 @@
 			alt: ''
 		},
 		{
-			title: 'MineCentral',
-			category: 'Personal project',
-			description:
-				'Built and maintained a Minecraft server hosting platform with Next.js and self-hosted server management tools. Connected Stripe subscriptions to server provisioning and a dashboard for billing and instance monitoring.',
-			technologies: ['Next.js', 'Stripe', 'Coolify'],
-			url: 'https://www.minecentral.net/',
-			image: asset('/projects/minecentral.png'),
-			alt: 'MineCentral Minecraft server hosting website'
-		},
-		{
 			title: 'National Medal of Honor Museum',
 			category: 'Client work at Praxis Loop',
 			description:
@@ -152,6 +142,16 @@
 			url: 'https://www.1staveadvisors.com/',
 			image: asset('/projects/advisors.png'),
 			alt: '1st Avenue Advisors official Open Graph logo'
+		},
+		{
+			title: 'MineCentral',
+			category: 'Personal project',
+			description:
+				'Built and maintained a Minecraft server hosting platform with Next.js and self-hosted server management tools. Connected Stripe subscriptions to server provisioning and a dashboard for billing and instance monitoring.',
+			technologies: ['Next.js', 'Stripe', 'Coolify'],
+			url: 'https://www.minecentral.net/',
+			image: asset('/projects/minecentral.png'),
+			alt: 'MineCentral Minecraft server hosting website'
 		}
 	];
 
