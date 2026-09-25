@@ -842,51 +842,8 @@ ul.details {
 .project-image img {
 	object-position: top;
 }
-.client-work {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 24px;
-	margin-top: 32px;
-	max-width: 52rem;
-}
-.client-site {
-	display: block;
-	min-width: 0;
-}
-.client-site img {
-	display: block;
-	width: 100%;
-	aspect-ratio: 16 / 9;
-	object-fit: cover;
-	object-position: top;
-	margin-bottom: 14px;
-	border: 1px solid var(--border);
-}
-.client-site .text-link {
-	align-items: baseline;
-}
-.client-site:hover .link-label::after {
-	transform: scaleX(1);
-}
-@media (max-width: 640px) {
-	.client-work {
-		grid-template-columns: 1fr;
-	}
-}
-
-.client-site.og-image img {
+.project-image.og-image img {
 	object-fit: contain;
 	background: #dadada;
-	padding: 16px;
-}
-
-.client-projects {
-	margin-bottom: 80px;
-}
-.client-projects .client-work {
-	max-width: none;
-	margin-top: 24px;
-}
-.client-projects .client-site img {
-	border-color: var(--cream-lighter);
+	padding: 24px;
 }

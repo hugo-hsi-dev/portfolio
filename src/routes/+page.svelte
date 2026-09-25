@@ -132,18 +132,23 @@
 			url: 'https://www.minecentral.net/',
 			image: asset('/projects/minecentral.png'),
 			alt: 'MineCentral Minecraft server hosting website'
-		}
-	];
-
-	const clientWork = [
+		},
 		{
 			title: 'National Medal of Honor Museum',
+			category: 'Client work at Praxis Loop',
+			description:
+				'Wrote migration scripts to move 3,500 pages from WordPress to Prismic, and built automated visual checks with Playwright and GitHub Actions to catch unintended layout changes.',
+			technologies: ['WordPress', 'Prismic', 'Playwright', 'GitHub Actions'],
 			url: 'https://mohmuseum.org/',
 			image: asset('/projects/museum.png'),
 			alt: 'National Medal of Honor Museum website'
 		},
 		{
 			title: '1st Avenue Advisors',
+			category: 'Client work at Praxis Loop',
+			description:
+				'Translated Figma designs into responsive Next.js and Tailwind components, connecting frontend forms with backend mailing services.',
+			technologies: ['Next.js', 'Tailwind CSS', 'shadcn/ui'],
 			url: 'https://www.1staveadvisors.com/',
 			image: asset('/projects/advisors.png'),
 			alt: '1st Avenue Advisors official Open Graph logo'
@@ -333,34 +338,17 @@
 		<div class="container">
 			<header class="section-heading">
 				<h2 id="projects-title">Projects &amp; Technical Experience</h2>
-				<span class="counter">{projects.length + clientWork.length} Entries</span>
+				<span class="counter">{projects.length} Entries</span>
 			</header>
-			<div class="client-projects">
-				<h3 class="category">Client work at Praxis Loop</h3>
-				<div class="client-work" aria-label="Client websites at Praxis Loop">
-					{#each clientWork as site (site.url)}
-						<!-- eslint-disable svelte/no-navigation-without-resolve -- Client URLs are external destinations. -->
-						<a
-							class="client-site"
-							class:og-image={site.title === '1st Avenue Advisors'}
-							href={site.url}
-						>
-							{#if site.image}<img src={site.image} alt={site.alt} loading="lazy" />{/if}
-							<span class="text-link"
-								><span class="link-label">{site.title}</span> {@render arrow()}</span
-							>
-						</a>
-						<!-- eslint-enable svelte/no-navigation-without-resolve -->
-					{/each}
-				</div>
-			</div>
 			<div class="project-list">
 				{#each projects as project (project.title)}
 					<article class="project" class:technical={!project.image}>
 						<!-- eslint-disable svelte/no-navigation-without-resolve -- Project URLs are external destinations. -->
 						{#if project.image}
 							<a
-								class="project-image personal"
+								class="project-image"
+								class:personal={project.category !== 'Client work at Praxis Loop'}
+								class:og-image={project.title === '1st Avenue Advisors'}
 								href={project.url}
 								aria-label={`Visit ${project.title}`}
 							>
@@ -374,12 +362,20 @@
 							</a>
 						{:else}
 							<div class="technical-heading">
-								<span class="category personal">{project.category}</span>
+								<span
+									class="category"
+									class:personal={project.category !== 'Client work at Praxis Loop'}
+									>{project.category}</span
+								>
 								<h3>{project.title}</h3>
 							</div>
 						{/if}
 						<div class="project-copy">
-							{#if project.image}<span class="category personal">{project.category}</span>
+							{#if project.image}<span
+									class="category"
+									class:personal={project.category !== 'Client work at Praxis Loop'}
+									>{project.category}</span
+								>
 								<h3>{project.title}</h3>{/if}
 							<p>{project.description}</p>
 							<ul class="tags">
