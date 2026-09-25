@@ -29,6 +29,8 @@
 	--stone-light: #b8b4ab;
 	--gold: #c4a35a;
 	--sage: #7a9a8a;
+	--gold-on-cream: #80651f;
+	--sage-on-cream: #4c705e;
 	--border: #333;
 	--serif: 'Forum', ui-serif, Georgia, serif;
 	--ease: cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -318,10 +320,10 @@ h2 {
 .category {
 	display: block;
 	margin-bottom: 12px;
-	color: var(--gold);
+	color: var(--gold-on-cream);
 }
 .category.personal {
-	color: var(--sage);
+	color: var(--sage-on-cream);
 }
 .project-copy h3 {
 	margin-bottom: 12px;
