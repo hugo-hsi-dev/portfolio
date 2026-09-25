@@ -879,3 +879,14 @@ ul.details {
 	background: #dadada;
 	padding: 16px;
 }
+
+.client-projects {
+	margin-bottom: 80px;
+}
+.client-projects .client-work {
+	max-width: none;
+	margin-top: 24px;
+}
+.client-projects .client-site img {
+	border-color: var(--cream-lighter);
+}

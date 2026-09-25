@@ -339,8 +339,27 @@
 		<div class="container">
 			<header class="section-heading">
 				<h2 id="projects-title">Projects &amp; Technical Experience</h2>
-				<span class="counter">{projects.length} Entries</span>
+				<span class="counter">{projects.length + clientWork.length} Entries</span>
 			</header>
+			<div class="client-projects">
+				<h3 class="category">Client work at Praxis Loop</h3>
+				<div class="client-work" aria-label="Client websites at Praxis Loop">
+					{#each clientWork as site (site.url)}
+						<!-- eslint-disable svelte/no-navigation-without-resolve -- Client URLs are external destinations. -->
+						<a
+							class="client-site"
+							class:og-image={site.title === '1st Avenue Advisors'}
+							href={site.url}
+						>
+							{#if site.image}<img src={site.image} alt={site.alt} loading="lazy" />{/if}
+							<span class="text-link"
+								><span class="link-label">{site.title}</span> {@render arrow()}</span
+							>
+						</a>
+						<!-- eslint-enable svelte/no-navigation-without-resolve -->
+					{/each}
+				</div>
+			</div>
 			<div class="project-list">
 				{#each projects as project (project.title)}
 					<article class="project" class:technical={!project.image}>
@@ -396,24 +415,6 @@
 						<h3>{item.role}</h3>
 						<p class="subtitle">{item.company}</p>
 						<p class="details">{item.description}</p>
-						{#if item.company === 'Praxis Loop'}
-							<div class="client-work" aria-label="Client websites at Praxis Loop">
-								{#each clientWork as site (site.url)}
-									<!-- eslint-disable svelte/no-navigation-without-resolve -- Client URLs are external destinations. -->
-									<a
-										class="client-site"
-										class:og-image={site.title === '1st Avenue Advisors'}
-										href={site.url}
-									>
-										{#if site.image}<img src={site.image} alt={site.alt} loading="lazy" />{/if}
-										<span class="text-link"
-											><span class="link-label">{site.title}</span> {@render arrow()}</span
-										>
-									</a>
-									<!-- eslint-enable svelte/no-navigation-without-resolve -->
-								{/each}
-							</div>
-						{/if}
 					</article>
 				{/each}
 			</div>
