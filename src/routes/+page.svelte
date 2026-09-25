@@ -154,23 +154,17 @@
 		{
 			date: '2025 — Present',
 			role: 'Full Stack Developer',
-			company: 'Praxis Loop',
-			description:
-				'Investigate production website issues by reproducing bugs and checking CMS content and configuration. Wrote scripts to migrate 3,500 pages on mohmuseum.org from WordPress to Prismic, meet weekly with clients to review issues and migration progress, and built automated visual checks with Playwright and GitHub Actions.'
+			company: 'Praxis Loop'
 		},
 		{
 			date: '2022 — 2023',
 			role: 'Production Designer',
-			company: 'Lookout',
-			description:
-				'Produced marketing and conference assets with feedback from design and marketing teams. Brought recurring motion graphics production in-house and created a reusable library of background graphics for marketing materials.'
+			company: 'Lookout'
 		},
 		{
 			date: '2021 — Present',
 			role: 'Badminton Head Coach',
-			company: 'Reflex',
-			description:
-				'Organize practice groups and rotations to balance individual coaching with class participation. Break complex techniques into manageable steps, assess students’ progress, and adjust the pace and activities to address difficulties and keep students engaged.'
+			company: 'Reflex'
 		}
 	];
 
@@ -414,7 +408,6 @@
 						<p class="date">{item.date}</p>
 						<h3>{item.role}</h3>
 						<p class="subtitle">{item.company}</p>
-						<p class="details">{item.description}</p>
 					</article>
 				{/each}
 			</div>
