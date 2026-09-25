@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { SvelteSet } from 'svelte/reactivity';
 	import { asset } from '$app/paths';
+	import resumeUrl from '../../resume/hugo-hsi-resume.pdf?url';
 	import { magnetic } from '$lib/actions/magnetic';
 
 	const headline = 'Engineering products from design to database.';
@@ -320,7 +321,8 @@
 				</p>
 				<div class="hero-actions">
 					<a class="button" href="#projects"><span class="button-label">View my work</span></a>
-					<a class="button outline" href={asset('/resume.pdf')} download="Hugo-Hsi-Resume.pdf"
+					<!-- eslint-disable-next-line svelte/no-navigation-without-resolve -- Vite resolves the imported PDF asset URL. -->
+					<a class="button outline" href={resumeUrl} download="Hugo-Hsi-Resume.pdf"
 						><span class="button-label">Download resume</span></a
 					>
 				</div>
