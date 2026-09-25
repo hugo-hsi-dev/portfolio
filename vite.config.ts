@@ -1,9 +1,13 @@
+import { fileURLToPath } from 'node:url';
 import tailwindcss from '@tailwindcss/vite';
 import adapter from '@sveltejs/adapter-cloudflare';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
+	server: {
+		fs: { allow: [fileURLToPath(new URL('./resume/hugo-hsi-resume.pdf', import.meta.url))] }
+	},
 	plugins: [
 		tailwindcss(),
 		sveltekit({
