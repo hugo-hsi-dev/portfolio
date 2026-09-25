@@ -185,7 +185,6 @@
 				'BIOS updates'
 			]
 		},
-		{ label: 'Package Managers', items: ['winget', 'Scoop', 'pacman'] },
 		{
 			label: 'Web & Tools',
 			items: [
@@ -400,7 +399,6 @@
 		<div class="container">
 			<header class="section-heading">
 				<h2 id="experience-title">Experience</h2>
-				<span class="counter">{experience.length} Roles</span>
 			</header>
 			<div class="timeline">
 				{#each experience as item (item.company)}
@@ -418,7 +416,6 @@
 		<div class="container">
 			<header class="section-heading">
 				<h2 id="education-title">Education</h2>
-				<span class="counter">2 Programs</span>
 			</header>
 			<div class="timeline">
 				<article class="timeline-item">
