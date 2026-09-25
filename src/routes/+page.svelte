@@ -104,73 +104,114 @@
 
 	const projects = [
 		{
-			title: 'National Medal of Honor Museum',
-			category: 'Client work at Praxis Loop',
-			personal: false,
+			title: 'Windows & PC Hardware',
+			category: 'Personal desktops and laptops',
 			description:
-				'Migrated a 3,500+ page website from WordPress to Prismic, creating editor-friendly content models and publishing workflows that reduced reliance on paid development for routine updates.',
-			technologies: ['Prismic CMS', 'WordPress', 'Playwright', 'GitHub Actions'],
-			url: 'https://mohmuseum.org/',
-			linkLabel: 'Visit site'
+				'Assembled a gaming desktop and installed Windows on personal desktops and laptops. Configured and updated BIOS, installed applications with winget and Scoop, and customized registry settings using technical guides.',
+			technologies: ['Windows', 'PC assembly', 'BIOS', 'winget', 'Scoop'],
+			url: '',
+			image: '',
+			alt: ''
+		},
+		{
+			title: 'Arch Linux',
+			category: 'Personal development laptop',
+			description:
+				'Explored Ubuntu, Fedora, and Zorin before choosing Arch for an aging laptop with battery and performance issues. Installed Arch using its documentation, managed packages with pacman, tested Hyprland and Niri, and maintained the system through updates and configuration cleanup.',
+			technologies: ['Arch Linux', 'pacman', 'Hyprland', 'Niri'],
+			url: '',
+			image: '',
+			alt: ''
 		},
 		{
 			title: 'MineCentral',
 			category: 'Personal project',
-			personal: true,
 			description:
-				'Built and maintained a Minecraft server hosting platform, connecting Stripe subscriptions, server provisioning, billing, and instance monitoring. Deployed and managed application services on a Linux VPS.',
-			technologies: ['Next.js', 'Stripe', 'Coolify', 'Linux VPS'],
+				'Built and maintained a Minecraft server hosting platform with Next.js and self-hosted server management tools. Connected Stripe subscriptions to server provisioning and a dashboard for billing and instance monitoring.',
+			technologies: ['Next.js', 'Stripe', 'Coolify'],
 			url: 'https://www.minecentral.net/',
-			linkLabel: 'Visit site'
+			image: asset('/projects/minecentral.png'),
+			alt: 'MineCentral Minecraft server hosting website'
+		}
+	];
+
+	const clientWork = [
+		{
+			title: 'National Medal of Honor Museum',
+			url: 'https://mohmuseum.org/',
+			image: asset('/projects/museum.png'),
+			alt: 'National Medal of Honor Museum website'
 		},
 		{
-			title: 'Me Save Money',
-			category: 'Personal project',
-			personal: true,
-			description:
-				'A budgeting PWA for tracking purchases, setting weekly budgets, and seeing remaining spend in real time. Built with type-safe server/client RPC using Svelte experimental remote functions.',
-			technologies: ['SvelteKit', 'PostgreSQL', 'TypeScript'],
-			url: 'https://github.com/hugo-hsi-dev/expense-tracker',
-			linkLabel: 'View code'
+			title: '1st Avenue Advisors',
+			url: 'https://www.1staveadvisors.com/',
+			image: asset('/projects/advisors.png'),
+			alt: '1st Avenue Advisors official Open Graph logo'
 		}
 	];
 
 	const experience = [
 		{
-			date: 'Oct. 2025 — Present',
-			role: 'Full Stack Developer (Contractor)',
+			date: '2025 — Present',
+			role: 'Full Stack Developer',
 			company: 'Praxis Loop',
 			description:
-				'Support client-facing production applications through issue triage, CMS debugging, and weekly stakeholder collaboration. Create editor documentation and publishing workflows, and build visual regression testing with Playwright and GitHub Actions.'
+				'Investigate production website issues by reproducing bugs and checking CMS content and configuration. Wrote scripts to migrate 3,500 pages on mohmuseum.org from WordPress to Prismic, meet weekly with clients to review issues and migration progress, and built automated visual checks with Playwright and GitHub Actions.'
 		},
 		{
 			date: '2022 — 2023',
-			role: 'Design Production Intern',
+			role: 'Production Designer',
 			company: 'Lookout',
 			description:
-				'Produced marketing and conference assets across design and stakeholder teams. Brought motion graphics production in-house and created a reusable background asset library to improve consistency and reduce repeated production work.'
+				'Produced marketing and conference assets with feedback from design and marketing teams. Brought recurring motion graphics production in-house and created a reusable library of background graphics for marketing materials.'
+		},
+		{
+			date: '2021 — Present',
+			role: 'Badminton Head Coach',
+			company: 'Reflex',
+			description:
+				'Organize practice groups and rotations to balance individual coaching with class participation. Break complex techniques into manageable steps, assess students’ progress, and adjust the pace and activities to address difficulties and keep students engaged.'
 		}
 	];
 
 	const technologies = [
-		{ label: 'Frontend', items: ['SvelteKit', 'Next.js', 'React', 'TypeScript', 'HTML & CSS'] },
 		{
-			label: 'Backend & CMS',
-			items: ['Node.js', 'Prismic CMS', 'WordPress', 'REST APIs', 'PostgreSQL', 'SQLite']
-		},
-		{
-			label: 'Deployment & Testing',
-			items: ['Linux VPS', 'Vercel', 'Dokploy', 'Coolify', 'GitHub Actions', 'Playwright']
-		},
-		{
-			label: 'Tools & Support',
+			label: 'Systems & Hardware',
 			items: [
-				'Git & GitHub',
+				'Windows installation and configuration',
+				'Arch Linux',
+				'WSL',
+				'PC assembly',
+				'BIOS updates'
+			]
+		},
+		{ label: 'Package Managers', items: ['winget', 'Scoop', 'pacman'] },
+		{
+			label: 'Web & Tools',
+			items: [
+				'WordPress',
+				'Prismic',
+				'REST APIs',
 				'Postman',
 				'Insomnia',
-				'Production issue triage',
-				'Technical documentation',
-				'Client communication'
+				'Git',
+				'GitHub',
+				'Vercel',
+				'Coolify'
+			]
+		},
+		{
+			label: 'Development',
+			items: [
+				'PostgreSQL',
+				'SQLite',
+				'SQL',
+				'JavaScript',
+				'TypeScript',
+				'HTML',
+				'CSS',
+				'GitHub Actions',
+				'Playwright'
 			]
 		}
 	];
@@ -297,30 +338,43 @@
 	<section class="section projects" id="projects" aria-labelledby="projects-title">
 		<div class="container">
 			<header class="section-heading">
-				<h2 id="projects-title">Selected Work</h2>
-				<span class="counter">3 Projects</span>
+				<h2 id="projects-title">Projects &amp; Technical Experience</h2>
+				<span class="counter">{projects.length} Entries</span>
 			</header>
 			<div class="project-list">
 				{#each projects as project (project.title)}
-					<article class="project">
+					<article class="project" class:technical={!project.image}>
 						<!-- eslint-disable svelte/no-navigation-without-resolve -- Project URLs are external destinations. -->
-						<a
-							class="project-image"
-							class:personal={project.personal}
-							href={project.url}
-							aria-label={`${project.linkLabel}: ${project.title}`}><span>{project.title}</span></a
-						>
+						{#if project.image}
+							<a
+								class="project-image personal"
+								href={project.url}
+								aria-label={`Visit ${project.title}`}
+							>
+								<img
+									src={project.image}
+									alt={project.alt}
+									width="1440"
+									height="960"
+									loading="lazy"
+								/>
+							</a>
+						{:else}
+							<div class="technical-heading">
+								<span class="category personal">{project.category}</span>
+								<h3>{project.title}</h3>
+							</div>
+						{/if}
 						<div class="project-copy">
-							<span class="category" class:personal={project.personal}>{project.category}</span>
-							<h3>{project.title}</h3>
+							{#if project.image}<span class="category personal">{project.category}</span>
+								<h3>{project.title}</h3>{/if}
 							<p>{project.description}</p>
 							<ul class="tags">
 								{#each project.technologies as technology (technology)}<li>{technology}</li>{/each}
 							</ul>
-
-							<a class="text-link" href={project.url}
-								><span class="link-label">{project.linkLabel}</span> {@render arrow()}</a
-							>
+							{#if project.url}<a class="text-link" href={project.url}
+									><span class="link-label">Visit site</span> {@render arrow()}</a
+								>{/if}
 						</div>
 					</article>
 					<!-- eslint-enable svelte/no-navigation-without-resolve -->
@@ -333,7 +387,7 @@
 		<div class="container">
 			<header class="section-heading">
 				<h2 id="experience-title">Experience</h2>
-				<span class="counter">2 Roles</span>
+				<span class="counter">{experience.length} Roles</span>
 			</header>
 			<div class="timeline">
 				{#each experience as item (item.company)}
@@ -342,6 +396,24 @@
 						<h3>{item.role}</h3>
 						<p class="subtitle">{item.company}</p>
 						<p class="details">{item.description}</p>
+						{#if item.company === 'Praxis Loop'}
+							<div class="client-work" aria-label="Client websites at Praxis Loop">
+								{#each clientWork as site (site.url)}
+									<!-- eslint-disable svelte/no-navigation-without-resolve -- Client URLs are external destinations. -->
+									<a
+										class="client-site"
+										class:og-image={site.title === '1st Avenue Advisors'}
+										href={site.url}
+									>
+										{#if site.image}<img src={site.image} alt={site.alt} loading="lazy" />{/if}
+										<span class="text-link"
+											><span class="link-label">{site.title}</span> {@render arrow()}</span
+										>
+									</a>
+									<!-- eslint-enable svelte/no-navigation-without-resolve -->
+								{/each}
+							</div>
+						{/if}
 					</article>
 				{/each}
 			</div>
@@ -356,12 +428,12 @@
 			</header>
 			<div class="timeline">
 				<article class="timeline-item">
-					<p class="date">May 2024</p>
+					<p class="date">2024</p>
 					<h3>Full Stack Web Development Bootcamp</h3>
 					<p class="subtitle">Columbia University</p>
 				</article>
 				<article class="timeline-item">
-					<p class="date">May 2023</p>
+					<p class="date">2023</p>
 					<h3>Bachelor of Fine Arts in Communication Design</h3>
 					<p class="subtitle">The New School</p>
 				</article>
@@ -371,7 +443,7 @@
 
 	<section class="section" aria-labelledby="tech-title">
 		<div class="container">
-			<header class="section-heading"><h2 id="tech-title">Tech Stack</h2></header>
+			<header class="section-heading"><h2 id="tech-title">Technical Skills</h2></header>
 			<div class="tech-grid">
 				{#each technologies as group (group.label)}<div class="tech-group">
 						<h3>{group.label}</h3>
