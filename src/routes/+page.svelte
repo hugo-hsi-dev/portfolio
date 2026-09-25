@@ -220,7 +220,7 @@
 	<title>Hugo Hsi — Full-stack Developer</title>
 	<meta
 		name="description"
-		content="Hugo Hsi is a Brooklyn-based full-stack developer with production experience in CMS migrations, web applications, client support, and Linux deployments."
+		content="Hugo Hsi is a Brooklyn-based full-stack developer with a background in communication design, building responsive websites, migrating content systems, and maintaining production applications."
 	/>
 	<meta property="og:title" content="Hugo Hsi — Full-stack Developer" />
 	<meta
@@ -314,8 +314,9 @@
 					>
 				</h1>
 				<p class="intro">
-					Full-stack developer with production web experience across CMS migrations, client support,
-					REST API debugging, CI/CD, and Linux-based deployments.
+					Full-stack developer with a background in communication design. I work directly with
+					clients to build responsive websites, migrate content systems, and maintain production
+					applications.
 				</p>
 				<div class="hero-actions">
 					<a class="button" href="#projects"><span class="button-label">View my work</span></a>
