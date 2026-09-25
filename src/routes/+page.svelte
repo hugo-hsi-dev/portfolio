@@ -329,8 +329,9 @@
 			</div>
 			<aside class="hero-quote">
 				<p>
-					<span aria-hidden="true">“</span> Comfortable tracing issues through frontend, CMS, API,
-					and database layers. <span aria-hidden="true">”</span>
+					<span aria-hidden="true">“</span> Beyond the keyboard, I'm a badminton coach, an avid
+					gamer, and an active proponent of taking a proper break to do absolutely nothing.
+					<span aria-hidden="true">”</span>
 				</p>
 				<span class="eyebrow">Brooklyn, New York</span>
 			</aside>
