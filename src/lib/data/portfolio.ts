@@ -6,10 +6,12 @@ export interface Project {
 	accent: 'gold' | 'sage';
 	description: string;
 	technologies: string[];
-	url: string;
-	image: string;
-	imageFit?: 'logo';
-	alt: string;
+	url?: string;
+	image?: {
+		src: string;
+		alt: string;
+		fit?: 'logo';
+	};
 }
 
 export interface TimelineEntry {
@@ -25,10 +27,7 @@ export const projects: Project[] = [
 		accent: 'sage',
 		description:
 			'Assembled a gaming desktop and installed Windows on personal desktops and laptops. Configured and updated BIOS, installed applications with winget and Scoop, and customized registry settings using technical guides.',
-		technologies: ['Windows', 'PC assembly', 'BIOS', 'winget', 'Scoop'],
-		url: '',
-		image: '',
-		alt: ''
+		technologies: ['Windows', 'PC assembly', 'BIOS', 'winget', 'Scoop']
 	},
 	{
 		title: 'Arch Linux',
@@ -36,10 +35,7 @@ export const projects: Project[] = [
 		accent: 'sage',
 		description:
 			'Explored Ubuntu, Fedora, and Zorin before choosing Arch for an aging laptop with battery and performance issues. Installed Arch using its documentation, managed packages with pacman, tested Hyprland and Niri, and maintained the system through updates and configuration cleanup.',
-		technologies: ['Arch Linux', 'pacman', 'Hyprland', 'Niri'],
-		url: '',
-		image: '',
-		alt: ''
+		technologies: ['Arch Linux', 'pacman', 'Hyprland', 'Niri']
 	},
 	{
 		title: 'National Medal of Honor Museum',
@@ -49,8 +45,7 @@ export const projects: Project[] = [
 			'Wrote migration scripts to move 3,500 pages from WordPress to Prismic, and built automated visual checks with Playwright and GitHub Actions to catch unintended layout changes.',
 		technologies: ['WordPress', 'Prismic', 'Playwright', 'GitHub Actions'],
 		url: 'https://mohmuseum.org/',
-		image: asset('/projects/museum.png'),
-		alt: 'National Medal of Honor Museum website'
+		image: { src: asset('/projects/museum.png'), alt: 'National Medal of Honor Museum website' }
 	},
 	{
 		title: '1st Avenue Advisors',
@@ -60,9 +55,11 @@ export const projects: Project[] = [
 			'Translated Figma designs into responsive Next.js and Tailwind components, connecting frontend forms with backend mailing services.',
 		technologies: ['Next.js', 'Tailwind CSS', 'shadcn/ui'],
 		url: 'https://www.1staveadvisors.com/',
-		image: asset('/projects/advisors.png'),
-		imageFit: 'logo',
-		alt: '1st Avenue Advisors official Open Graph logo'
+		image: {
+			src: asset('/projects/advisors.png'),
+			alt: '1st Avenue Advisors official Open Graph logo',
+			fit: 'logo'
+		}
 	},
 	{
 		title: 'MineCentral',
@@ -72,8 +69,10 @@ export const projects: Project[] = [
 			'Built and maintained a Minecraft server hosting platform with Next.js and self-hosted server management tools. Connected Stripe subscriptions to server provisioning and a dashboard for billing and instance monitoring.',
 		technologies: ['Next.js', 'Stripe', 'Coolify'],
 		url: 'https://www.minecentral.net/',
-		image: asset('/projects/minecentral.png'),
-		alt: 'MineCentral Minecraft server hosting website'
+		image: {
+			src: asset('/projects/minecentral.png'),
+			alt: 'MineCentral Minecraft server hosting website'
+		}
 	}
 ];
 

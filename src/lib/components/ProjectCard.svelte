@@ -1,4 +1,5 @@
 <script lang="ts">
+	import TextLink from './TextLink.svelte';
 	import { reveal } from '$lib/actions/reveal';
 	import type { Project } from '$lib/data/portfolio';
 	let { project }: { project: Project } = $props();
@@ -32,26 +33,27 @@
 >
 	<!-- eslint-disable svelte/no-navigation-without-resolve -- Project URLs are external destinations. -->
 	{#if project.image}
-		<a
+		<svelte:element
+			this={project.url ? 'a' : 'div'}
 			class={[
 				'flex aspect-video min-w-0 items-center justify-center overflow-hidden text-center font-serif text-lg text-stone-light shadow-[0_0_0_1px_rgb(0_0_0/8%)] lg:col-span-7',
 				project.accent === 'sage' ? 'bg-cream-light' : 'bg-cream-lighter'
 			]}
 			href={project.url}
-			aria-label={`Visit ${project.title}`}
+			aria-label={project.url ? `Visit ${project.title}` : undefined}
 		>
 			<img
 				class={[
 					'h-full w-full object-top transition-transform duration-400 motion-reduce:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover/project:scale-[1.025]',
-					project.imageFit === 'logo' ? 'bg-[#dadada] object-contain p-6' : 'object-cover'
+					project.image.fit === 'logo' ? 'bg-[#dadada] object-contain p-6' : 'object-cover'
 				]}
-				src={project.image}
-				alt={project.alt}
+				src={project.image.src}
+				alt={project.image.alt}
 				width="1440"
 				height="960"
 				loading="lazy"
 			/>
-		</a>
+		</svelte:element>
 	{:else}
 		<div class="lg:col-span-5">{@render heading(true)}</div>
 	{/if}
@@ -66,14 +68,7 @@
 				</li>{/each}
 		</ul>
 		{#if project.url}
-			<a
-				class="group/link inline-flex items-center gap-1.5 text-sm leading-normal"
-				href={project.url}
-				><span
-					class="relative after:absolute after:right-0 after:-bottom-[3px] after:left-0 after:h-px after:origin-left after:scale-x-0 after:bg-current after:transition-transform after:duration-300 after:ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-focus-visible/link:after:scale-x-100 motion-reduce:after:transition-none [@media(hover:hover)_and_(pointer:fine)]:group-hover/link:after:scale-x-100"
-					>Visit site</span
-				> <span aria-hidden="true">↗</span></a
-			>
+			<TextLink href={project.url} arrow>Visit site</TextLink>
 		{/if}
 	</div>
 	<!-- eslint-enable svelte/no-navigation-without-resolve -->

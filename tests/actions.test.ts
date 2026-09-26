@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { getEventListeners } from 'node:events';
 import { test, type TestContext } from 'node:test';
 import { magnetic } from '../src/lib/actions/magnetic.ts';
 import { reveal } from '../src/lib/actions/reveal.ts';
@@ -21,22 +22,26 @@ function browser(t: TestContext) {
 	const observers: Observer[] = [];
 	class Observer {
 		callback: IntersectionObserverCallback;
-		node?: Element;
+		nodes = new Set<Element>();
 		disconnected = false;
 		constructor(callback: IntersectionObserverCallback) {
 			this.callback = callback;
 			observers.push(this);
 		}
 		observe(node: Element) {
-			this.node = node;
+			this.nodes.add(node);
+		}
+		unobserve(node: Element) {
+			this.nodes.delete(node);
 		}
 		disconnect() {
+			this.nodes.clear();
 			this.disconnected = true;
 		}
-		enter() {
+		enter(node = this.nodes.values().next().value) {
 			if (!this.disconnected) {
 				this.callback(
-					[{ isIntersecting: true, target: this.node } as IntersectionObserverEntry],
+					[{ isIntersecting: true, target: node } as IntersectionObserverEntry],
 					this as unknown as IntersectionObserver
 				);
 			}
@@ -122,11 +127,11 @@ test('reveal observes its own node once and cancels when reduced motion becomes 
 	const { node, animations } = animatedElement();
 	const action = reveal(node);
 	assert.equal(animations.length, 0);
-	assert.equal(observers[0].node, node);
+	assert.equal(observers[0].nodes.has(node), true);
 	observers[0].enter();
 	assert.equal(animations.length, 1);
-	assert.equal(observers[0].disconnected, true);
-	observers[0].enter();
+	assert.equal(observers[0].nodes.size, 0);
+	observers[0].enter(node);
 	assert.equal(animations.length, 1);
 	reduced.change(true);
 	assert.equal(animations[0].cancelled, true);
@@ -166,4 +171,102 @@ test('destroy disconnects a pending reveal and removes its preference listener',
 	reduced.change(false);
 	assert.equal(observers.length, 1);
 	assert.equal(animations.length, 0);
+});
+
+test('reveals share one observer and listener while targets retain independent lifecycles', (t) => {
+	const { observers, reduced } = browser(t);
+	const first = animatedElement();
+	const second = animatedElement();
+	const a = reveal(first.node);
+	const b = reveal(second.node);
+	assert.equal(observers.length, 1);
+	assert.equal(observers[0].nodes.size, 2);
+	assert.equal(getEventListeners(reduced, 'change').length, 1);
+	a?.destroy?.();
+	assert.equal(observers[0].disconnected, false);
+	assert.equal(observers[0].nodes.size, 1);
+	assert.equal(getEventListeners(reduced, 'change').length, 1);
+	observers[0].enter(first.node);
+	assert.equal(first.animations.length, 0);
+	observers[0].enter(second.node);
+	assert.equal(second.animations.length, 1);
+	observers[0].enter(second.node);
+	assert.equal(second.animations.length, 1);
+	b?.destroy?.();
+	assert.equal(second.animations[0].cancelled, true);
+	assert.equal(observers[0].disconnected, true);
+	assert.equal(getEventListeners(reduced, 'change').length, 0);
+});
+
+test('reduced motion pauses pending reveals and cancels all active entrances', (t) => {
+	const { observers, reduced } = browser(t);
+	reduced.change(true);
+	const first = animatedElement();
+	const second = animatedElement();
+	const a = reveal(first.node);
+	const b = reveal(second.node);
+	assert.equal(observers.length, 0);
+	reduced.change(false);
+	assert.equal(observers.length, 1);
+	assert.equal(observers[0].nodes.size, 2);
+	reduced.change(true);
+	assert.equal(observers[0].nodes.size, 0);
+	observers[0].enter(first.node);
+	assert.equal(first.animations.length, 0);
+	reduced.change(false);
+	observers[0].enter(first.node);
+	observers[0].enter(second.node);
+	reduced.change(true);
+	assert.equal(first.animations[0].cancelled, true);
+	assert.equal(second.animations[0].cancelled, true);
+	reduced.change(false);
+	assert.equal(observers[0].nodes.size, 0);
+	a?.destroy?.();
+	b?.destroy?.();
+});
+
+test('disabled reveals can be enabled and pending reveals can be disabled', (t) => {
+	const { observers } = browser(t);
+	const { node, animations } = animatedElement();
+	const action = reveal(node, false);
+	assert.equal(observers.length, 0);
+	action?.update?.({ delay: 50 });
+	assert.equal(observers[0].nodes.has(node), true);
+	action?.update?.(false);
+	observers[0].enter(node);
+	assert.equal(animations.length, 0);
+	action?.update?.({ delay: 100 });
+	observers[0].enter(node);
+	assert.equal(animations[0].options.delay, 100);
+	action?.destroy?.();
+});
+
+test('reveal remains visible when IntersectionObserver is unavailable', (t) => {
+	const { window, reduced } = browser(t);
+	Reflect.deleteProperty(window, 'IntersectionObserver');
+	const { node, animations } = animatedElement();
+	const action = reveal(node);
+	assert.equal(animations.length, 0);
+	action?.destroy?.();
+	assert.equal(getEventListeners(reduced, 'change').length, 0);
+});
+
+test('reveal does not touch browser APIs during server rendering', () => {
+	const { node, animations } = animatedElement();
+	assert.equal(reveal(node), undefined);
+	assert.equal(animations.length, 0);
+});
+
+test('reveal recreates shared resources after the last target is destroyed', (t) => {
+	const { observers, reduced } = browser(t);
+	const first = reveal(animatedElement().node);
+	first?.destroy?.();
+	const second = animatedElement();
+	const next = reveal(second.node);
+	assert.equal(observers.length, 2);
+	assert.equal(getEventListeners(reduced, 'change').length, 1);
+	observers[1].enter(second.node);
+	assert.equal(second.animations.length, 1);
+	next?.destroy?.();
+	assert.equal(getEventListeners(reduced, 'change').length, 0);
 });
