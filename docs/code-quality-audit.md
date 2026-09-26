@@ -1,0 +1,18 @@
+# Website code quality audit
+
+Scope: styling, animation techniques, and component/function responsibilities.
+
+| Finding                                                                                                                                              | Resolution                                                                                                                                                                                        |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tailwind was imported, but a large global stylesheet implemented the design with custom selectors, cascading overrides, and unused lab/detail rules. | Moved layout, typography, responsive states, focus states, and hover effects to Tailwind utilities. `layout.css` now contains only the Tailwind import, font loading, and theme tokens/keyframes. |
+| The route owned content data, every page section, typing, reveal observation, navigation visibility, and scroll progress.                            | Reduced the route to metadata and composition. Extracted section components, a reusable project card and timeline, typed content data, and independent interaction components/actions.            |
+| Magnetic links implemented a spring integrator and animation frame loop.                                                                             | Pointer handlers compute target translation; Tailwind CSS transitions perform interpolation. Fine-pointer/reduced-motion checks and cleanup remain.                                               |
+| Reveal behavior depended on global queries and presentational class names.                                                                           | Attached a scoped reveal action to each target, using IntersectionObserver and the Web Animations API with teardown and live reduced-motion cancellation.                                         |
+| Scroll progress used reactive page state on every scroll.                                                                                            | Uses a native CSS scroll timeline where supported; older browsers get a paused Web Animation updated by coalesced scroll/resize events.                                                           |
+| Project presentation depended on matching personal titles/category strings.                                                                          | Added explicit accent and image-fit fields without changing displayed content.                                                                                                                    |
+
+The typewriter retains a small text-update timer to preserve proportional-font wrapping and the reserved layout. Cursor blinking is a Tailwind theme animation. Dynamic pointer coordinates are the only inline style writes; they are runtime interaction values rather than a second styling system.
+
+Validation: Svelte/TypeScript checks, formatting/ESLint, production build, action lifecycle regression tests, and browser checks at 1280px and 390px. Browser checks covered section navigation, native scroll progress, reduced-motion rendering, mobile footer layout, horizontal overflow, and console errors. The older-browser scroll fallback was reviewed but not tested in an older browser engine.
+
+Personal content, branding, links, and metadata are preserved. Magnetic movement now uses an easing transition rather than simulated spring physics.
