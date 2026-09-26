@@ -16,6 +16,7 @@ class Preference extends EventTarget {
 	}
 }
 
+/** Install controllable browser doubles and restore the original globals after the test. */
 function browser(t: TestContext) {
 	const reduced = new Preference(false);
 	const fine = new Preference(true);
@@ -64,6 +65,7 @@ function browser(t: TestContext) {
 	return { window, reduced, fine, observers };
 }
 
+/** Record native animation options and cancellation without requiring a DOM. */
 function animatedElement() {
 	const animations: { cancelled: boolean; options: KeyframeAnimationOptions }[] = [];
 	const node = {

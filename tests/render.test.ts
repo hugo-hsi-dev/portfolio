@@ -10,6 +10,7 @@ after(async () => {
 	await server?.close();
 });
 
+/** Load a Svelte component through Vite and return its server-rendered body. */
 async function renderModule(path: string) {
 	const [{ default: component }, { render }] = await Promise.all([
 		server.ssrLoadModule(path),

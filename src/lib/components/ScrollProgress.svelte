@@ -23,15 +23,16 @@
 		const scheduleUpdate = () => {
 			if (!frame) frame = requestAnimationFrame(update);
 		};
-		const resizeObserver = new ResizeObserver(scheduleUpdate);
-		resizeObserver.observe(document.body);
+		const resizeObserver =
+			typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(scheduleUpdate);
+		resizeObserver?.observe(document.body);
 		window.addEventListener('scroll', scheduleUpdate, { passive: true });
 		window.addEventListener('resize', scheduleUpdate);
 		update();
 		return () => {
 			cancelAnimationFrame(frame);
 			animation.cancel();
-			resizeObserver.disconnect();
+			resizeObserver?.disconnect();
 			window.removeEventListener('scroll', scheduleUpdate);
 			window.removeEventListener('resize', scheduleUpdate);
 		};
