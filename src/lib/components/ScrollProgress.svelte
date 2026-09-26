@@ -12,12 +12,14 @@
 		});
 		animation.pause();
 		let frame = 0;
+		/** Map the current document scroll fraction onto the paused native animation. */
 		const update = () => {
 			frame = 0;
 			const distance = document.documentElement.scrollHeight - window.innerHeight;
 			animation.currentTime =
 				distance > 0 ? Math.min(1, Math.max(0, window.scrollY / distance)) : 0;
 		};
+		/** Coalesce scroll and resize notifications into one update per animation frame. */
 		const scheduleUpdate = () => {
 			if (!frame) frame = requestAnimationFrame(update);
 		};

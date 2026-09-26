@@ -15,6 +15,7 @@ export const reveal: Action<HTMLElement, RevealOptions | undefined> = (node, opt
 	let observer: IntersectionObserver | undefined;
 	let revealed = false;
 
+	/** Release any pending entrance animation and intersection observation. */
 	function cancel() {
 		animation?.cancel();
 		animation = undefined;
@@ -22,6 +23,7 @@ export const reveal: Action<HTMLElement, RevealOptions | undefined> = (node, opt
 		observer = undefined;
 	}
 
+	/** Reveal once, animating only when the browser and motion preference allow it. */
 	function animate() {
 		cancel();
 		revealed = true;
@@ -39,6 +41,7 @@ export const reveal: Action<HTMLElement, RevealOptions | undefined> = (node, opt
 		};
 	}
 
+	/** Schedule the entrance immediately above the fold or when the node enters view. */
 	function observe() {
 		cancel();
 		if (revealed || preference.matches) return;
@@ -57,6 +60,7 @@ export const reveal: Action<HTMLElement, RevealOptions | undefined> = (node, opt
 		observer.observe(node);
 	}
 
+	/** Cancel motion when requested, or resume observation for an unrevealed node. */
 	function preferenceChanged() {
 		if (preference.matches) cancel();
 		else observe();
@@ -66,10 +70,12 @@ export const reveal: Action<HTMLElement, RevealOptions | undefined> = (node, opt
 	preference.addEventListener('change', preferenceChanged);
 
 	return {
+		/** Refresh entrance options without replaying a completed reveal. */
 		update(value = {}) {
 			options = value;
 			observe();
 		},
+		/** Release animation resources and the motion-preference listener. */
 		destroy() {
 			cancel();
 			preference.removeEventListener('change', preferenceChanged);

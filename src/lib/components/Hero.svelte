@@ -4,6 +4,7 @@
 	import Typewriter from './Typewriter.svelte';
 
 	let { onNameVisibilityChange }: { onNameVisibilityChange: (visible: boolean) => void } = $props();
+	/** Notify the navigation when the hero name enters or leaves the viewport. */
 	function observeName(node: HTMLElement) {
 		const observer = new IntersectionObserver(([entry]) =>
 			onNameVisibilityChange(entry.isIntersecting)
