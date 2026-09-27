@@ -8,91 +8,50 @@ export const magnetic: Action<HTMLElement, number | undefined> = (node, intensit
 	const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
 	const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)');
 	const originalTranslate = content.style.translate;
-	let frame = 0;
-	let previousTime = 0;
-	let x = 0;
-	let y = 0;
-	let velocityX = 0;
-	let velocityY = 0;
-	let targetX = 0;
-	let targetY = 0;
 
+	/** Allow pointer motion only for fine pointers without a reduced-motion preference. */
 	function enabled() {
 		return finePointer.matches && !reducedMotion.matches;
 	}
 
+	/** Restore the child translation that existed before this action mounted. */
 	function reset() {
-		cancelAnimationFrame(frame);
-		frame = 0;
-		previousTime = 0;
-		x = y = velocityX = velocityY = targetX = targetY = 0;
 		content!.style.translate = originalTranslate;
 	}
 
-	function animate(time: number) {
-		// Small integration steps preserve the spring across different refresh rates.
-		let remaining = previousTime ? Math.min((time - previousTime) / 1000, 0.064) : 1 / 60;
-		previousTime = time;
-		while (remaining > 0) {
-			const step = Math.min(remaining, 1 / 240);
-			velocityX += ((targetX - x) * 150 - velocityX * 15) * step;
-			velocityY += ((targetY - y) * 150 - velocityY * 15) * step;
-			x += velocityX * step;
-			y += velocityY * step;
-			remaining -= step;
-		}
-
-		const settled =
-			Math.abs(targetX - x) + Math.abs(targetY - y) < 0.01 &&
-			Math.abs(velocityX) + Math.abs(velocityY) < 0.01;
-		if (settled) {
-			x = targetX;
-			y = targetY;
-			velocityX = velocityY = 0;
-		}
-		content!.style.translate = x === 0 && y === 0 ? originalTranslate : `${x}px ${y}px`;
-		frame = settled ? 0 : requestAnimationFrame(animate);
-		if (settled) previousTime = 0;
-	}
-
-	function start() {
-		if (!frame) frame = requestAnimationFrame(animate);
-	}
-
+	/** Offset the child from the pointer while keeping the parent hit area stationary. */
 	function move(event: PointerEvent) {
 		if (!enabled() || event.pointerType === 'touch') return;
 		const bounds = node.getBoundingClientRect();
-		targetX = (event.clientX - bounds.left - bounds.width / 2) * intensity;
-		targetY = (event.clientY - bounds.top - bounds.height / 2) * intensity;
-		start();
+		const x = (event.clientX - bounds.left - bounds.width / 2) * intensity;
+		const y = (event.clientY - bounds.top - bounds.height / 2) * intensity;
+		// Tailwind's translate transition on the content handles interpolation.
+		content!.style.translate = `${x}px ${y}px`;
 	}
 
-	function leave() {
-		targetX = targetY = 0;
-		if (enabled()) start();
-		else reset();
-	}
-
+	/** Clear a magnetic offset when an input or motion preference disables the effect. */
 	function preferenceChanged() {
 		if (!enabled()) reset();
 	}
 
 	node.addEventListener('pointermove', move);
-	node.addEventListener('pointerleave', leave);
-	node.addEventListener('pointercancel', leave);
+	node.addEventListener('pointerleave', reset);
+	node.addEventListener('pointercancel', reset);
 	window.addEventListener('blur', reset);
 	reducedMotion.addEventListener('change', preferenceChanged);
 	finePointer.addEventListener('change', preferenceChanged);
 
 	return {
+		/** Apply a new pointer displacement multiplier. */
 		update(value = 0.3) {
 			intensity = value;
 		},
+		/** Restore the child and release the pointer and media-query listeners. */
 		destroy() {
 			reset();
 			node.removeEventListener('pointermove', move);
-			node.removeEventListener('pointerleave', leave);
-			node.removeEventListener('pointercancel', leave);
+			node.removeEventListener('pointerleave', reset);
+			node.removeEventListener('pointercancel', reset);
 			window.removeEventListener('blur', reset);
 			reducedMotion.removeEventListener('change', preferenceChanged);
 			finePointer.removeEventListener('change', preferenceChanged);
