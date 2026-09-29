@@ -49,7 +49,7 @@
 >
 <ScrollProgress />
 <SiteNav {showName} />
-<main id="main" class="overflow-clip">
+<main id="main" tabindex="-1" class="overflow-clip">
 	<Hero onNameVisibilityChange={(visible) => (showName = !visible)} />
 	<ProjectsSection />
 	<TimelineSection id="experience" title="Experience" items={experience} />

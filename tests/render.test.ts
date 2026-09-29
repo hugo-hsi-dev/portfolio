@@ -46,6 +46,10 @@ test('page renders complete accessible content without browser APIs or JavaScrip
 	assert.equal((html.match(/href="https:\/\/github.com\/hugo-hsi-dev"/g) ?? []).length, 2);
 	assert.equal((html.match(/href="https:\/\/www.linkedin.com\/in\/hugo-hsi"/g) ?? []).length, 2);
 	assert.ok(!html.includes('href=""'));
+	assert.match(html, /<main\b[^>]*id="main"[^>]*tabindex="-1"/);
+	for (const title of ['National Medal of Honor Museum', '1st Avenue Advisors', 'MineCentral']) {
+		assert.ok(html.includes(`aria-label="Visit site: ${title}"`));
+	}
 });
 
 test('shared links preserve native anchor attributes and isolate underline hover groups', async () => {

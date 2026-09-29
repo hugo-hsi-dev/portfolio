@@ -1,4 +1,6 @@
 import type { Action } from 'svelte/action';
+import { on } from 'svelte/events';
+import { prefersReducedMotion } from 'svelte/motion';
 
 export type RevealOptions = {
 	delay?: number;
@@ -9,104 +11,59 @@ export type RevealOptions = {
 	ready?: boolean;
 };
 
-const pending = new Map<Element, () => void>();
-const consumers = new Set<() => void>();
-let observer: IntersectionObserver | undefined;
-let preference: MediaQueryList | undefined;
-
-/** Cancel motion when requested, or resume observation for unrevealed nodes. */
-function preferenceChanged() {
-	for (const notify of consumers) notify();
-}
-
-/** Share motion preferences while any target remains mounted. */
-function subscribe(notify: () => void) {
-	if (!preference) {
-		preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-		preference.addEventListener('change', preferenceChanged);
-	}
-	consumers.add(notify);
-	return () => {
-		consumers.delete(notify);
-		if (consumers.size) return;
-		preference?.removeEventListener('change', preferenceChanged);
-		preference = undefined;
-		observer?.disconnect();
-		observer = undefined;
-		pending.clear();
-	};
-}
-
-/** Remove only this target, leaving other entrances scheduled. */
-function stopObserving(node: HTMLElement) {
-	if (pending.delete(node)) observer?.unobserve(node);
-}
-
-/** Lazily share viewport observation across reveal targets. */
-function observe(node: HTMLElement, animate: () => void) {
-	if (!('IntersectionObserver' in window)) return;
-	observer ??= new IntersectionObserver(
-		(entries) => {
-			for (const entry of entries) {
-				if (entry.isIntersecting) pending.get(entry.target)?.();
-			}
-		},
-		{ threshold: 0.1 }
-	);
-	pending.set(node, animate);
-	observer.observe(node);
-}
-
-/** Enhance visible HTML with a one-time entrance; never hide it before JavaScript runs. */
+/** Enhance visible HTML with a one-time CSS entrance; never hide it before JavaScript runs. */
 export const reveal: Action<HTMLElement, RevealOptions | false | undefined> = (
 	node,
 	options = {}
 ) => {
 	if (typeof window === 'undefined') return;
-	let animation: Animation | undefined;
 	let revealed = false;
-	let heldVisibility: string | undefined;
+	let observer: IntersectionObserver | undefined;
+	let removeListeners: (() => void)[] = [];
 
-	/** Release any pending entrance animation and intersection observation. */
-	function cancel() {
-		animation?.cancel();
-		animation = undefined;
-		stopObserving(node);
-		if (heldVisibility !== undefined) {
-			node.style.visibility = heldVisibility;
-			heldVisibility = undefined;
+	function clearAnimation() {
+		for (const remove of removeListeners) remove();
+		removeListeners = [];
+		node.classList.remove('animate-reveal');
+		for (const property of ['--reveal-delay', '--reveal-x', '--reveal-y', '--reveal-duration']) {
+			node.style.removeProperty(property);
 		}
 	}
 
-	/** Reveal once, animating only when the browser and motion preference allow it. */
+	function cancel() {
+		clearAnimation();
+		node.classList.remove('reveal-waiting');
+		observer?.disconnect();
+		observer = undefined;
+	}
+
+	/** Consume the entrance even when reduced motion skips or cancels it. */
 	function animate() {
 		cancel();
 		revealed = true;
-		if (options === false || preference?.matches || !node.animate) return;
+		if (options === false || prefersReducedMotion.current) return;
 		const { delay = 0, x = 0, y = 40, duration = 600 } = options;
-		animation = node.animate(
-			[
-				{ opacity: 0, translate: `${x}px ${y}px` },
-				{ opacity: 1, translate: '0px 0px' }
-			],
-			{ duration, delay, easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)', fill: 'backwards' }
-		);
-		animation.onfinish = () => {
-			animation = undefined;
+		node.style.setProperty('--reveal-delay', `${delay}ms`);
+		node.style.setProperty('--reveal-x', `${x}px`);
+		node.style.setProperty('--reveal-y', `${y}px`);
+		node.style.setProperty('--reveal-duration', `${duration}ms`);
+		const finished = (event: AnimationEvent) => {
+			if (event.target === node && event.animationName === 'reveal') clearAnimation();
 		};
+		removeListeners = [on(node, 'animationend', finished), on(node, 'animationcancel', finished)];
+		node.classList.add('animate-reveal');
 	}
 
-	/** Schedule the entrance immediately above the fold or when the node enters view. */
 	function refresh() {
 		cancel();
-		if (options === false || revealed || preference?.matches) return;
+		if (options === false || revealed) return;
+		if (prefersReducedMotion.current) {
+			revealed = true;
+			return;
+		}
 		if (options.ready === false) {
-			if (
-				typeof node.animate === 'function' &&
-				(!options.immediate || window.scrollY < window.innerHeight)
-			) {
-				heldVisibility = node.style.visibility;
-				node.style.visibility = 'hidden';
+			if (!options.immediate || window.scrollY < window.innerHeight) {
+				node.classList.add('reveal-waiting');
 			}
 			return;
 		}
@@ -115,21 +72,22 @@ export const reveal: Action<HTMLElement, RevealOptions | false | undefined> = (
 			if (window.scrollY < window.innerHeight) animate();
 			return;
 		}
-		observe(node, animate);
+		if (typeof IntersectionObserver === 'undefined') return;
+		observer = new IntersectionObserver(
+			(entries) => {
+				if (entries.some((entry) => entry.isIntersecting)) animate();
+			},
+			{ threshold: 0.1 }
+		);
+		observer.observe(node);
 	}
 
-	const unsubscribe = subscribe(refresh);
 	refresh();
 	return {
-		/** Refresh entrance options without replaying a completed reveal. */
 		update(value = {}) {
 			options = value;
 			refresh();
 		},
-		/** Release animation resources and the motion-preference listener. */
-		destroy() {
-			cancel();
-			unsubscribe();
-		}
+		destroy: cancel
 	};
 };

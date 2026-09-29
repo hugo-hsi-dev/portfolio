@@ -19,6 +19,18 @@
 @theme {
 	--animate-cursor-blink: cursor-blink 1.06s steps(1) infinite;
 	--animate-scroll-progress: scroll-progress linear both;
+	--animate-reveal: reveal var(--reveal-duration, 600ms) var(--ease-reveal) var(--reveal-delay, 0ms)
+		backwards;
+	@keyframes reveal {
+		from {
+			opacity: 0;
+			transform: translate(var(--reveal-x, 0px), var(--reveal-y, 40px));
+		}
+		to {
+			opacity: 1;
+			transform: translate(0px, 0px);
+		}
+	}
 	@keyframes cursor-blink {
 		0%,
 		49% {
@@ -52,4 +64,16 @@
 	--color-sage-on-cream: #4c705e;
 	--color-border: #333;
 	--ease-reveal: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.reveal-waiting {
+		visibility: hidden;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.animate-reveal {
+		animation: none;
+	}
 }

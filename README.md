@@ -18,6 +18,7 @@ branch-prefixed URL automatically.
 ```sh
 pnpm lint
 pnpm check
+pnpm test
 pnpm build
 pnpm deploy:dry-run
 ```

@@ -68,7 +68,9 @@
 				</li>{/each}
 		</ul>
 		{#if project.url}
-			<TextLink href={project.url} arrow>Visit site</TextLink>
+			<TextLink href={project.url} aria-label={`Visit site: ${project.title}`} arrow
+				>Visit site</TextLink
+			>
 		{/if}
 	</div>
 	<!-- eslint-enable svelte/no-navigation-without-resolve -->
