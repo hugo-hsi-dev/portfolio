@@ -50,7 +50,7 @@
 				use:reveal={{
 					ready: typewriterComplete,
 					immediate: true,
-					delay: 150,
+					delay: 450,
 					y: 12,
 					duration: 450
 				}}
@@ -64,7 +64,7 @@
 					entrance={{
 						ready: typewriterComplete,
 						immediate: true,
-						delay: 300,
+						delay: 900,
 						y: 12,
 						duration: 450
 					}}>View my work</Button
@@ -76,7 +76,7 @@
 					entrance={{
 						ready: typewriterComplete,
 						immediate: true,
-						delay: 450,
+						delay: 1350,
 						y: 12,
 						duration: 450
 					}}>Download resume</Button
@@ -88,7 +88,7 @@
 			use:reveal={{
 				ready: typewriterComplete,
 				immediate: true,
-				delay: 600,
+				delay: 1800,
 				x: 20,
 				y: 0,
 				duration: 450
