@@ -5,6 +5,7 @@
 	import Button from './Button.svelte';
 
 	let { onNameVisibilityChange }: { onNameVisibilityChange: (visible: boolean) => void } = $props();
+	let typewriterComplete = $state(false);
 	/** Notify the navigation when the hero name enters or leaves the viewport. */
 	function observeName(node: HTMLElement) {
 		const observer = new IntersectionObserver(([entry]) =>
@@ -27,7 +28,7 @@
 			<p
 				class="mb-6 text-sm tracking-[0.2em] text-stone uppercase"
 				use:observeName
-				use:reveal={{ immediate: true, y: 10, duration: 400 }}
+				use:reveal={{ ready: typewriterComplete, immediate: true, y: 12, duration: 450 }}
 			>
 				Hugo Hsi
 			</p>
@@ -35,30 +36,59 @@
 				id="hero-title"
 				class="mb-8 max-w-2xl font-serif text-4xl leading-[1.1] font-normal md:text-5xl lg:text-6xl"
 			>
-				<Typewriter text="Engineering products from design to database." />
+				<Typewriter
+					text="Engineering products from design to database."
+					onComplete={() => (typewriterComplete = true)}
+				/>
 			</h1>
 			<p
 				class="mb-10 max-w-lg text-base leading-[1.625] text-pretty text-slate"
-				use:reveal={{ immediate: true, delay: 100, y: 0, duration: 500 }}
+				use:reveal={{
+					ready: typewriterComplete,
+					immediate: true,
+					delay: 150,
+					y: 12,
+					duration: 450
+				}}
 			>
 				Full-stack developer with a background in communication design. I work directly with clients
 				to build responsive websites, migrate content systems, and maintain production applications.
 			</p>
 			<div class="flex flex-wrap gap-4">
-				<Button href="#projects" entrance={{ immediate: true, delay: 220, y: 10, duration: 350 }}
-					>View my work</Button
+				<Button
+					href="#projects"
+					entrance={{
+						ready: typewriterComplete,
+						immediate: true,
+						delay: 300,
+						y: 12,
+						duration: 450
+					}}>View my work</Button
 				>
 				<Button
 					href={resumeUrl}
 					download="Hugo-Hsi-Resume.pdf"
 					variant="outline"
-					entrance={{ immediate: true, delay: 370, y: 10, duration: 350 }}>Download resume</Button
+					entrance={{
+						ready: typewriterComplete,
+						immediate: true,
+						delay: 450,
+						y: 12,
+						duration: 450
+					}}>Download resume</Button
 				>
 			</div>
 		</div>
 		<aside
 			class="max-w-[22rem] font-serif text-sm leading-[1.625] text-pretty text-stone italic lg:col-span-4 lg:ml-auto lg:text-right"
-			use:reveal={{ immediate: true, delay: 520, x: 20, y: 0, duration: 450 }}
+			use:reveal={{
+				ready: typewriterComplete,
+				immediate: true,
+				delay: 600,
+				x: 20,
+				y: 0,
+				duration: 450
+			}}
 		>
 			<p>
 				Beyond the keyboard, I'm a badminton coach, an avid gamer, and an active proponent of taking

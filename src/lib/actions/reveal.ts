@@ -6,6 +6,7 @@ export type RevealOptions = {
 	y?: number;
 	duration?: number;
 	immediate?: boolean;
+	ready?: boolean;
 };
 
 const pending = new Map<Element, () => void>();
@@ -64,12 +65,17 @@ export const reveal: Action<HTMLElement, RevealOptions | false | undefined> = (
 	if (typeof window === 'undefined') return;
 	let animation: Animation | undefined;
 	let revealed = false;
+	let heldVisibility: string | undefined;
 
 	/** Release any pending entrance animation and intersection observation. */
 	function cancel() {
 		animation?.cancel();
 		animation = undefined;
 		stopObserving(node);
+		if (heldVisibility !== undefined) {
+			node.style.visibility = heldVisibility;
+			heldVisibility = undefined;
+		}
 	}
 
 	/** Reveal once, animating only when the browser and motion preference allow it. */
@@ -94,6 +100,16 @@ export const reveal: Action<HTMLElement, RevealOptions | false | undefined> = (
 	function refresh() {
 		cancel();
 		if (options === false || revealed || preference?.matches) return;
+		if (options.ready === false) {
+			if (
+				typeof node.animate === 'function' &&
+				(!options.immediate || window.scrollY < window.innerHeight)
+			) {
+				heldVisibility = node.style.visibility;
+				node.style.visibility = 'hidden';
+			}
+			return;
+		}
 		if (options.immediate) {
 			revealed = true;
 			if (window.scrollY < window.innerHeight) animate();

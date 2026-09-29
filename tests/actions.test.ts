@@ -69,6 +69,7 @@ function browser(t: TestContext) {
 function animatedElement() {
 	const animations: { cancelled: boolean; options: KeyframeAnimationOptions }[] = [];
 	const node = {
+		style: { visibility: '' },
 		animate(_frames: Keyframe[], options: KeyframeAnimationOptions) {
 			const animation = {
 				cancelled: false,
@@ -241,6 +242,53 @@ test('disabled reveals can be enabled and pending reveals can be disabled', (t) 
 	observers[0].enter(node);
 	assert.equal(animations[0].options.delay, 100);
 	action?.destroy?.();
+});
+
+test('reveal holds content until ready, then starts the delayed entrance', (t) => {
+	browser(t);
+	const { node, animations } = animatedElement();
+	const action = reveal(node, { immediate: true, ready: false });
+	assert.equal(node.style.visibility, 'hidden');
+	assert.equal(animations.length, 0);
+	action?.update?.({ immediate: true, ready: true, delay: 150 });
+	assert.equal(node.style.visibility, '');
+	assert.equal(animations.length, 1);
+	assert.equal(animations[0].options.delay, 150);
+	action?.destroy?.();
+});
+
+test('reduced motion releases waiting content and cleanup restores inline visibility', (t) => {
+	const { reduced } = browser(t);
+	const { node, animations } = animatedElement();
+	node.style.visibility = 'visible';
+	const action = reveal(node, { immediate: true, ready: false });
+	assert.equal(node.style.visibility, 'hidden');
+	reduced.change(true);
+	assert.equal(node.style.visibility, 'visible');
+	action?.update?.({ immediate: true, ready: true });
+	assert.equal(animations.length, 0);
+	action?.destroy?.();
+	reduced.change(false);
+	const waiting = reveal(node, { immediate: true, ready: false });
+	assert.equal(node.style.visibility, 'hidden');
+	waiting?.destroy?.();
+	assert.equal(node.style.visibility, 'visible');
+});
+
+test('waiting immediate reveals remain visible for restored scroll or unavailable animation', (t) => {
+	const { window } = browser(t);
+	const { node, animations } = animatedElement();
+	window.scrollY = window.innerHeight;
+	const skipped = reveal(node, { immediate: true, ready: false });
+	assert.equal(node.style.visibility, '');
+	skipped?.update?.({ immediate: true, ready: true });
+	assert.equal(animations.length, 0);
+	skipped?.destroy?.();
+	window.scrollY = 0;
+	const unsupported = { style: { visibility: '' } } as unknown as HTMLElement;
+	const fallback = reveal(unsupported, { immediate: true, ready: false });
+	assert.equal(unsupported.style.visibility, '');
+	fallback?.destroy?.();
 });
 
 test('reveal remains visible when IntersectionObserver is unavailable', (t) => {
