@@ -32,7 +32,13 @@
 			<p
 				class="mb-6 text-sm tracking-[0.2em] text-stone uppercase"
 				use:observeName
-				use:reveal={{ ready: typewriterComplete, immediate: true, y: 12, duration: 450 }}
+				use:reveal={{
+					ready: typewriterComplete,
+					immediate: true,
+					delay: 300,
+					y: 12,
+					duration: 450
+				}}
 			>
 				Hugo Hsi
 			</p>
@@ -64,7 +70,7 @@
 					entrance={{
 						ready: typewriterComplete,
 						immediate: true,
-						delay: 900,
+						delay: 600,
 						y: 12,
 						duration: 450
 					}}>View my work</Button
@@ -76,7 +82,7 @@
 					entrance={{
 						ready: typewriterComplete,
 						immediate: true,
-						delay: 1350,
+						delay: 750,
 						y: 12,
 						duration: 450
 					}}>Download resume</Button
@@ -88,7 +94,7 @@
 			use:reveal={{
 				ready: typewriterComplete,
 				immediate: true,
-				delay: 1800,
+				delay: 900,
 				x: 20,
 				y: 0,
 				duration: 450
