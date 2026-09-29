@@ -7,9 +7,13 @@
 	let { onNameVisibilityChange }: { onNameVisibilityChange: (visible: boolean) => void } = $props();
 	/** Notify the navigation when the hero name enters or leaves the viewport. */
 	function observeName(node: HTMLElement) {
-		const observer = new IntersectionObserver(([entry]) =>
-			onNameVisibilityChange(entry.isIntersecting)
-		);
+		if (typeof IntersectionObserver === 'undefined') {
+			onNameVisibilityChange(false);
+			return;
+		}
+		const observer = new IntersectionObserver(([entry]) => {
+			if (entry) onNameVisibilityChange(entry.isIntersecting);
+		});
 		observer.observe(node);
 		return { destroy: () => observer.disconnect() };
 	}
