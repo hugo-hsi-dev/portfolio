@@ -178,3 +178,45 @@ test('content remains visible without IntersectionObserver', (t) => {
 	assert.equal(properties.size, 0);
 	action?.destroy?.();
 });
+
+test('reveal waits for readiness before starting the delayed CSS entrance', (t) => {
+	const { observers } = browser(t);
+	const { node, classes, properties } = element();
+	const action = reveal(node, { immediate: true, ready: false });
+	assert.ok(classes.has('reveal-waiting'));
+	assert.equal(classes.has('animate-reveal'), false);
+	assert.equal(properties.size, 0);
+	assert.equal(observers.length, 0);
+	action?.update?.({ immediate: true, ready: true, delay: 150 });
+	assert.equal(classes.has('reveal-waiting'), false);
+	assert.ok(classes.has('animate-reveal'));
+	assert.equal(properties.get('--reveal-delay'), '150ms');
+	action?.destroy?.();
+});
+
+test('reduced motion releases waiting content and cleanup removes the gate', (t) => {
+	const { reduceMotion } = browser(t);
+	const { node, classes } = element();
+	const action = reveal(node, { immediate: true, ready: false });
+	assert.ok(classes.has('reveal-waiting'));
+	reduceMotion(true);
+	action?.update?.({ immediate: true, ready: true });
+	assert.equal(classes.size, 0);
+	action?.destroy?.();
+	reduceMotion(false);
+	const waiting = reveal(node, { immediate: true, ready: false });
+	assert.ok(classes.has('reveal-waiting'));
+	waiting?.destroy?.();
+	assert.equal(classes.size, 0);
+});
+
+test('waiting immediate reveals remain visible for restored scroll', (t) => {
+	const { window } = browser(t);
+	const { node, classes } = element();
+	window.scrollY = window.innerHeight;
+	const action = reveal(node, { immediate: true, ready: false });
+	assert.equal(classes.size, 0);
+	action?.update?.({ immediate: true, ready: true });
+	assert.equal(classes.size, 0);
+	action?.destroy?.();
+});

@@ -66,6 +66,17 @@
 	--ease-reveal: cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
+.animate-reveal {
+	animation-delay: var(--reveal-delay, 0ms);
+	animation-duration: var(--reveal-duration, 600ms);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+	.reveal-waiting {
+		visibility: hidden;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.animate-reveal {
 		animation: none;

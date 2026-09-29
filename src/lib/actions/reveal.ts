@@ -8,6 +8,7 @@ export type RevealOptions = {
 	y?: number;
 	duration?: number;
 	immediate?: boolean;
+	ready?: boolean;
 };
 
 /** Enhance visible HTML with a one-time CSS entrance; never hide it before JavaScript runs. */
@@ -31,6 +32,7 @@ export const reveal: Action<HTMLElement, RevealOptions | false | undefined> = (
 
 	function cancel() {
 		clearAnimation();
+		node.classList.remove('reveal-waiting');
 		observer?.disconnect();
 		observer = undefined;
 	}
@@ -57,6 +59,12 @@ export const reveal: Action<HTMLElement, RevealOptions | false | undefined> = (
 		if (options === false || revealed) return;
 		if (prefersReducedMotion.current) {
 			revealed = true;
+			return;
+		}
+		if (options.ready === false) {
+			if (!options.immediate || window.scrollY < window.innerHeight) {
+				node.classList.add('reveal-waiting');
+			}
 			return;
 		}
 		if (options.immediate) {

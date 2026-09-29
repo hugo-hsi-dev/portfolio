@@ -1,20 +1,31 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { prefersReducedMotion, Tween } from 'svelte/motion';
 
-	let { text }: { text: string } = $props();
+	let { text, onComplete }: { text: string; onComplete?: () => void } = $props();
 	const characters = new Tween(0);
 	let typing = $state(false);
 	const visibleLength = $derived(typing ? Math.floor(characters.current) : text.length);
 	let initialized = false;
+	let completed = false;
 
 	$effect(() => {
 		const length = text.length;
 		const reducedMotion = prefersReducedMotion.current;
 		const animate = !initialized && !reducedMotion && window.scrollY < window.innerHeight;
+		let disposed = false;
 		typing = animate;
 		initialized = true;
-		void characters.set(length, animate ? { delay: 300, duration: length * 35 } : { duration: 0 });
+		void characters
+			.set(length, animate ? { delay: 300, duration: length * 35 } : { duration: 0 })
+			.then(() => {
+				if (disposed || completed) return;
+				typing = false;
+				completed = true;
+				untrack(() => onComplete?.());
+			});
 		return () => {
+			disposed = true;
 			void characters.set(length, { duration: 0 });
 		};
 	});
