@@ -24,6 +24,7 @@ Run the project checks before submitting a change:
 ```sh
 pnpm lint
 pnpm check
+pnpm test
 pnpm build
 pnpm deploy:dry-run
 ```

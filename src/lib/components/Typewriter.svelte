@@ -1,44 +1,28 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
+	import { prefersReducedMotion, Tween } from 'svelte/motion';
 
 	let { text }: { text: string } = $props();
-	let visibleLength = $state<number | null>(null);
-	let showCursor = $state(false);
+	const characters = new Tween(0);
+	let typing = $state(false);
+	const visibleLength = $derived(typing ? Math.floor(characters.current) : text.length);
+	let initialized = false;
 
-	onMount(() => {
-		const preference = window.matchMedia('(prefers-reduced-motion: reduce)');
-		let timer: ReturnType<typeof setTimeout>;
-		/** Stop typing and display the full text without its animated cursor. */
-		const complete = () => {
-			clearTimeout(timer);
-			visibleLength = null;
-			showCursor = false;
-		};
-		/** Reveal one character and schedule the next until the text is complete. */
-		const typeNext = () => {
-			visibleLength = (visibleLength ?? 0) + 1;
-			if (visibleLength < text.length) timer = setTimeout(typeNext, 35);
-		};
-		if (!preference.matches && window.scrollY < window.innerHeight) {
-			visibleLength = 0;
-			showCursor = true;
-			timer = setTimeout(typeNext, 300);
-		}
-		/** Finish immediately if reduced motion is enabled during typing. */
-		const updatePreference = () => {
-			if (preference.matches) complete();
-		};
-		preference.addEventListener('change', updatePreference);
+	$effect(() => {
+		const length = text.length;
+		const reducedMotion = prefersReducedMotion.current;
+		const animate = !initialized && !reducedMotion && window.scrollY < window.innerHeight;
+		typing = animate;
+		initialized = true;
+		void characters.set(length, animate ? { delay: 300, duration: length * 35 } : { duration: 0 });
 		return () => {
-			clearTimeout(timer);
-			preference.removeEventListener('change', updatePreference);
+			void characters.set(length, { duration: 0 });
 		};
 	});
 </script>
 
 <span class="sr-only">{text}</span>
 <span aria-hidden="true"
-	>{text.slice(0, visibleLength ?? text.length)}{#if showCursor}<span
+	>{text.slice(0, visibleLength)}{#if typing}<span
 			class="relative inline after:absolute after:bottom-[0.08em] after:left-1 after:h-[1cap] after:w-0.5 after:animate-cursor-blink after:bg-current after:content-[''] motion-reduce:hidden"
-		></span>{/if}<span class="invisible">{text.slice(visibleLength ?? text.length)}</span></span
+		></span>{/if}<span class="invisible">{text.slice(visibleLength)}</span></span
 >
