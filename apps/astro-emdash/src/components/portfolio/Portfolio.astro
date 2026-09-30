@@ -1,0 +1,219 @@
+---
+import PortfolioLayout from '../../layouts/PortfolioLayout.astro';
+import ProjectCard from './ProjectCard.astro';
+import Timeline from './Timeline.astro';
+import TextLink from './TextLink.astro';
+import resumeUrl from '../../assets/hugo-hsi-resume.pdf?url';
+import type { Portfolio } from './types';
+interface Props {
+	portfolio: Portfolio;
+}
+const { portfolio } = Astro.props;
+const { hero, sections, contacts, footer, ui } = portfolio;
+const [top, projects, experience, education, tech, contact] = sections;
+const email = contacts.find((item) => item.id === 'email')!;
+const navContacts = ui.navigation.contactIds.map((id) => contacts.find((item) => item.id === id)!);
+// The application owns this media ID mapping; CMS content cannot redirect the resume download.
+const resumeAssets: Record<string, string> = { 'resume-pdf': resumeUrl };
+---
+
+<PortfolioLayout {portfolio}>
+	<a class="skip-link" href={ui.skipLink.href}>
+		{ui.skipLink.label}
+	</a>
+	<div class="scroll-progress" aria-hidden="true">
+		<span></span>
+	</div>
+	<header class="site-nav">
+		<a
+			class="nav-name"
+			data-nav-name
+			data-magnetic="0.2"
+			href={ui.navigation.homeHref}
+			aria-label={ui.navigation.homeLabel}
+		>
+			<span class="magnetic-content" data-magnetic-content>
+				{hero.name}
+			</span>
+		</a>
+		<nav class="social-nav" aria-label={ui.navigation.socialLabel}>
+			{navContacts.map((link) => (
+				<a class="social-link" data-magnetic="0.3" href={link.url} aria-label={link.label}>
+					<span class="magnetic-content" data-magnetic-content>
+						<svg
+							width="20"
+							height="20"
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="1.5"
+							aria-hidden="true"
+						>
+							{link.id === 'github' ? (
+								<path d="M9 19c-4.3 1.3-4.3-2.2-6-2.7m12 5v-3.4c0-1 .1-1.5-.5-2.1 3.1-.3 6.4-1.5 6.4-6.9 0-1.5-.5-2.7-1.4-3.7.2-.4.6-1.8-.1-3.6 0 0-1.2-.4-3.8 1.4a13 13 0 0 0-6.9 0C6.1 1.2 4.9 1.6 4.9 1.6c-.7 1.8-.3 3.2-.1 3.6a5.3 5.3 0 0 0-1.4 3.7c0 5.4 3.3 6.6 6.4 6.9-.5.5-.8 1.1-.8 2.1v3.4" />
+							) : (
+								<>
+									<rect x="3" y="3" width="18" height="18" rx="1" />
+									<path d="M7 10v7m0-10v.1M11 17v-7m0 3a3 3 0 0 1 6 0v4" />
+								</>
+							)}
+						</svg>
+					</span>
+				</a>
+			))}
+		</nav>
+	</header>
+	<main id={ui.main.id} tabindex={ui.main.tabindex}>
+		<section class="hero" id={top.id} aria-labelledby={top.headingId ?? undefined}>
+			<div class="hero-grid">
+				<div class="hero-copy">
+					<p
+						class="hero-name"
+						data-hero-name
+						data-reveal="hero"
+						data-delay="300"
+						data-y="12"
+						data-duration="450"
+					>
+						{hero.name}
+					</p>
+					<h1 class="hero-title" id={top.headingId ?? undefined}>
+						<span class="sr-only">{hero.headline}</span>
+						<span data-typewriter data-text={hero.headline} aria-hidden="true">
+							<span data-typewriter-visible>{hero.headline}</span>
+							<span class="typewriter-cursor" data-typewriter-cursor hidden></span>
+							<span class="typewriter-tail" data-typewriter-tail></span>
+						</span>
+					</h1>
+					<p
+						class="hero-description"
+						data-reveal="hero"
+						data-delay="450"
+						data-y="12"
+						data-duration="450"
+					>
+						{hero.description}
+					</p>
+					<div class="hero-actions">
+						<a
+							class="button"
+							href={hero.primaryAction.href}
+							data-reveal="hero"
+							data-delay="600"
+							data-y="12"
+							data-duration="450"
+						>
+							<span>{hero.primaryAction.label}</span>
+						</a>
+						<a
+							class="button button-outline"
+							href={resumeAssets[hero.resumeAction.mediaId]}
+							download={hero.resumeAction.download}
+							data-reveal="hero"
+							data-delay="750"
+							data-y="12"
+							data-duration="450"
+						>
+							<span>{hero.resumeAction.label}</span>
+						</a>
+					</div>
+				</div>
+				<aside
+					class="hero-aside"
+					data-reveal="hero"
+					data-delay="900"
+					data-x="20"
+					data-y="0"
+					data-duration="450"
+				>
+					<p>
+						{hero.aside}{' '}
+						<span aria-hidden="true" class="hero-quote">
+							{ui.decorations.quote}
+						</span>
+					</p>
+					<span class="hero-location">{hero.location}</span>
+				</aside>
+			</div>
+		</section>
+		<section class="section" id={projects.id} aria-labelledby={projects.headingId ?? undefined}>
+			<div class="section-inner">
+				<header class="section-header" data-reveal>
+					<h2 class="section-title" id={projects.headingId ?? undefined}>
+						{projects.title}
+					</h2>
+				</header>
+				<div class="projects">
+					{portfolio.projects.map((project) => (
+						<ProjectCard {project} {ui} />
+					))}
+				</div>
+			</div>
+		</section>
+		<Timeline section={experience} items={portfolio.experience} />
+		<Timeline section={education} items={portfolio.education} divided />
+		<section class="section" id={tech.id} aria-labelledby={tech.headingId ?? undefined}>
+			<div class="section-inner">
+				<header class="section-header" data-reveal>
+					<h2 class="section-title" id={tech.headingId ?? undefined}>
+						{tech.title}
+					</h2>
+				</header>
+				<div class="skills" data-reveal>
+					{portfolio.skillGroups.map((group) => (
+						<div>
+							<h3 class="skill-title">{group.label}</h3>
+							<ul class="skill-list">
+								{group.items.map((item) => (
+									<li>{item}</li>
+								))}
+							</ul>
+						</div>
+					))}
+				</div>
+			</div>
+		</section>
+	</main>
+	<footer class="site-footer" id={contact.id}>
+		<div class="footer-inner">
+			<div class="footer-grid" data-reveal>
+				<div>
+					<h2 class="footer-title">{footer.heading}</h2>
+					<p class="footer-description">{footer.description}</p>
+				</div>
+				<div class="footer-contact">
+					<a href={email.url} class="email-link" data-magnetic="0.15">
+						<span class="magnetic-content" data-magnetic-content>
+							<svg
+								width="24"
+								height="24"
+								viewBox="0 0 24 24"
+								fill="none"
+								stroke="currentColor"
+								stroke-width="1.5"
+								aria-hidden="true"
+							>
+								<rect x="3" y="5" width="18" height="14" rx="1" />
+								<path d="m3 6 9 7 9-7" />
+							</svg>
+							{email.address}
+						</span>
+					</a>
+					<div class="footer-links">
+						{contacts.map((link) => (
+							<TextLink href={link.url}>{link.label}</TextLink>
+						))}
+					</div>
+				</div>
+			</div>
+			<div class="footer-bottom" data-reveal>
+				<span>
+					{footer.copyright.prefix}
+					{new Date().getFullYear()}
+					{footer.copyright.suffix}
+				</span>
+				<span>{footer.credit}</span>
+			</div>
+		</div>
+	</footer>
+</PortfolioLayout>

@@ -1,0 +1,32 @@
+---
+import type { Portfolio } from './types';
+interface Props {
+	section: Portfolio['sections'][number];
+	items: Portfolio['experience'];
+	divided?: boolean;
+}
+const { section, items, divided } = Astro.props;
+---
+
+<section
+	id={section.id}
+	aria-labelledby={section.headingId ?? undefined}
+	class:list={['section', 'timeline-section', divided && 'timeline-divided']}
+>
+	<div class="section-inner">
+		<header class="section-header" data-reveal>
+			<h2 class="section-title" id={section.headingId ?? undefined}>
+				{section.title}
+			</h2>
+		</header>
+		<div class="timeline">
+			{items.map((item) => (
+				<article class="timeline-entry" data-reveal>
+					<p class="timeline-date">{item.date}</p>
+					<h3 class="timeline-role">{item.role}</h3>
+					<p class="timeline-company">{item.company}</p>
+				</article>
+			))}
+		</div>
+	</div>
+</section>

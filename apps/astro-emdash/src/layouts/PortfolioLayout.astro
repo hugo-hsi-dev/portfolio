@@ -1,0 +1,38 @@
+---
+import type { Portfolio } from '../components/portfolio/types';
+import favicon from '../assets/favicon.svg?url';
+import '../styles/portfolio.css';
+interface Props {
+	portfolio: Portfolio;
+}
+const {
+	portfolio: { site, seo, ui }
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={site.language}>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="text-scale" content="scale" />
+		<title>{seo.title}</title>
+		<meta name="description" content={seo.description} />
+		<meta property="og:title" content={seo.openGraph.title} />
+		<meta property="og:description" content={seo.openGraph.description} />
+		<meta property="og:type" content={seo.openGraph.type} />
+		<meta property="og:url" content={seo.openGraph.url} />
+		<meta name="theme-color" content={seo.themeColor} />
+		<link rel="canonical" href={seo.canonical} />
+		<link rel="icon" href={favicon} />
+		{ui.fontPreloads.map((href) => (
+			<link rel="preload" href={href} as="font" type="font/ttf" crossorigin="anonymous" />
+		))}
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>
+<script>
+	import '../scripts/portfolio';
+</script>
