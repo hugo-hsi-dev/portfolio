@@ -170,7 +170,9 @@ Follow-up signal testing found `signal-exit` could re-emit SIGTERM after a once-
 handler deregistered. Retaining the handler until finally corrected it. A real
 interrupted smoke exited with failure, left no temporary storage and preserved all
 source-state hashes; native review approved this adjustment and the CI fixes.
-Focused smoke/script/lint checks were repeated after that signal-only correction.
+The full fresh aggregate above was repeated at exact commit
+`147ff98405a1bb5c52a7642c9036e72a9a618877` after the signal correction; all checks
+passed locally. Native review included the correction.
 
 Aggregate logs are `/tmp/operations-aggregate-*.log` and browser evidence is
 `/tmp/portfolio-ui-cms/public-route-results.json`. These are task-local evidence.
@@ -180,6 +182,27 @@ completed rehearsal. The
 initial 45-test count above remains attributed to e13d5f2. The added isolation
 regressions increase this branch's migration suite to 49 tests. No saved setting,
 credential, resource, UI integration merge or main change is part of these fixes.
+
+## Same-renderer CI follow-up
+
+Hosted run [36700439084](https://github.com/hugo-hsi-dev/portfolio/actions/runs/36700439084)
+at `147ff98405a1bb5c52a7642c9036e72a9a618877` passed bootstrap, migration
+checks/build/smoke and UI unit tests, then failed the strict screenshot check on
+Ubuntu with Chrome for Testing 151.0.7922.34. That run retained no image artifacts;
+it cannot by itself identify the changed pixels. Local Debian Chromium
+151.0.7922.173 passed the committed images. Subsequent CI therefore renders verified
+immutable legacy source `326c112c709f93bba6fb4701d03870383a316424` and the CMS
+candidate in the same job/browser/OS/font environment, preserving zero-pixel
+acceptance and all CMS/interaction checks. No committed images are replaced and no
+threshold is raised. Source/tree/cleanliness, renderer identity and screenshot
+hashes are checked before accepting the reference. Explicit reference, candidate,
+all-view pixel diffs and static-baseline drift metrics are retained even on failure.
+
+The local immutable legacy capture matched all four committed screenshots exactly.
+A successful hosted full aggregate and inspection of its retained pixel evidence
+are required before this correction is eligible for integration merge. Neither this
+workflow nor its reference build deploys a Worker or requires secrets. Separate
+admin and persistent recovery evidence remains outside this operations gate.
 
 ## References
 

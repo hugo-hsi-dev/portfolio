@@ -17,7 +17,7 @@ concurrency:
 jobs:
   validate:
     name: Local migration and legacy checks
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 20
     env:
       WRANGLER_SEND_METRICS: 'false'
@@ -46,12 +46,25 @@ jobs:
       - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
         with:
           node-version: '24'
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: 326c112c709f93bba6fb4701d03870383a316424
+          path: legacy-reference
+          persist-credentials: false
+      - name: Prepare immutable legacy reference checkout
+        working-directory: ${{ github.workspace }}
+        run: |
+          test ! -e /tmp/l
+          mkdir /tmp/l
+          cp -a legacy-reference/. /tmp/l/
+          test "$(git -C /tmp/l rev-parse HEAD)" = 326c112c709f93bba6fb4701d03870383a316424
       - name: Verify toolchain and install frozen workspace
         run: |
           node --version
           test "$(pnpm --version)" = 11.22.0
           git rev-parse HEAD
           pnpm migration:bootstrap
+          pnpm --dir /tmp/l install --frozen-lockfile
       - name: Validate migration with local emulation
         run: |
           pnpm migration:check
@@ -68,7 +81,13 @@ jobs:
           browser_executable="$(python -c 'from playwright.sync_api import sync_playwright; p = sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
           sudo ln -sf "$browser_executable" /usr/bin/chromium
           /usr/bin/chromium --version
+      - name: Render immutable legacy reference with the candidate renderer
+        run: |
+          node scripts/migration/legacy-reference.mjs --checkout /tmp/l --browser /usr/bin/chromium --out /tmp/portfolio-ui-legacy-reference
       - name: Validate published CMS UI
+        env:
+          PORTFOLIO_UI_REFERENCE: /tmp/portfolio-ui-legacy-reference
+          PORTFOLIO_UI_BROWSER: /usr/bin/chromium
         run: |
           pnpm exec node --test apps/astro-emdash/tests/*.test.ts
           pnpm exec node --test apps/astro-emdash/tests/ui-public-d1.test.mjs
@@ -78,6 +97,20 @@ jobs:
           pnpm check
           pnpm test
           pnpm deploy:dry-run
+      - name: Upload explicit parity evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: portfolio-parity-${{ github.event.pull_request.head.sha || github.sha }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            /tmp/portfolio-ui-legacy-reference/**/*.json
+            /tmp/portfolio-ui-legacy-reference/**/*.png
+            /tmp/portfolio-ui-legacy-reference/**/*.log
+            /tmp/portfolio-ui-cms/**/*.json
+            /tmp/portfolio-ui-cms/**/*.png
+            /tmp/portfolio-ui-cms/**/*.log
       - name: Verify validation preserved repository inputs
         run: |
           git diff --exit-code

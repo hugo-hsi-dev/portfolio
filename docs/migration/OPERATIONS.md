@@ -70,8 +70,8 @@ and local environment files are also excluded from version control.
 and integration pushes, using Node 24, pnpm 11.22.0, frozen bootstrap, migration
 check/build/disposable smoke, UI interaction and published-CMS browser tests, and
 legacy lint/check/tests/deployment dry-run. Browser tooling is pinned to Python
-3.12, Playwright 1.62.0 and Pillow 12.3.0; Chromium and its runner dependencies are
-installed explicitly. The downloaded Chromium is linked at `/usr/bin/chromium`,
+3.12, Playwright 1.62.0 and Pillow 12.3.0 on Ubuntu 24.04; Chromium and its runner
+dependencies are installed explicitly. The downloaded Chromium is linked at `/usr/bin/chromium`,
 the existing UI harness default, on the ephemeral CI runner. Run validation from
 a short checkout path (CI uses `/tmp/p`, local replay uses `/workspace/op`) because
 Chromium Unix socket paths include the UI harness's app-local temporary directory
@@ -81,7 +81,19 @@ disabled, matching the saved cloud activation script. It
 uses pinned actions, `contents:read`, credential-free checkout and no repository
 secrets, cloud environments or deployment step. Its final check rejects changed
 tracked inputs and unexpected untracked files. It does not configure required
-status checks or any repository security setting. The UI harness is invoked without modifications. Authenticated browser admin
+status checks or any repository security setting. CI renders the legacy reference from verified immutable source
+`326c112c709f93bba6fb4701d03870383a316424` and the published CMS candidate in the
+same job/browser/OS/font environment. The reference checkout uses its own frozen
+lockfile and is never taken from migration candidate output. The capture records
+source and renderer provenance plus screenshot hashes; the CMS test validates that
+provenance before comparing all four captures in each of its two phases with strict
+zero-pixel equality. Static checked-in images remain the default for standalone
+local checks, and are never regenerated or replaced. Reference drift against those
+images is emitted separately for diagnosing renderer differences. CI uploads
+explicit PNG/JSON reference/candidate/diff evidence even when parity fails.
+
+The UI harness retains its publication, media, interaction and strict screenshot
+assertions; its reference input is selected only by the verified capture manifest. Authenticated browser admin
 verification remains a separate gate owned by its task.
 
 ## Environment key and storage mapping

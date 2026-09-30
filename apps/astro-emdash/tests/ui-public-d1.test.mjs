@@ -7,6 +7,10 @@ import { dirname, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { withPortfolioD1Harness } from '../migration/portfolio/d1-harness.mjs';
 import { baseline, createDraftSeed } from '../migration/portfolio/seed.mjs';
+import {
+	compareScreenshots,
+	validateLegacyReference
+} from '../../../scripts/migration/legacy-reference.mjs';
 
 const testsRoot = dirname(fileURLToPath(import.meta.url));
 const appRoot = resolve(testsRoot, '..');
@@ -56,31 +60,34 @@ function python(args, timeout = 90_000) {
 
 async function browserParity(origin, phase) {
 	const destination = resolve(output, phase);
-	await python([resolve(testsRoot, 'ui-browser.py'), '--url', `${origin}/`, '--out', destination]);
-	// Compare decoded pixels, not compressed PNG bytes. Requires Pillow already installed.
-	const comparison = JSON.parse(
-		await python([
-			'-c',
-			`import json,sys
-from pathlib import Path
-from PIL import Image,ImageChops
-results={}
-for name in ['astro-375.png','astro-768.png','astro-1440.png','astro-375-nojs.png']:
- a=Image.open(Path(sys.argv[1])/name).convert('RGB')
- b=Image.open(Path(sys.argv[2])/name).convert('RGB')
- assert a.size==b.size, name+' dimensions differ'
- difference=ImageChops.difference(a,b).getbbox()
- assert difference is None, name+' differs from committed source-parity baseline'
- results[name]={'size':list(a.size),'differing_pixels':0}
-print(json.dumps(results))`,
-			resolve(testsRoot, 'evidence'),
-			destination
-		])
-	);
-	await writeFile(
-		resolve(destination, 'pixel-comparison.json'),
-		JSON.stringify(comparison, null, 2)
-	);
+	const browser = process.env.PORTFOLIO_UI_BROWSER || '/usr/bin/chromium';
+	const reference = process.env.PORTFOLIO_UI_REFERENCE
+		? resolve(process.env.PORTFOLIO_UI_REFERENCE)
+		: resolve(testsRoot, 'evidence');
+	const provenance = process.env.PORTFOLIO_UI_REFERENCE
+		? await validateLegacyReference(reference, browser)
+		: undefined;
+	await python([
+		resolve(testsRoot, 'ui-browser.py'),
+		'--url',
+		`${origin}/`,
+		'--out',
+		destination,
+		'--browser',
+		browser
+	]);
+	if (provenance) {
+		await writeFile(
+			resolve(destination, 'reference-manifest.json'),
+			JSON.stringify(provenance, null, 2)
+		);
+	}
+	// Compare every decoded pixel and write all failure artifacts before raising.
+	const comparison = await compareScreenshots(reference, destination, destination);
+	for (const [name, result] of Object.entries(comparison)) {
+		assert.ok(result.dimensions_match, `${name} dimensions differ`);
+		assert.equal(result.differing_pixels, 0, `${name} differs from source-parity baseline`);
+	}
 	return comparison;
 }
 
