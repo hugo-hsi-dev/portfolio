@@ -1,0 +1,117 @@
+name: Migration validation
+
+on:
+  pull_request:
+    branches: [integration/astro-emdash]
+  push:
+    branches: [integration/astro-emdash]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: migration-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Local migration and legacy checks
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    env:
+      WRANGLER_SEND_METRICS: 'false'
+      CLOUDFLARE_CF_FETCH_ENABLED: 'false'
+      ASTRO_TELEMETRY_DISABLED: '1'
+      PNPM_CONFIG_ENABLE_GLOBAL_VIRTUAL_STORE: 'false'
+    defaults:
+      run:
+        working-directory: /tmp/p
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          # Validate the exact PR head; integration replay runs on the push event.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - name: Use a short checkout path for Chromium sockets
+        working-directory: ${{ github.workspace }}
+        run: |
+          test ! -e /tmp/p
+          mkdir /tmp/p
+          cp -a . /tmp/p/
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+        with:
+          version: 11.22.0
+          run_install: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '24'
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          ref: 326c112c709f93bba6fb4701d03870383a316424
+          path: legacy-reference
+          persist-credentials: false
+      - name: Prepare immutable legacy reference checkout
+        working-directory: ${{ github.workspace }}
+        run: |
+          test ! -e /tmp/l
+          mkdir /tmp/l
+          cp -a legacy-reference/. /tmp/l/
+          test "$(git -C /tmp/l rev-parse HEAD)" = 326c112c709f93bba6fb4701d03870383a316424
+      - name: Verify toolchain and install frozen workspace
+        run: |
+          node --version
+          test "$(pnpm --version)" = 11.22.0
+          git rev-parse HEAD
+          pnpm migration:bootstrap
+          pnpm --dir /tmp/l install --frozen-lockfile
+      - name: Validate migration with local emulation
+        run: |
+          pnpm migration:check
+          pnpm migration:build
+          pnpm migration:smoke
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned local browser tooling
+        run: |
+          python -m pip install playwright==1.62.0 Pillow==12.3.0
+          python -m playwright install --with-deps chromium
+          # The UI-owned harness defaults to this system path.
+          browser_executable="$(python -c 'from playwright.sync_api import sync_playwright; p = sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
+          sudo ln -sf "$browser_executable" /usr/bin/chromium
+          /usr/bin/chromium --version
+      - name: Render immutable legacy reference with the candidate renderer
+        run: |
+          node scripts/migration/legacy-reference.mjs --checkout /tmp/l --browser /usr/bin/chromium --out /tmp/portfolio-ui-legacy-reference
+      - name: Validate published CMS UI
+        env:
+          PORTFOLIO_UI_REFERENCE: /tmp/portfolio-ui-legacy-reference
+          PORTFOLIO_UI_BROWSER: /usr/bin/chromium
+        run: |
+          pnpm exec node --test apps/astro-emdash/tests/*.test.ts
+          pnpm exec node --test apps/astro-emdash/tests/ui-public-d1.test.mjs
+      - name: Validate legacy application
+        run: |
+          pnpm lint
+          pnpm check
+          pnpm test
+          pnpm deploy:dry-run
+      - name: Upload explicit parity evidence even on failure
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: portfolio-parity-${{ github.event.pull_request.head.sha || github.sha }}
+          retention-days: 7
+          if-no-files-found: warn
+          path: |
+            /tmp/portfolio-ui-legacy-reference/**/*.json
+            /tmp/portfolio-ui-legacy-reference/**/*.png
+            /tmp/portfolio-ui-legacy-reference/**/*.log
+            /tmp/portfolio-ui-cms/**/*.json
+            /tmp/portfolio-ui-cms/**/*.png
+            /tmp/portfolio-ui-cms/**/*.log
+      - name: Verify validation preserved repository inputs
+        run: |
+          git diff --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"

@@ -6,11 +6,11 @@ returns that schema plus 17 deterministic, explicitly draft, slugless entries. R
 ordered `{value: string}` rows. The fixture retains simple `string[]` values; the runtime adapter
 must convert between these shapes.
 
-This directory is outside EmDash's automatic seed discovery. The foundation owner can select
-`migration/portfolio/schema.seed.json` through the app's `package.json#emdash.seed` **after review**.
-No package field or default `seed/seed.json` was changed here. Do not register the generated draft
-content as an automatic startup migration. Schema-only setup will initially have no portfolio
-content; use an explicit fixture mode for local public UI development until publishing is wired.
+The app's `package.json#emdash.seed` selects `migration/portfolio/schema.seed.json` for
+schema-only setup. Generated draft content is not an automatic startup migration.
+Schema setup creates no administrator or published portfolio content. The public runtime
+requires deliberate publication of all required records and fails closed without fixture
+fallback; see [RUNTIME.md](./RUNTIME.md) for the current loader and local D1 coverage.
 
 ## Exact APIs verified
 
@@ -105,12 +105,15 @@ exact data parity, conflicting source/manual edits, missing-record recovery, dup
 publication/remote-media rejection, identity collisions and stored-schema drift.
 
 The harness uses version-pinned raw `ec_*` reads for local preflight and verification. It is not a
-production query adapter or a promise of stable database internals. Core schema migration behavior,
-D1 execution, concurrency, persistent import ledgers, draft preview and publication need separate
-integration checks before adapting this approach to a real target. In particular, do not infer D1
-transaction guarantees from this SQLite test. Define the public `loadPortfolio()` implementation
-using the agreed EmDash live-content APIs, not this local SQL inspection harness.
+production query adapter or a promise of stable database internals. The CMS slice now exercises core setup, D1 execution, publication, native write-policy
+hooks and media bytes in actual disposable workerd tests. Its `loadPortfolio()` uses
+published EmDash collection reads, not this SQL inspection harness. Concurrency,
+persistent import ledgers, browser draft preview and authenticated editor behavior
+remain separate gates before adapting the importer to a persistent target. Do not
+infer a transaction across the complete import from the SQLite or D1 rehearsals.
 
-Before CMS release, enforce application-owned field protection and the home singleton policy;
-validate URL protocols and email/mailto agreement at the write boundary; verify media editing and
-published-only reads. Do not add unsupported placeholder API calls to simulate those controls.
+Application-owned field protection, the home singleton, URL protocols, email/mailto
+agreement and published-only reads are enforced and tested by the CMS slice.
+Authenticated media picker/editing, passkeys, session behavior, persistent setup and
+backup/restore still require separate verification; direct handler tests do not
+establish those browser workflows.

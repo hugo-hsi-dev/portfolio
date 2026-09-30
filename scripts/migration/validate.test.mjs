@@ -18,7 +18,8 @@ test('cloud environment or resource changes cannot enter foundation checks unnot
 		(config) => (config.d1_databases[0].database_id = 'actual-resource'),
 		(config) => (config.routes = [{ pattern: 'hugohsi.dev', custom_domain: true }]),
 		(config) => (config.workers_dev = true),
-		(config) => (config.env = { production: {} })
+		(config) => (config.env = { production: {} }),
+		(config) => (config.worker_loaders = [{ binding: 'LOADER' }])
 	]) {
 		const config = localConfig();
 		change(config);

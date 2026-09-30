@@ -35,9 +35,12 @@ pnpm migration:smoke
 pnpm migration:dev
 ```
 
-Development uses the URL reported by Portless. The smoke test starts a loopback
-preview on port 4387 and stops it afterward. It checks ephemeral D1, R2 and KV,
-then the built Worker health route and CMS setup page. It never creates an admin.
+Development uses the URL reported by Portless. The smoke test copies the built
+Worker to a temporary directory and starts it on a dynamically selected loopback
+port. Its D1/R2/KV and built-route storage never reuse app state; all temporary
+files are removed on exit. It checks the health route and CMS setup HTML without
+creating an admin. See [operations setup](./OPERATIONS.md) for the exact cloud
+activation/start recipe, generated types contract and CI validation workflow.
 Build before smoke. Run legacy checks independently:
 
 ```sh
@@ -108,16 +111,18 @@ first-admin setup later at the intended origin. No credentials are created here.
 
 - [x] Foundation: coupled Astro/EmDash runtime, shared lockfile/scripts, local storage,
       environment validation and local smoke tests.
-- [ ] Content model: deterministic authored-TS fixture, stable identifiers and asset hashes,
+- [x] Content model: deterministic authored-TS fixture, stable identifiers and asset hashes,
       reviewed EmDash 1.x schemas and idempotent importer. Owner: content task.
-- [ ] UI parity: preserve design/content, URLs, accessibility, responsive layouts,
+- [x] UI parity: preserve design/content, URLs, accessibility, responsive layouts,
       motion and résumé links; compare screenshots and functional behavior.
-- [ ] CMS editing: seed only fresh databases, test draft/publish/preview/media/auth,
-      use reviewed schema migrations for existing databases.
+- [ ] CMS editing: disposable D1 draft/publication/policy/media handler tests pass;
+      real authenticated editing, passkeys, draft preview, sessions and media picker
+      remain gates. Use reviewed schema migrations for existing databases.
 - [ ] Separate private preview resources/config: DB/MEDIA/SESSION and runtime origin,
       credential setup by Hugo, build-time `CLOUDFLARE_ENV`, no production bindings.
 - [ ] Cloud checks and recovery: replay the same scripts, backup/restore rehearsal,
-      migration rollback plan and no secret/state transfers.
+      migration rollback plan and no secret/state transfers. Follow the
+      [cutover/recovery runbook](./RECOVERY.md); its persistent rehearsal remains pending.
 - [ ] Main cutover: 90–100% ready, passing independent review/checks and parity,
       functional CMS, isolated preview, recovery evidence and Hugo's approval.
 
@@ -162,5 +167,8 @@ Local Node 24.21.0 / pnpm 11.22.0:
   root and direct app development were corrected and reviewed again, with no
   remaining concrete defects. Named cloud-target rejection was also verified.
 
-The CMS admin bundle emits Vite's large-chunk advisory. Functional editor workflows,
-public-page UI parity, cloud replay and a private CMS preview remain later gates.
+The CMS admin bundle emits Vite's large-chunk advisory. Functional authenticated editor workflows, public-page UI parity and a private CMS
+preview remain later gates. Fresh cloud replay at integration `e13d5f2` passed
+45 migration tests with no skips and zero Astro diagnostics; the operations PR
+adds disposable built smoke, generated-type exclusions and a local-only CI gate.
+See [operations review](./OPERATIONS-REVIEW.md) for attributed evidence.
