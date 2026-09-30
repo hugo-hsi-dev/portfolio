@@ -4,6 +4,9 @@
 	"version": "0.0.1",
 	"type": "module",
 	"portless": "portfolio-astro-emdash",
+	"emdash": {
+		"seed": "./migration/portfolio/schema.seed.json"
+	},
 	"engines": {
 		"node": ">=24 <25",
 		"pnpm": ">=11 <12"

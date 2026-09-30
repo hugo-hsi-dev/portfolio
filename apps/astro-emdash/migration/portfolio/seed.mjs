@@ -1,9 +1,9 @@
-import { readFileSync } from 'node:fs';
+import schemaSeed from './schema.seed.json' with { type: 'json' };
+import baseline from './fixture.json' with { type: 'json' };
+import manifest from './manifest.json' with { type: 'json' };
 
-const read = (name) => JSON.parse(readFileSync(new URL(name, import.meta.url), 'utf8'));
-export const schemaSeed = read('schema.seed.json');
-export const baseline = read('fixture.json');
-const media = read('manifest.json').media;
+export { schemaSeed, baseline };
+const media = manifest.media;
 const repeat = (items) => items.map((value) => ({ value }));
 
 /** EmDash 1.0.1 SeedFile: non-routable, slugless records keep their explicit seed IDs. */

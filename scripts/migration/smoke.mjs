@@ -29,10 +29,15 @@ console.log('Ephemeral local D1, R2 and SESSION KV operations passed.');
 const astroPackage = requireApp.resolve('astro/package.json');
 const { bin } = JSON.parse(readFileSync(astroPackage, 'utf8'));
 const cli = resolve(astroPackage, '..', bin.astro);
-const child = spawn(process.execPath, [cli, 'preview', '--host', '127.0.0.1', '--port', '4387'], {
-	cwd: appRoot,
-	stdio: ['ignore', 'pipe', 'pipe']
-});
+// Astro 7 auto-backgrounds in agent environments unless --ignore-lock is specified.
+const child = spawn(
+	process.execPath,
+	[cli, 'preview', '--ignore-lock', '--host', '127.0.0.1', '--port', '4387'],
+	{
+		cwd: appRoot,
+		stdio: ['ignore', 'pipe', 'pipe']
+	}
+);
 let logs = '';
 child.stdout.on('data', (chunk) => (logs += chunk));
 child.stderr.on('data', (chunk) => (logs += chunk));
