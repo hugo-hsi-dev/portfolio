@@ -1,0 +1,123 @@
+{
+	"schemaVersion": 1,
+	"language": "en",
+	"route": "/",
+	"primaryActionHref": "#projects",
+	"resumeAction": {
+		"mediaId": "resume-pdf",
+		"download": "Hugo-Hsi-Resume.pdf"
+	},
+	"sections": [
+		{
+			"id": "top",
+			"headingId": "hero-title"
+		},
+		{
+			"id": "projects",
+			"headingId": "projects-title"
+		},
+		{
+			"id": "experience",
+			"headingId": "experience-title"
+		},
+		{
+			"id": "education",
+			"headingId": "education-title"
+		},
+		{
+			"id": "tech",
+			"headingId": "tech-title"
+		},
+		{
+			"id": "contact",
+			"headingId": null
+		}
+	],
+	"projects": [
+		{
+			"id": "windows-pc-hardware",
+			"accent": "sage"
+		},
+		{
+			"id": "arch-linux",
+			"accent": "sage"
+		},
+		{
+			"id": "medal-of-honor-museum",
+			"accent": "gold"
+		},
+		{
+			"id": "first-avenue-advisors",
+			"accent": "gold",
+			"fit": "logo"
+		},
+		{
+			"id": "minecentral",
+			"accent": "sage"
+		}
+	],
+	"experience": ["praxis-loop", "lookout", "reflex"],
+	"education": ["columbia-bootcamp", "new-school-bfa"],
+	"skillGroups": ["systems-hardware", "web-tools", "development"],
+	"contacts": ["email", "github", "linkedin"],
+	"footer": {
+		"copyright": {
+			"prefix": "© ",
+			"year": "runtime-current-year",
+			"suffixTemplate": " {name}. All rights reserved."
+		},
+		"credit": "Built with SvelteKit, Cloudflare, and attention to detail."
+	},
+	"seo": {
+		"canonical": "https://hugohsi.dev/",
+		"themeColor": "#f8f6f1",
+		"sitemap": {
+			"url": "https://www.hugohsi.dev/",
+			"changefreq": "monthly",
+			"priority": "1.0"
+		},
+		"robots": {
+			"userAgent": "*",
+			"allow": "/",
+			"sitemap": "https://www.hugohsi.dev/sitemap.xml"
+		},
+		"openGraph": {
+			"type": "website",
+			"url": "https://hugohsi.dev/"
+		}
+	},
+	"ui": {
+		"skipLink": {
+			"label": "Skip to content",
+			"href": "#main"
+		},
+		"main": {
+			"id": "main",
+			"tabindex": -1
+		},
+		"navigation": {
+			"homeHref": "#top",
+			"homeLabel": "{name}, back to top",
+			"socialLabel": "Social links",
+			"contactIds": ["github", "linkedin"]
+		},
+		"projectLink": {
+			"label": "Visit site",
+			"imageAriaLabel": "Visit {title}",
+			"textAriaLabel": "Visit site: {title}"
+		},
+		"decorations": {
+			"quote": "”",
+			"externalArrow": "↗",
+			"ariaHidden": true
+		},
+		"projectImage": {
+			"width": 1440,
+			"height": 960,
+			"loading": "lazy",
+			"defaultFit": "cover",
+			"logoFit": "contain"
+		},
+		"fontPreloads": ["/fonts/forum.ttf", "/fonts/outfit.ttf"]
+	}
+}

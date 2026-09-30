@@ -1,14 +1,14 @@
 # Portfolio content migration contract
 
-Status: portable baseline fixture plus verified EmDash 1.0.1 schema and disposable local seed
-rehearsal. No runtime wiring, persistent/remote database writes, credentials or package/configuration
-changes are included. See `LOCAL-SEED.md` for the tested APIs and remaining production gates.
+Status: verified EmDash 1.0.1 schema, published runtime adapter, application safeguards and
+disposable D1/R2 lifecycle tests. See `RUNTIME.md` for the exact UI interface and operational limits;
+`LOCAL-SEED.md` retains the original SQLite rehearsal. No remote writes or credentials are included.
 The source is commit `326c112c709f93bba6fb4701d03870383a316424`.
 
 ## Consume the fixture
 
 `fixture.json` is UTF-8 JSON with `schemaVersion: 1`. It has no framework imports or generated
-asset dependencies. The UI can read it directly until the CMS adapter returns the same shape.
+asset dependencies. It is the explicit test/parity reference; public rendering must use `loadPortfolio()`.
 `manifest.json` records source hashes, source-to-target mappings, import identities, media byte
 hashes, proposed asset destinations and unresolved decisions. Proposed destinations are not files
 created by this slice. Do not copy the fixture wholesale to a publicly editable settings object.
@@ -38,7 +38,7 @@ all visible punctuation, casing, wording and Unicode characters are preserved.
 
 The logical contract below is implemented by `schema.seed.json` and the deterministic draft mapper
 in `seed.mjs`, verified against EmDash 1.0.1. `LOCAL-SEED.md` specifies the exact stored fields.
-The runtime query adapter remains pending agreement with the foundation owner.
+The runtime query adapter and typed failure contract are documented in `RUNTIME.md`.
 Use plain text for the current copy; converting it to Portable Text is unnecessary for parity.
 No blog posts, case-study routes, taxonomy, forms, plugin catalog or generic page builder is needed.
 
@@ -54,8 +54,8 @@ No blog posts, case-study routes, taxonomy, forms, plugin catalog or generic pag
 Public adapter contract: `loadPortfolio()` returns the fixture shape with only **published** CMS
 values overlaid onto application-owned fields. It must surface missing required records or read
 failures explicitly; do not silently replace an unavailable database with old published content.
-This slice does not implement that function. Keep the fixture available as an explicit local/test
-input. Query ordering must use stored `position`, with external ID as a deterministic tie-breaker.
+Keep the fixture available as an explicit local/test input. All 17 baseline records are required
+in this initial release; adding/removing records requires a reviewed contract change. Query ordering must use stored `position`, with external ID as a deterministic tie-breaker.
 Reject duplicate IDs and missing singleton content. Do not expose drafts through anonymous queries.
 Required field and URL validation belongs at the CMS boundary, including allowed link protocols,
 media existence/alt text, accent/fit enums and consistent email address/mailto values.
@@ -129,4 +129,5 @@ built-in TypeScript stripping on trusted repository data modules; no Svelte/Vite
 The additional `local-seed.test.mjs` suite verifies official seed validation and local import
 idempotency with installed EmDash 1.0.1. It is explicitly skipped when that dependency is absent.
 Set `PORTFOLIO_EMDASH_PACKAGE_ROOT` to the installed foundation app or disposable package directory
-to require that integration run. Remote D1/R2, public querying and publication are not tested here.
+to require that integration run. The additional `portfolio-d1.test.mjs` covers actual emulated D1/R2, public querying and publication.
+Remote D1/R2 remains untested and unprovisioned.
