@@ -65,11 +65,6 @@ jobs:
           git rev-parse HEAD
           pnpm migration:bootstrap
           pnpm --dir /tmp/l install --frozen-lockfile
-      - name: Validate migration with local emulation
-        run: |
-          pnpm migration:check
-          pnpm migration:build
-          pnpm migration:smoke
       - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
         with:
           python-version: '3.12'
@@ -81,6 +76,21 @@ jobs:
           browser_executable="$(python -c 'from playwright.sync_api import sync_playwright; p = sync_playwright().start(); print(p.chromium.executable_path); p.stop()')"
           sudo ln -sf "$browser_executable" /usr/bin/chromium
           /usr/bin/chromium --version
+      - name: Install pinned admin browser driver
+        run: |
+          mkdir /tmp/portfolio-admin-browser
+          cat > /tmp/portfolio-admin-browser/package.json <<'JSON'
+          {"private":true,"type":"module","dependencies":{"playwright-core":"1.63.0"}}
+          JSON
+          pnpm --dir /tmp/portfolio-admin-browser install --ignore-scripts
+      - name: Validate migration and admin with local emulation
+        env:
+          PORTFOLIO_BROWSER_PACKAGE_ROOT: /tmp/portfolio-admin-browser
+          PORTFOLIO_CHROMIUM_EXECUTABLE: /usr/bin/chromium
+        run: |
+          pnpm migration:check
+          pnpm migration:build
+          pnpm migration:smoke
       - name: Render immutable legacy reference with the candidate renderer
         run: |
           node scripts/migration/legacy-reference.mjs --checkout /tmp/l --browser /usr/bin/chromium --out /tmp/portfolio-ui-legacy-reference

@@ -26,6 +26,12 @@ Use the repository's Node 24 and pnpm 11.22 bootstrap first. HTTP acceptance run
 `pnpm migration:check` without extra dependencies. Browser acceptance explicitly skips when neither
 browser variable is supplied; supplying only one, an invalid package root, or a bad executable fails.
 
+Migration CI requires browser acceptance in the existing `migration:check` aggregate. It installs
+only the pinned Node driver outside the checkout and uses the same `/usr/bin/chromium` executable
+already installed for the legacy/candidate parity harness. There is no second browser download or
+renderer helper, and the HTTP tests run once through the existing aggregate glob. Set both variables
+below when running `pnpm migration:check` locally to require the same admin gate.
+
 To require Chromium acceptance without editing repository manifests, install the pinned test driver
 in a disposable directory, then use an existing Chromium executable:
 
