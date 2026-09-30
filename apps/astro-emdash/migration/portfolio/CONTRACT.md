@@ -1,7 +1,8 @@
 # Portfolio content migration contract
 
-Status: portable baseline fixture and proposed CMS model. No EmDash API calls, importer,
-credentials, database writes, runtime imports, or package/configuration changes are included.
+Status: portable baseline fixture plus verified EmDash 1.0.1 schema and disposable local seed
+rehearsal. No runtime wiring, persistent/remote database writes, credentials or package/configuration
+changes are included. See `LOCAL-SEED.md` for the tested APIs and remaining production gates.
 The source is commit `326c112c709f93bba6fb4701d03870383a316424`.
 
 ## Consume the fixture
@@ -35,8 +36,9 @@ all visible punctuation, casing, wording and Unicode characters are preserved.
 
 ## Proposed CMS model
 
-These are logical field contracts, **not asserted EmDash SDK definitions**. Bind actual supported
-field APIs only after the foundation owner agrees on the query interface and installed APIs.
+The logical contract below is implemented by `schema.seed.json` and the deterministic draft mapper
+in `seed.mjs`, verified against EmDash 1.0.1. `LOCAL-SEED.md` specifies the exact stored fields.
+The runtime query adapter remains pending agreement with the foundation owner.
 Use plain text for the current copy; converting it to Portable Text is unnecessary for parity.
 No blog posts, case-study routes, taxonomy, forms, plugin catalog or generic page builder is needed.
 
@@ -81,7 +83,9 @@ reordering, but the initial migration must reproduce manifest positions exactly.
    Rerunning must produce zero creates, updates or deletes. Failed runs resume from the ledger;
    never delete CMS entries merely because they are absent from this initial fixture.
 6. Publication is a separate deliberate stage, not a side effect of import or cloud startup.
-   No importer is implemented or run here, including against local databases.
+   `local-seed.mjs` verifies this proposal in disposable in-memory SQLite only. It cannot open an
+   existing database, resolve Cloudflare bindings, or publish entries. Slugless EmDash 1.0.1 seeds
+   preserve their explicit IDs, so this local implementation needs no additional identity ledger.
 
 ## Media and URL policy
 
@@ -122,4 +126,7 @@ media at repository root, checks baseline hashes, compares every exported data f
 component text/metadata parity. It intentionally fails if the recorded baseline changes or is
 removed: rerun before removing legacy files, and retain its evidence for cutover. It uses Node's
 built-in TypeScript stripping on trusted repository data modules; no Svelte/Vite dependencies run.
-These tests do not claim CMS import idempotency or publishing behavior has been implemented.
+The additional `local-seed.test.mjs` suite verifies official seed validation and local import
+idempotency with installed EmDash 1.0.1. It is explicitly skipped when that dependency is absent.
+Set `PORTFOLIO_EMDASH_PACKAGE_ROOT` to the installed foundation app or disposable package directory
+to require that integration run. Remote D1/R2, public querying and publication are not tested here.

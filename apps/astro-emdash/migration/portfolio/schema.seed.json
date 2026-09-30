@@ -1,0 +1,428 @@
+{
+	"version": "1",
+	"defaultLocale": "en",
+	"meta": {
+		"name": "Hugo Hsi portfolio",
+		"description": "Schema only; authored records are imported separately as drafts."
+	},
+	"collections": [
+		{
+			"slug": "portfolio_home",
+			"label": "Portfolio home",
+			"routable": false,
+			"supports": ["drafts", "revisions"],
+			"commentsEnabled": false,
+			"sortOrder": 0,
+			"group": "Portfolio",
+			"titleField": "headline",
+			"fields": [
+				{
+					"slug": "external_id",
+					"label": "Migration identity",
+					"type": "string",
+					"required": true,
+					"unique": true,
+					"indexed": true,
+					"translatable": false
+				},
+				{
+					"slug": "position",
+					"label": "Display position",
+					"type": "integer",
+					"required": true,
+					"indexed": true,
+					"translatable": false,
+					"validation": {
+						"min": 0
+					}
+				},
+				{
+					"slug": "name",
+					"label": "Name",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "headline",
+					"label": "Headline",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "description",
+					"label": "Introduction",
+					"type": "text",
+					"required": true
+				},
+				{
+					"slug": "aside",
+					"label": "Personal note",
+					"type": "text",
+					"required": true
+				},
+				{
+					"slug": "location",
+					"label": "Location",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "primary_action_label",
+					"label": "Project link label",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "resume_action_label",
+					"label": "Resume link label",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "projects_heading",
+					"label": "Projects heading",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "experience_heading",
+					"label": "Experience heading",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "education_heading",
+					"label": "Education heading",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "skills_heading",
+					"label": "Skills heading",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "footer_heading",
+					"label": "Contact heading",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "footer_description",
+					"label": "Contact introduction",
+					"type": "text",
+					"required": true
+				},
+				{
+					"slug": "seo_title",
+					"label": "SEO title",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "seo_description",
+					"label": "SEO description",
+					"type": "text",
+					"required": true
+				},
+				{
+					"slug": "og_title",
+					"label": "Open Graph title",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "og_description",
+					"label": "Open Graph description",
+					"type": "text",
+					"required": true
+				}
+			]
+		},
+		{
+			"slug": "portfolio_projects",
+			"label": "Projects",
+			"routable": false,
+			"supports": ["drafts", "revisions"],
+			"commentsEnabled": false,
+			"sortOrder": 1,
+			"group": "Portfolio",
+			"titleField": "title",
+			"fields": [
+				{
+					"slug": "external_id",
+					"label": "Migration identity",
+					"type": "string",
+					"required": true,
+					"unique": true,
+					"indexed": true,
+					"translatable": false
+				},
+				{
+					"slug": "position",
+					"label": "Display position",
+					"type": "integer",
+					"required": true,
+					"indexed": true,
+					"translatable": false,
+					"validation": {
+						"min": 0
+					}
+				},
+				{
+					"slug": "title",
+					"label": "Title",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "category",
+					"label": "Category",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "description",
+					"label": "Description",
+					"type": "text",
+					"required": true
+				},
+				{
+					"slug": "technologies",
+					"label": "Technologies",
+					"type": "repeater",
+					"required": true,
+					"validation": {
+						"subFields": [
+							{
+								"slug": "value",
+								"label": "Value",
+								"type": "string",
+								"required": true
+							}
+						],
+						"minItems": 1
+					}
+				},
+				{
+					"slug": "url",
+					"label": "Project URL",
+					"type": "url",
+					"required": false
+				},
+				{
+					"slug": "image",
+					"label": "Project image",
+					"type": "image",
+					"required": false
+				}
+			]
+		},
+		{
+			"slug": "portfolio_experience",
+			"label": "Experience",
+			"routable": false,
+			"supports": ["drafts", "revisions"],
+			"commentsEnabled": false,
+			"sortOrder": 2,
+			"group": "Portfolio",
+			"titleField": "role",
+			"fields": [
+				{
+					"slug": "external_id",
+					"label": "Migration identity",
+					"type": "string",
+					"required": true,
+					"unique": true,
+					"indexed": true,
+					"translatable": false
+				},
+				{
+					"slug": "position",
+					"label": "Display position",
+					"type": "integer",
+					"required": true,
+					"indexed": true,
+					"translatable": false,
+					"validation": {
+						"min": 0
+					}
+				},
+				{
+					"slug": "date",
+					"label": "Date",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "role",
+					"label": "Role",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "company",
+					"label": "Company",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"slug": "portfolio_education",
+			"label": "Education",
+			"routable": false,
+			"supports": ["drafts", "revisions"],
+			"commentsEnabled": false,
+			"sortOrder": 3,
+			"group": "Portfolio",
+			"titleField": "role",
+			"fields": [
+				{
+					"slug": "external_id",
+					"label": "Migration identity",
+					"type": "string",
+					"required": true,
+					"unique": true,
+					"indexed": true,
+					"translatable": false
+				},
+				{
+					"slug": "position",
+					"label": "Display position",
+					"type": "integer",
+					"required": true,
+					"indexed": true,
+					"translatable": false,
+					"validation": {
+						"min": 0
+					}
+				},
+				{
+					"slug": "date",
+					"label": "Date",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "role",
+					"label": "Role",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "company",
+					"label": "Company",
+					"type": "string",
+					"required": true
+				}
+			]
+		},
+		{
+			"slug": "portfolio_skill_groups",
+			"label": "Skill groups",
+			"routable": false,
+			"supports": ["drafts", "revisions"],
+			"commentsEnabled": false,
+			"sortOrder": 4,
+			"group": "Portfolio",
+			"titleField": "label",
+			"fields": [
+				{
+					"slug": "external_id",
+					"label": "Migration identity",
+					"type": "string",
+					"required": true,
+					"unique": true,
+					"indexed": true,
+					"translatable": false
+				},
+				{
+					"slug": "position",
+					"label": "Display position",
+					"type": "integer",
+					"required": true,
+					"indexed": true,
+					"translatable": false,
+					"validation": {
+						"min": 0
+					}
+				},
+				{
+					"slug": "label",
+					"label": "Label",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "items",
+					"label": "Skills",
+					"type": "repeater",
+					"required": true,
+					"validation": {
+						"subFields": [
+							{
+								"slug": "value",
+								"label": "Value",
+								"type": "string",
+								"required": true
+							}
+						],
+						"minItems": 1
+					}
+				}
+			]
+		},
+		{
+			"slug": "portfolio_contacts",
+			"label": "Contact links",
+			"routable": false,
+			"supports": ["drafts", "revisions"],
+			"commentsEnabled": false,
+			"sortOrder": 5,
+			"group": "Portfolio",
+			"titleField": "label",
+			"fields": [
+				{
+					"slug": "external_id",
+					"label": "Migration identity",
+					"type": "string",
+					"required": true,
+					"unique": true,
+					"indexed": true,
+					"translatable": false
+				},
+				{
+					"slug": "position",
+					"label": "Display position",
+					"type": "integer",
+					"required": true,
+					"indexed": true,
+					"translatable": false,
+					"validation": {
+						"min": 0
+					}
+				},
+				{
+					"slug": "label",
+					"label": "Label",
+					"type": "string",
+					"required": true
+				},
+				{
+					"slug": "url",
+					"label": "Link URL",
+					"type": "url",
+					"required": true
+				},
+				{
+					"slug": "address",
+					"label": "Email address",
+					"type": "string",
+					"required": false
+				}
+			]
+		}
+	]
+}
