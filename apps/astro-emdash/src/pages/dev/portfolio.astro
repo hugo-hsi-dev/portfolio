@@ -1,0 +1,10 @@
+---
+// Explicit visual-test input. This route never serves fixture content from a built Worker.
+import fixture from '../../../migration/portfolio/fixture.json';
+import Portfolio from '../../components/portfolio/Portfolio.astro';
+if (!import.meta.env.DEV) return new Response(null, { status: 404 });
+Astro.response.headers.set('Cache-Control', 'no-store');
+Astro.response.headers.set('X-Robots-Tag', 'noindex, nofollow');
+---
+
+<Portfolio portfolio={fixture} />

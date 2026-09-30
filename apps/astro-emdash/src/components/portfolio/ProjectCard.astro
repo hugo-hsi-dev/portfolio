@@ -1,0 +1,64 @@
+---
+import TextLink from './TextLink.astro';
+import type { Portfolio, Project } from './types';
+interface Props {
+	project: Project;
+	ui: Portfolio['ui'];
+}
+const { project, ui } = Astro.props;
+const Media = project.url ? 'a' : 'div';
+---
+
+<article
+	data-reveal
+	class:list={['project', project.image ? 'project-with-image' : 'project-without-image']}
+>
+	{project.image ? (
+		<Media
+			class:list={['project-media', `accent-${project.accent}`]}
+			href={project.url}
+			aria-label={
+				project.url ? ui.projectLink.imageAriaLabel.replace('{title}', project.title) : undefined
+			}
+		>
+			<img
+				class:list={['project-image', project.image.fit === 'logo' && 'project-image-logo']}
+				src={project.image.src}
+				alt={project.image.alt}
+				width={ui.projectImage.width}
+				height={ui.projectImage.height}
+				loading="lazy"
+			/>
+		</Media>
+	) : (
+		<div class="project-heading">
+			<span class:list={['project-category', `accent-${project.accent}`]}>{project.category}</span>
+			<h3 class="project-title">{project.title}</h3>
+		</div>
+	)}
+	<div class="project-details">
+		{project.image && (
+			<>
+				<span class:list={['project-category', `accent-${project.accent}`]}>
+					{project.category}
+				</span>
+				<h3 class="project-title">{project.title}</h3>
+			</>
+		)}
+		<p class="project-description">{project.description}</p>
+		<ul class="technologies">
+			{project.technologies.map((technology) => (
+				<li>{technology}</li>
+			))}
+		</ul>
+		{project.url && (
+			<TextLink
+				href={project.url}
+				label={ui.projectLink.textAriaLabel.replace('{title}', project.title)}
+				arrow={ui.decorations.externalArrow}
+			>
+				{ui.projectLink.label}
+			</TextLink>
+		)}
+	</div>
+</article>

@@ -1,0 +1,17 @@
+{
+	"375": {
+		"mean_abs_channel_diff": 0.0,
+		"pixels_any_diff_pct": 0.0,
+		"pixels_diff_gt20_pct": 0.0
+	},
+	"768": {
+		"mean_abs_channel_diff": 0.0,
+		"pixels_any_diff_pct": 0.0,
+		"pixels_diff_gt20_pct": 0.0
+	},
+	"1440": {
+		"mean_abs_channel_diff": 0.0,
+		"pixels_any_diff_pct": 0.0,
+		"pixels_diff_gt20_pct": 0.0
+	}
+}

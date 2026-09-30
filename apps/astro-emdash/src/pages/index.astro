@@ -1,0 +1,28 @@
+---
+import PortfolioView from '../components/portfolio/Portfolio.astro';
+import { loadPortfolio, type Portfolio } from '../lib/server/portfolio';
+
+export const prerender = false;
+
+let portfolio: Portfolio;
+try {
+	portfolio = await loadPortfolio();
+} catch {
+	// Never reveal loader/driver details or substitute fixture content for a failed read.
+	return new Response(
+		'<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><title>Temporarily unavailable</title></head><body><main><h1>Portfolio is temporarily unavailable.</h1></main></body></html>',
+		{
+			status: 503,
+			headers: {
+				'Content-Type': 'text/html; charset=utf-8',
+				'Cache-Control': 'private, no-store',
+				'X-Robots-Tag': 'noindex'
+			}
+		}
+	);
+}
+// Publication changes must be visible on the next request until a cache policy is agreed.
+Astro.response.headers.set('Cache-Control', 'no-store');
+---
+
+<PortfolioView {portfolio} />
