@@ -1,0 +1,275 @@
+{
+	"schemaVersion": 1,
+	"site": {
+		"name": "Hugo Hsi",
+		"language": "en",
+		"route": "/"
+	},
+	"hero": {
+		"name": "Hugo Hsi",
+		"headline": "Engineering products from design to database.",
+		"description": "Full-stack developer with a background in communication design. I work directly with clients to build responsive websites, migrate content systems, and maintain production applications.",
+		"aside": "Beyond the keyboard, I'm a badminton coach, an avid gamer, and an active proponent of taking a proper break to do absolutely nothing.",
+		"location": "Brooklyn, New York",
+		"primaryAction": {
+			"label": "View my work",
+			"href": "#projects"
+		},
+		"resumeAction": {
+			"label": "Download resume",
+			"mediaId": "resume-pdf",
+			"download": "Hugo-Hsi-Resume.pdf"
+		}
+	},
+	"sections": [
+		{
+			"id": "top",
+			"headingId": "hero-title",
+			"title": null
+		},
+		{
+			"id": "projects",
+			"headingId": "projects-title",
+			"title": "Projects & Technical Experience"
+		},
+		{
+			"id": "experience",
+			"headingId": "experience-title",
+			"title": "Experience"
+		},
+		{
+			"id": "education",
+			"headingId": "education-title",
+			"title": "Education"
+		},
+		{
+			"id": "tech",
+			"headingId": "tech-title",
+			"title": "Technical Skills"
+		},
+		{
+			"id": "contact",
+			"headingId": null,
+			"title": "Let’s work together"
+		}
+	],
+	"projects": [
+		{
+			"id": "windows-pc-hardware",
+			"title": "Windows & PC Hardware",
+			"category": "Personal desktops and laptops",
+			"accent": "sage",
+			"description": "Assembled a gaming desktop and installed Windows on personal desktops and laptops. Configured and updated BIOS, installed applications with winget and Scoop, and customized registry settings using technical guides.",
+			"technologies": ["Windows", "PC assembly", "BIOS", "winget", "Scoop"]
+		},
+		{
+			"id": "arch-linux",
+			"title": "Arch Linux",
+			"category": "Personal development laptop",
+			"accent": "sage",
+			"description": "Explored Ubuntu, Fedora, and Zorin before choosing Arch for an aging laptop with battery and performance issues. Installed Arch using its documentation, managed packages with pacman, tested Hyprland and Niri, and maintained the system through updates and configuration cleanup.",
+			"technologies": ["Arch Linux", "pacman", "Hyprland", "Niri"]
+		},
+		{
+			"id": "medal-of-honor-museum",
+			"title": "National Medal of Honor Museum",
+			"category": "Client work at Praxis Loop",
+			"accent": "gold",
+			"description": "Wrote migration scripts to move 3,500 pages from WordPress to Prismic, and built automated visual checks with Playwright and GitHub Actions to catch unintended layout changes.",
+			"technologies": ["WordPress", "Prismic", "Playwright", "GitHub Actions"],
+			"url": "https://mohmuseum.org/",
+			"image": {
+				"src": "/projects/museum.png",
+				"alt": "National Medal of Honor Museum website"
+			}
+		},
+		{
+			"id": "first-avenue-advisors",
+			"title": "1st Avenue Advisors",
+			"category": "Client work at Praxis Loop",
+			"accent": "gold",
+			"description": "Translated Figma designs into responsive Next.js and Tailwind components, connecting frontend forms with backend mailing services.",
+			"technologies": ["Next.js", "Tailwind CSS", "shadcn/ui"],
+			"url": "https://www.1staveadvisors.com/",
+			"image": {
+				"src": "/projects/advisors.png",
+				"alt": "1st Avenue Advisors official Open Graph logo",
+				"fit": "logo"
+			}
+		},
+		{
+			"id": "minecentral",
+			"title": "MineCentral",
+			"category": "Personal project",
+			"accent": "sage",
+			"description": "Built and maintained a Minecraft server hosting platform with Next.js and self-hosted server management tools. Connected Stripe subscriptions to server provisioning and a dashboard for billing and instance monitoring.",
+			"technologies": ["Next.js", "Stripe", "Coolify"],
+			"url": "https://www.minecentral.net/",
+			"image": {
+				"src": "/projects/minecentral.png",
+				"alt": "MineCentral Minecraft server hosting website"
+			}
+		}
+	],
+	"experience": [
+		{
+			"id": "praxis-loop",
+			"date": "2025 — Present",
+			"role": "Full Stack Developer",
+			"company": "Praxis Loop"
+		},
+		{
+			"id": "lookout",
+			"date": "2022 — 2023",
+			"role": "Production Designer",
+			"company": "Lookout"
+		},
+		{
+			"id": "reflex",
+			"date": "2021 — Present",
+			"role": "Badminton Head Coach",
+			"company": "Reflex"
+		}
+	],
+	"education": [
+		{
+			"id": "columbia-bootcamp",
+			"date": "2024",
+			"role": "Full Stack Web Development Bootcamp",
+			"company": "Columbia University"
+		},
+		{
+			"id": "new-school-bfa",
+			"date": "2023",
+			"role": "Bachelor of Fine Arts in Communication Design",
+			"company": "The New School"
+		}
+	],
+	"skillGroups": [
+		{
+			"id": "systems-hardware",
+			"label": "Systems & Hardware",
+			"items": [
+				"Windows installation and configuration",
+				"Arch Linux",
+				"WSL",
+				"PC assembly",
+				"BIOS updates"
+			]
+		},
+		{
+			"id": "web-tools",
+			"label": "Web & Tools",
+			"items": [
+				"WordPress",
+				"Prismic",
+				"REST APIs",
+				"Postman",
+				"Insomnia",
+				"Git",
+				"GitHub",
+				"Vercel",
+				"Coolify"
+			]
+		},
+		{
+			"id": "development",
+			"label": "Development",
+			"items": [
+				"PostgreSQL",
+				"SQLite",
+				"SQL",
+				"JavaScript",
+				"TypeScript",
+				"HTML",
+				"CSS",
+				"GitHub Actions",
+				"Playwright"
+			]
+		}
+	],
+	"contacts": [
+		{
+			"id": "email",
+			"label": "Email",
+			"address": "hugohsidev@gmail.com",
+			"url": "mailto:hugohsidev@gmail.com"
+		},
+		{
+			"id": "github",
+			"label": "GitHub",
+			"url": "https://github.com/hugo-hsi-dev"
+		},
+		{
+			"id": "linkedin",
+			"label": "LinkedIn",
+			"url": "https://www.linkedin.com/in/hugo-hsi"
+		}
+	],
+	"footer": {
+		"heading": "Let’s work together",
+		"description": "Full-stack development, thoughtful design, and hands-on production experience. Based in Brooklyn, New York.",
+		"copyright": {
+			"prefix": "© ",
+			"year": "runtime-current-year",
+			"suffix": " Hugo Hsi. All rights reserved."
+		},
+		"credit": "Built with SvelteKit, Cloudflare, and attention to detail."
+	},
+	"seo": {
+		"title": "Hugo Hsi — Full-stack Developer",
+		"description": "Hugo Hsi is a Brooklyn-based full-stack developer with a background in communication design, building responsive websites, migrating content systems, and maintaining production applications.",
+		"canonical": "https://hugohsi.dev/",
+		"openGraph": {
+			"title": "Hugo Hsi — Full-stack Developer",
+			"description": "Engineering products from design to database. Selected work, experience, and education.",
+			"type": "website",
+			"url": "https://hugohsi.dev/"
+		},
+		"themeColor": "#f8f6f1",
+		"sitemap": {
+			"url": "https://www.hugohsi.dev/",
+			"changefreq": "monthly",
+			"priority": "1.0"
+		},
+		"robots": {
+			"userAgent": "*",
+			"allow": "/",
+			"sitemap": "https://www.hugohsi.dev/sitemap.xml"
+		}
+	},
+	"ui": {
+		"skipLink": {
+			"label": "Skip to content",
+			"href": "#main"
+		},
+		"main": {
+			"id": "main",
+			"tabindex": -1
+		},
+		"navigation": {
+			"homeHref": "#top",
+			"homeLabel": "Hugo Hsi, back to top",
+			"socialLabel": "Social links",
+			"contactIds": ["github", "linkedin"]
+		},
+		"projectLink": {
+			"label": "Visit site",
+			"imageAriaLabel": "Visit {title}",
+			"textAriaLabel": "Visit site: {title}"
+		},
+		"decorations": {
+			"quote": "”",
+			"externalArrow": "↗",
+			"ariaHidden": true
+		},
+		"projectImage": {
+			"width": 1440,
+			"height": 960,
+			"loading": "lazy",
+			"defaultFit": "cover",
+			"logoFit": "contain"
+		},
+		"fontPreloads": ["/fonts/forum.ttf", "/fonts/outfit.ttf"]
+	}
+}
