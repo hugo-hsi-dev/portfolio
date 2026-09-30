@@ -20,7 +20,12 @@
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
-		"test": "node --experimental-strip-types --test tests/*.test.ts"
+		"test": "node --experimental-strip-types --test tests/*.test.ts",
+		"migration:bootstrap": "pnpm install --frozen-lockfile",
+		"migration:dev": "node scripts/migration/validate.mjs && pnpm --filter @portfolio/astro-emdash dev",
+		"migration:check": "node scripts/migration/validate.mjs && node --test scripts/migration/*.test.mjs apps/astro-emdash/migration/portfolio/*.test.mjs && pnpm --filter @portfolio/astro-emdash check",
+		"migration:build": "node scripts/migration/validate.mjs && pnpm --filter @portfolio/astro-emdash build",
+		"migration:smoke": "pnpm --filter @portfolio/astro-emdash smoke"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
@@ -43,6 +48,7 @@
 		"typescript": "^6.0.3",
 		"typescript-eslint": "^8.60.1",
 		"vite": "^8.0.16",
-		"wrangler": "^4.97.0"
+		"wrangler": "^4.97.0",
+		"prettier-plugin-astro": "1.1.0"
 	}
 }
