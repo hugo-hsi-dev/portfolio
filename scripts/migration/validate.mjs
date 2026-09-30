@@ -9,7 +9,7 @@ export function validateLocalConfig(config, environment = process.env) {
 		throw new Error('Foundation commands require the local environment.');
 	if (config.name !== 'portfolio-astro-emdash-local')
 		throw new Error('Expected isolated Worker name.');
-	if (config.routes?.length || config.env || config.account_id || config.worker_loaders) {
+	if (config.routes?.length || config.env || config.account_id || config.worker_loaders?.length) {
 		throw new Error('Cloud targets and plugin loaders require a separate reviewed configuration.');
 	}
 	if (config.workers_dev !== false || config.preview_urls !== false) {

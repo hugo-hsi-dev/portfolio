@@ -7,3 +7,6 @@ bun.lockb
 
 # Miscellaneous
 /static/
+
+# Generated EmDash schema types; never hand-format or commit local schema output.
+/apps/astro-emdash/emdash-env.d.ts

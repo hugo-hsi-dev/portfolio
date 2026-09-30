@@ -1,0 +1,70 @@
+name: Migration validation
+
+on:
+  pull_request:
+    branches: [integration/astro-emdash]
+  push:
+    branches: [integration/astro-emdash]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: migration-validation-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Local migration and legacy checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      WRANGLER_SEND_METRICS: 'false'
+      CLOUDFLARE_CF_FETCH_ENABLED: 'false'
+      ASTRO_TELEMETRY_DISABLED: '1'
+    steps:
+      - uses: actions/checkout@fbc6f3992d24b796d5a048ff273f7fcc4a7b6c09 # v5
+        with:
+          persist-credentials: false
+          # Validate the exact PR head; integration replay runs on the push event.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+        with:
+          version: 11.22.0
+          run_install: false
+      - uses: actions/setup-node@a0853c24544627f65ddf259abe73b1d18a591444 # v5
+        with:
+          node-version: '24'
+      - name: Verify toolchain and install frozen workspace
+        run: |
+          node --version
+          test "$(pnpm --version)" = 11.22.0
+          git rev-parse HEAD
+          pnpm migration:bootstrap
+      - name: Validate migration with local emulation
+        run: |
+          pnpm migration:check
+          pnpm migration:build
+          pnpm migration:smoke
+      - uses: actions/setup-python@ece7cb06caefa5fff74198d8649806c4678c61a1 # v6
+        with:
+          python-version: '3.12'
+      - name: Install pinned local browser tooling
+        run: |
+          python -m pip install playwright==1.62.0 Pillow==12.3.0
+          python -m playwright install --with-deps chromium
+      - name: Validate published CMS UI
+        run: |
+          pnpm exec node --test apps/astro-emdash/tests/*.test.ts
+          pnpm exec node --test apps/astro-emdash/tests/ui-public-d1.test.mjs
+      - name: Validate legacy application
+        run: |
+          pnpm lint
+          pnpm check
+          pnpm test
+          pnpm deploy:dry-run
+      - name: Verify validation preserved repository inputs
+        run: |
+          git diff --exit-code
+          test -z "$(git ls-files --others --exclude-standard)"

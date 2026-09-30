@@ -24,3 +24,5 @@ vite.config.ts.timestamp-*
 **/.dev.vars
 **/.dev.vars.*
 !**/.dev.vars.example
+# EmDash regenerates schema types from the local database on dev startup.
+/apps/astro-emdash/emdash-env.d.ts
