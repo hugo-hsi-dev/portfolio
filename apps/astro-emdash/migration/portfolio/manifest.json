@@ -1,0 +1,367 @@
+{
+	"schemaVersion": 1,
+	"sourceCommit": "326c112c709f93bba6fb4701d03870383a316424",
+	"identityNamespace": "portfolio-v1",
+	"sources": [
+		{
+			"path": "src/lib/data/portfolio.ts",
+			"sha256": "9edf52e174ceefe6840b0f71eae2b3dbb2bc1d3835e65dee229d5be9f0251bd9"
+		},
+		{
+			"path": "src/lib/data/contact.ts",
+			"sha256": "f0bcf4a8f5ae8d8542905e47f4ea02ba3e1262cb1c91dba6e77c83151ba45ebe"
+		},
+		{
+			"path": "src/routes/+page.svelte",
+			"sha256": "ef6988dd8b88fdb5b8f535291c266fae49279f8baf75ebe5a84faa912f1e6a48"
+		},
+		{
+			"path": "src/routes/+layout.svelte",
+			"sha256": "8be6a8b34b79423f45b57945212c935ce522589c035aa1fb7725ba3faac8d3a4"
+		},
+		{
+			"path": "src/routes/layout.css",
+			"sha256": "b8d9be8cab8c9869f54f7501ad58ddbde652e15400c81fa9f13822700a1f931a"
+		},
+		{
+			"path": "src/app.html",
+			"sha256": "097c3d16212fc620fb41a73ae20664f4f9c6c419d2937dab42e0d470cdfcb583"
+		},
+		{
+			"path": "src/lib/components/Hero.svelte",
+			"sha256": "9ae0f72cee5eadee0653798ec7cf9a7d18483f3778ffecb6f900f4d5443ee9e0"
+		},
+		{
+			"path": "src/lib/components/SiteFooter.svelte",
+			"sha256": "fbfe813ac11e0e549844ec1bb461c1d222efe27e4b6c9c7d2ddc333dcb1dad0c"
+		},
+		{
+			"path": "src/lib/components/SiteNav.svelte",
+			"sha256": "23c9623cb6423a50e2e3bf366be8528d082424ccea3f20961ebed478ae5638e3"
+		},
+		{
+			"path": "src/lib/components/ProjectsSection.svelte",
+			"sha256": "92a557e484fc2abc716d7ca23d730c25bea1eb0e84dfc412abcc088f4f6dc3b3"
+		},
+		{
+			"path": "src/lib/components/SkillsSection.svelte",
+			"sha256": "02e6a155fe053100dc851479e970d85a2e1f88974f181fd1183cb597e206b0ed"
+		},
+		{
+			"path": "src/lib/components/TimelineSection.svelte",
+			"sha256": "81df512f84e7fc6e169c6d5d20629cabb9ffdf82c4da4f2a8c430fb05b115ca1"
+		},
+		{
+			"path": "src/lib/components/Section.svelte",
+			"sha256": "6c835e8659ec8037118fd9402f2e13851718d518efea3410c5d5ce3fc916c32c"
+		},
+		{
+			"path": "src/lib/components/ProjectCard.svelte",
+			"sha256": "bb8c1d79abaf66e8233c85ea31ff771a5026d00b97bc8bc8250350a9117331ad"
+		},
+		{
+			"path": "src/lib/components/TextLink.svelte",
+			"sha256": "5221b0dd731f8ab801ba5234fab56830babe993e368ff7610d9b44ffd1a564e1"
+		},
+		{
+			"path": "static/robots.txt",
+			"sha256": "c0ae8c00190960c685d7695a441e5e11b5a3e53a1595e45b8ea5675b0fe75ca7"
+		},
+		{
+			"path": "static/sitemap.xml",
+			"sha256": "8be38a7922b7e0e5648bb649953d667136e6ce4692c03e5963a50b3a44624791"
+		},
+		{
+			"path": "resume/README.md",
+			"sha256": "2ad72eaa7ce2595671146df8026569110d98bb4bdab263177949b7d3a5816c7d"
+		}
+	],
+	"mappings": [
+		{
+			"target": "/projects",
+			"collection": "portfolio_projects",
+			"sources": ["src/lib/data/portfolio.ts#projects"]
+		},
+		{
+			"target": "/experience",
+			"collection": "portfolio_experience",
+			"sources": ["src/lib/data/portfolio.ts#experience"]
+		},
+		{
+			"target": "/education",
+			"collection": "portfolio_education",
+			"sources": ["src/lib/data/portfolio.ts#education"]
+		},
+		{
+			"target": "/skillGroups",
+			"collection": "portfolio_skill_groups",
+			"sources": ["src/lib/data/portfolio.ts#technologies"]
+		},
+		{
+			"target": "/contacts",
+			"collection": "portfolio_contacts",
+			"sources": ["src/lib/data/contact.ts"]
+		},
+		{
+			"target": "/hero",
+			"collection": "portfolio_home",
+			"sources": ["src/lib/components/Hero.svelte"]
+		},
+		{
+			"target": "/footer",
+			"collection": "portfolio_home",
+			"sources": ["src/lib/components/SiteFooter.svelte"]
+		},
+		{
+			"target": "/sections",
+			"collection": "portfolio_home",
+			"sources": [
+				"src/routes/+page.svelte",
+				"src/lib/components/ProjectsSection.svelte",
+				"src/lib/components/SkillsSection.svelte",
+				"src/lib/components/SiteFooter.svelte"
+			]
+		},
+		{
+			"target": "/seo",
+			"collection": "portfolio_home",
+			"sources": ["src/routes/+page.svelte", "static/robots.txt", "static/sitemap.xml"]
+		},
+		{
+			"target": "/site",
+			"collection": null,
+			"sources": [
+				"src/app.html",
+				"src/lib/components/Hero.svelte",
+				"src/lib/components/SiteNav.svelte"
+			]
+		},
+		{
+			"target": "/ui",
+			"collection": null,
+			"sources": [
+				"src/routes/+page.svelte",
+				"src/lib/components/SiteNav.svelte",
+				"src/lib/components/Hero.svelte",
+				"src/lib/components/ProjectCard.svelte",
+				"src/lib/components/TextLink.svelte"
+			]
+		}
+	],
+	"records": [
+		{
+			"fixturePointer": "/projects/0",
+			"externalId": "portfolio-v1:projects:windows-pc-hardware",
+			"position": 0
+		},
+		{
+			"fixturePointer": "/projects/1",
+			"externalId": "portfolio-v1:projects:arch-linux",
+			"position": 1
+		},
+		{
+			"fixturePointer": "/projects/2",
+			"externalId": "portfolio-v1:projects:medal-of-honor-museum",
+			"position": 2
+		},
+		{
+			"fixturePointer": "/projects/3",
+			"externalId": "portfolio-v1:projects:first-avenue-advisors",
+			"position": 3
+		},
+		{
+			"fixturePointer": "/projects/4",
+			"externalId": "portfolio-v1:projects:minecentral",
+			"position": 4
+		},
+		{
+			"fixturePointer": "/experience/0",
+			"externalId": "portfolio-v1:experience:praxis-loop",
+			"position": 0
+		},
+		{
+			"fixturePointer": "/experience/1",
+			"externalId": "portfolio-v1:experience:lookout",
+			"position": 1
+		},
+		{
+			"fixturePointer": "/experience/2",
+			"externalId": "portfolio-v1:experience:reflex",
+			"position": 2
+		},
+		{
+			"fixturePointer": "/education/0",
+			"externalId": "portfolio-v1:education:columbia-bootcamp",
+			"position": 0
+		},
+		{
+			"fixturePointer": "/education/1",
+			"externalId": "portfolio-v1:education:new-school-bfa",
+			"position": 1
+		},
+		{
+			"fixturePointer": "/skillGroups/0",
+			"externalId": "portfolio-v1:skillGroups:systems-hardware",
+			"position": 0
+		},
+		{
+			"fixturePointer": "/skillGroups/1",
+			"externalId": "portfolio-v1:skillGroups:web-tools",
+			"position": 1
+		},
+		{
+			"fixturePointer": "/skillGroups/2",
+			"externalId": "portfolio-v1:skillGroups:development",
+			"position": 2
+		},
+		{
+			"fixturePointer": "/contacts/0",
+			"externalId": "portfolio-v1:contacts:email",
+			"position": 0
+		},
+		{
+			"fixturePointer": "/contacts/1",
+			"externalId": "portfolio-v1:contacts:github",
+			"position": 1
+		},
+		{
+			"fixturePointer": "/contacts/2",
+			"externalId": "portfolio-v1:contacts:linkedin",
+			"position": 2
+		},
+		{
+			"externalId": "portfolio-v1:home",
+			"position": 0,
+			"fixturePointers": ["/hero", "/footer", "/sections", "/seo"]
+		}
+	],
+	"media": [
+		{
+			"id": "project-advisors",
+			"source": "static/projects/advisors.png",
+			"publicUrl": "/projects/advisors.png",
+			"mime": "image/png",
+			"delivery": "public",
+			"target": "apps/astro-emdash/public/projects/advisors.png",
+			"bytes": 73065,
+			"sha256": "d47506f6b7638db4c7d0ad9776a5a748098ace657b2973ec8359d104b0e4d0f5"
+		},
+		{
+			"id": "project-minecentral",
+			"source": "static/projects/minecentral.png",
+			"publicUrl": "/projects/minecentral.png",
+			"mime": "image/png",
+			"delivery": "public",
+			"target": "apps/astro-emdash/public/projects/minecentral.png",
+			"bytes": 524410,
+			"sha256": "8135344277cd23688bb1dd995443c13f713faaf373c725f596a872d4d6453886"
+		},
+		{
+			"id": "project-museum",
+			"source": "static/projects/museum.png",
+			"publicUrl": "/projects/museum.png",
+			"mime": "image/png",
+			"delivery": "public",
+			"target": "apps/astro-emdash/public/projects/museum.png",
+			"bytes": 114492,
+			"sha256": "679b696b6d81167a4eb44f65eaba9111d6040fd025fa4950829c05cc963157a5"
+		},
+		{
+			"id": "font-forum",
+			"source": "static/fonts/forum.ttf",
+			"publicUrl": "/fonts/forum.ttf",
+			"mime": "font/ttf",
+			"delivery": "public",
+			"target": "apps/astro-emdash/public/fonts/forum.ttf",
+			"bytes": 241080,
+			"sha256": "0ae21f320a7bae60712908271b15e8bd21f24347a903e246cae8ac5d75a476fc"
+		},
+		{
+			"id": "font-outfit",
+			"source": "static/fonts/outfit.ttf",
+			"publicUrl": "/fonts/outfit.ttf",
+			"mime": "font/ttf",
+			"delivery": "public",
+			"target": "apps/astro-emdash/public/fonts/outfit.ttf",
+			"bytes": 47844,
+			"sha256": "6a8c9be856a6b9e09c66615634904616152c9de5e44db343a3ced240479c586a"
+		},
+		{
+			"id": "font-forum-license",
+			"source": "static/fonts/Forum-LICENSE.txt",
+			"publicUrl": "/fonts/Forum-LICENSE.txt",
+			"mime": "text/plain",
+			"delivery": "public",
+			"target": "apps/astro-emdash/public/fonts/Forum-LICENSE.txt",
+			"bytes": 4399,
+			"sha256": "1bfe7d2aca99042eabf37079152fef8abdda2c36dad454ae89b858a3cb1078c5"
+		},
+		{
+			"id": "font-outfit-license",
+			"source": "static/fonts/Outfit-LICENSE.txt",
+			"publicUrl": "/fonts/Outfit-LICENSE.txt",
+			"mime": "text/plain",
+			"delivery": "public",
+			"target": "apps/astro-emdash/public/fonts/Outfit-LICENSE.txt",
+			"bytes": 4389,
+			"sha256": "c676351bf8576b9aba743cd5eaa8c0e7ee0d51f805d720447b4df4ddb6a2e416"
+		},
+		{
+			"id": "grain",
+			"source": "static/grain.svg",
+			"publicUrl": "/grain.svg",
+			"mime": "image/svg+xml",
+			"delivery": "public",
+			"target": "apps/astro-emdash/public/grain.svg",
+			"bytes": 248,
+			"sha256": "75f47466a092d5d6e8940d1d2cf5e1b24bf673405bdfc431672aa9e6a06cef4c"
+		},
+		{
+			"id": "favicon",
+			"source": "src/lib/assets/favicon.svg",
+			"publicUrl": null,
+			"mime": "image/svg+xml",
+			"delivery": "bundled",
+			"target": "apps/astro-emdash/src/assets/favicon.svg",
+			"bytes": 239,
+			"sha256": "ef2f7f756b6e45e9a88febad56cc98827474b48ba6b596e8f2de5059f14f94bb"
+		},
+		{
+			"id": "resume-pdf",
+			"source": "resume/hugo-hsi-resume.pdf",
+			"publicUrl": null,
+			"mime": "application/pdf",
+			"delivery": "bundled",
+			"target": "apps/astro-emdash/src/assets/hugo-hsi-resume.pdf",
+			"bytes": 91592,
+			"sha256": "c38cc6398aa39f2ab36df81ac6cfafb286d7e337bf7b4fa1353bf72efd281da6"
+		},
+		{
+			"id": "resume-source",
+			"source": "resume/hugo-hsi-resume.tex",
+			"publicUrl": null,
+			"mime": "application/x-tex",
+			"delivery": "source-only",
+			"target": "resume/hugo-hsi-resume.tex",
+			"bytes": 6088,
+			"sha256": "296a186767e4ec1454ee12567bfc7e52323cd6f8c887be073bf26abb62777681"
+		}
+	],
+	"decisions": [
+		{
+			"id": "canonical-host",
+			"status": "unresolved",
+			"detail": "Preserve apex canonical/OG and www sitemap/robots baseline until an explicit host/redirect decision."
+		},
+		{
+			"id": "framework-credit",
+			"status": "unresolved",
+			"detail": "Preserve SvelteKit credit verbatim; update only as an explicitly reviewed migration copy change."
+		},
+		{
+			"id": "resume-legacy-url",
+			"status": "unresolved",
+			"detail": "Old generated artifact uses /_app/immutable/assets/hugo-hsi-resume.BZP4g5vC.pdf; artifact evidence, not a stable source URL. Verify deployed URL and preserve or redirect before cutover."
+		}
+	]
+}
