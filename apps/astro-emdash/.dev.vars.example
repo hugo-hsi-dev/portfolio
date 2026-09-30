@@ -1,0 +1,4 @@
+# Optional local runtime origin. Use the URL reported by Portless.
+# EMDASH_SITE_URL=https://portfolio-astro-emdash.localhost
+# No deployment credentials are needed for local D1/R2/KV emulation.
+# Set EMDASH_ENCRYPTION_KEY securely later, before encrypted plugin settings are used.

@@ -16,3 +16,11 @@ Thumbs.db
 # Vite
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Isolated Astro / EmDash development
+**/dist/
+**/.astro/
+**/.emdash/
+**/.dev.vars
+**/.dev.vars.*
+!**/.dev.vars.example
