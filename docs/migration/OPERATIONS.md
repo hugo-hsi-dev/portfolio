@@ -71,7 +71,13 @@ and integration pushes, using Node 24, pnpm 11.22.0, frozen bootstrap, migration
 check/build/disposable smoke, UI interaction and published-CMS browser tests, and
 legacy lint/check/tests/deployment dry-run. Browser tooling is pinned to Python
 3.12, Playwright 1.62.0 and Pillow 12.3.0; Chromium and its runner dependencies are
-installed explicitly. It
+installed explicitly. The downloaded Chromium is linked at `/usr/bin/chromium`,
+the existing UI harness default, on the ephemeral CI runner. Run validation from
+a short checkout path (CI uses `/tmp/p`, local replay uses `/workspace/op`) because
+Chromium Unix socket paths include the UI harness's app-local temporary directory
+and must fit the platform socket limit. The checkout copy precedes installation so
+module real paths remain in the same short tree. Global pnpm virtual storage is
+disabled, matching the saved cloud activation script. It
 uses pinned actions, `contents:read`, credential-free checkout and no repository
 secrets, cloud environments or deployment step. Its final check rejects changed
 tracked inputs and unexpected untracked files. It does not configure required
