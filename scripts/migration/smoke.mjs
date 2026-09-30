@@ -18,7 +18,8 @@ const signalHandlers = ['SIGINT', 'SIGTERM'].map((signal) => {
 		interruption.abort(new Error(`Smoke interrupted by ${signal}`));
 		child?.kill('SIGTERM');
 	};
-	process.once(signal, handler);
+	// Keep the listener until finally: signal-exit must see our cleanup handler.
+	process.on(signal, handler);
 	return [signal, handler];
 });
 try {

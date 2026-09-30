@@ -132,9 +132,10 @@ preview persistence too; do not delete another developer's local CMS state.
    Rolling back code alone does not restore database schema/content or media.
    Main/domain routing and production remain separately approval-gated.
 
-## Operations follow-up
+## Operations follow-up after UI integration
 
-The operations branch resolves initial findings 1–3: generated collection types
+The operations branch rebases onto UI integration
+`3a4500cf05162405c15af15cfb646e8c1e0d0831` and resolves initial findings 1–3: generated collection types
 are ignored by Git/Prettier; built smoke uses a sanitized local Wrangler child and
 copied build in temporary storage; a read-only integration CI workflow runs local
 migration/legacy validation; and seed documentation reflects the current CMS slice.
@@ -148,7 +149,34 @@ consistent backups, isolated restore, cutover and rollback evidence. Saved setti
 and persistent recovery are still future authorized actions. Admin and UI harnesses
 remain owned by their separate tasks; no authenticated browser proof is implied.
 
-Follow-up native review and fresh replay results are recorded with the PR. The
+A fresh Node 24.19.0 / pnpm 11.22.0 worktree at operations code commit
+`7a380bdf3aa8569e1d436f56afa2b80e30aece66` passed:
+
+- Frozen bootstrap; 49 migration tests, zero skips; Astro zero diagnostics.
+- Migration build and disposable built smoke.
+- Four UI unit tests and the actual published-CMS browser harness: eight zero-pixel
+  comparisons and three original media hashes, plus draft/publication/503 recovery.
+- Whole-repository lint, legacy zero diagnostics, 12 tests, build and ASSETS-only dry-run.
+- No tracked input changes or unexpected untracked outputs after validation.
+
+The first longer checkout hit Chromium's Unix socket limit; the complete passing
+replay used `/workspace/op`, and CI installs under `/tmp/p`. Playwright 1.62.0,
+Pillow 12.3.0 and local system Chromium 151.0.7922.173 supplied this browser evidence.
+CI installs Playwright's pinned Chromium 151.0.7922.34 and links it at the harness's
+expected `/usr/bin/chromium`. Hosted CI still needs its own successful run; local
+system-Chromium evidence is not a claim that this hosted browser ran.
+
+Follow-up signal testing found `signal-exit` could re-emit SIGTERM after a once-only
+handler deregistered. Retaining the handler until finally corrected it. A real
+interrupted smoke exited with failure, left no temporary storage and preserved all
+source-state hashes; native review approved this adjustment and the CI fixes.
+Focused smoke/script/lint checks were repeated after that signal-only correction.
+
+Aggregate logs are `/tmp/operations-aggregate-*.log` and browser evidence is
+`/tmp/portfolio-ui-cms/public-route-results.json`. These are task-local evidence.
+Authenticated admin/passkey/editor sessions, persistent staging setup/import and
+backup/restore remain unverified; the recovery document is a procedure, not a
+completed rehearsal. The
 initial 45-test count above remains attributed to e13d5f2. The added isolation
 regressions increase this branch's migration suite to 49 tests. No saved setting,
 credential, resource, UI integration merge or main change is part of these fixes.

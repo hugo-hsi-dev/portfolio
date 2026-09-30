@@ -113,7 +113,7 @@ first-admin setup later at the intended origin. No credentials are created here.
       environment validation and local smoke tests.
 - [x] Content model: deterministic authored-TS fixture, stable identifiers and asset hashes,
       reviewed EmDash 1.x schemas and idempotent importer. Owner: content task.
-- [ ] UI parity: preserve design/content, URLs, accessibility, responsive layouts,
+- [x] UI parity: preserve design/content, URLs, accessibility, responsive layouts,
       motion and résumé links; compare screenshots and functional behavior.
 - [ ] CMS editing: disposable D1 draft/publication/policy/media handler tests pass;
       real authenticated editing, passkeys, draft preview, sessions and media picker
