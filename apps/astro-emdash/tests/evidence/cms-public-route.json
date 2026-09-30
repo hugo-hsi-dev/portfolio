@@ -1,0 +1,79 @@
+{
+	"publication": [
+		{
+			"state": "schema-only",
+			"status": 503
+		},
+		{
+			"state": "17-drafts",
+			"status": 503
+		},
+		{
+			"state": "pending-edit-and-preview-query",
+			"visible": false
+		},
+		{
+			"state": "published-edit",
+			"visible": true
+		},
+		{
+			"state": "required-home-unpublished",
+			"status": 503
+		}
+	],
+	"images": [
+		{
+			"project": "medal-of-honor-museum",
+			"url": "/_emdash/api/media/file/01M3RV6W716363TCP8BX6XSJY7.png",
+			"sha256": "679b696b6d81167a4eb44f65eaba9111d6040fd025fa4950829c05cc963157a5"
+		},
+		{
+			"project": "first-avenue-advisors",
+			"url": "/_emdash/api/media/file/01M3RV6WM4MNNRVT0BM6EJ6TTQ.png",
+			"sha256": "d47506f6b7638db4c7d0ad9776a5a748098ace657b2973ec8359d104b0e4d0f5"
+		},
+		{
+			"project": "minecentral",
+			"url": "/_emdash/api/media/file/01M3RV6X2W38PK8J46YTDD3ACQ.png",
+			"sha256": "8135344277cd23688bb1dd995443c13f713faaf373c725f596a872d4d6453886"
+		}
+	],
+	"screenshots": {
+		"published": {
+			"astro-375.png": {
+				"size": [375, 6850],
+				"differing_pixels": 0
+			},
+			"astro-768.png": {
+				"size": [768, 7040],
+				"differing_pixels": 0
+			},
+			"astro-1440.png": {
+				"size": [1440, 5789],
+				"differing_pixels": 0
+			},
+			"astro-375-nojs.png": {
+				"size": [375, 6850],
+				"differing_pixels": 0
+			}
+		},
+		"cmsMedia": {
+			"astro-375.png": {
+				"size": [375, 6850],
+				"differing_pixels": 0
+			},
+			"astro-768.png": {
+				"size": [768, 7040],
+				"differing_pixels": 0
+			},
+			"astro-1440.png": {
+				"size": [1440, 5789],
+				"differing_pixels": 0
+			},
+			"astro-375-nojs.png": {
+				"size": [375, 6850],
+				"differing_pixels": 0
+			}
+		}
+	}
+}

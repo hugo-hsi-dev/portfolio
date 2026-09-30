@@ -1,5 +1,5 @@
-import type fixture from '../../../migration/portfolio/fixture.json';
+import type { Portfolio } from '../../lib/server/portfolio';
 
-/** Shared presentation shape; content is supplied by the published-only server loader. */
-export type Portfolio = typeof fixture;
+/** The presentation consumes the validated, published-only server contract. */
+export type { Portfolio };
 export type Project = Portfolio['projects'][number];

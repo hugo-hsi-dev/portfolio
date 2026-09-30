@@ -2,9 +2,9 @@
 
 The public presentation accepts the ordered portfolio shape in
 `migration/portfolio/CONTRACT.md`. `src/components/portfolio/Portfolio.astro` renders
-provided data; it does not load content or provide fallback values. The fixture import
-in `types.ts` is type-only. CMS schema, querying, validation and publication belong to
-the CMS slice.
+provided data; it does not load content or provide fallback values. Presentation types
+reference the CMS-exported `Portfolio` through type-only imports. CMS schema, querying,
+validation and publication belong to the CMS slice.
 
 ## Explicit development input
 
@@ -13,9 +13,12 @@ This route explicitly supplies the fixture for visual and interaction testing. I
 returns 404 from a built Worker, sets `no-store`, and requests no indexing. It is not
 the public CMS-backed route and must never be used as a database-failure fallback.
 
-The CMS integration must supply `src/lib/server/portfolio.ts` with
-`loadPortfolio(): Promise<fixture shape>`. Public loader failures or missing required
-published content must return a minimal generic HTTP 503 without internal details.
+The public `/` route calls `src/lib/server/portfolio.ts`
+`loadPortfolio(): Promise<Portfolio>` on every request. Any loader failure, including
+missing required published content, returns minimal generic HTTP 503 HTML with
+`Cache-Control: private, no-store` and `X-Robots-Tag: noindex`. Successful responses
+use `no-store` so publication changes appear on the next request. Request query
+parameters never select draft/preview content.
 Required presentation references include the six ordered sections, email contact,
 both navigation contact IDs and the application-owned `resume-pdf` media ID.
 Optional project images and URLs remain optional.
@@ -36,21 +39,20 @@ Optional project images and URLs remain optional.
 ## Verification
 
 Baseline source: `326c112c709f93bba6fb4701d03870383a316424`.
-Integration base: `a1ee7b7fbdce1af92a334e108975cc6aef0b8ed9`.
+Integration base after CMS rebase: `e13d5f274b519c0b2df781c535d6ae59301ab3eb`.
 Cloud checks used Node 24.19.0 and pnpm 11.22.0.
 
 Run `pnpm migration:check`, `pnpm migration:build`, `pnpm migration:smoke`, and
-`pnpm exec node --test apps/astro-emdash/tests/*.test.ts`. Legacy checks remain
+`pnpm exec node --test apps/astro-emdash/tests/*.test.ts`. The public CMS/browser
+integration test is `pnpm exec node --test apps/astro-emdash/tests/ui-public-d1.test.mjs`. Legacy checks remain
 `pnpm lint`, `pnpm check`, `pnpm test`, and `pnpm deploy:dry-run`.
 
 In an agent environment, Astro 7 may automatically detach its dev/preview process.
-For these local checks, `ASTRO_DEV_BACKGROUND=1` keeps the existing Portless command
-attached; `ASTRO_PREVIEW_BACKGROUND=1` keeps the existing smoke runner attached.
-Writable `XDG_CONFIG_HOME` and `PNPM_HOME` directories may be needed in a sandbox.
-These are command-local environment settings, not deployment configuration.
-
-The current environment cannot fetch the EmDash admin's Google Fonts metadata.
-Builds complete with that warning; portfolio fonts are local and fully loaded.
+Use `pnpm --filter @portfolio/astro-emdash dev --ignore-lock` to keep the existing
+Portless command attached. The merged CMS slice adds the supported `--ignore-lock`
+flag to the smoke runner and disables optional admin font fetching. Writable
+`XDG_CONFIG_HOME` and `PNPM_HOME` directories may be needed in a sandbox. These are
+command-local environment settings, not deployment configuration.
 
 ### Browser evidence
 
@@ -69,12 +71,25 @@ horizontal overflow were found. Keyboard order/skip focus, typing, reveal cleanu
 header scrolling, magnetic movement, reduced-motion toggling, missing observer
 support, cursor visibility without JavaScript and PDF bytes were verified.
 
-Evidence currently exercises the explicit development fixture route. Published CMS
-success, missing-content 503 and draft exclusion require the CMS loader integration;
-these checks must not be reported as published-content verification.
+The initial screenshots exercise the explicit development fixture route. The separate
+public CMS/browser integration test uses isolated local D1/R2 state and compares
+published content against those same captures, including CMS-hosted image URLs. It
+checks draft-only/missing content 503 responses, private pending edits, publication
+visibility and deliberate unpublish/republish recovery. It never creates an admin or
+connects to live resources. [CMS route results](tests/evidence/cms-public-route.json)
+record all eight zero-pixel comparisons, publication states and original image hashes.
+The recorded media URLs belong to the disposed local test database, not a deployment.
+Real admin/passkey workflows, persistent staging, and backup/recovery remain separate gates.
+
+The UI test places its disposable app under ignored `.astro/ui-d1-temp` and restores
+`TMPDIR` afterward. This keeps the app and pnpm dependency real paths under a common
+filesystem ancestor: Astro 7 otherwise rebases an absolute EmDash CSS module path
+under `/tmp`, causing a development error overlay. The shared CMS harness, route
+authentication, dependency files and browser assertions are unchanged.
 
 A reusable browser harness requires Python Playwright and Chromium (already present
-in this cloud environment). Supply the actual Portless URL explicitly:
+in this cloud environment). The CMS integration test additionally requires Pillow.
+Supply the actual Portless URL explicitly:
 
 ```sh
 python apps/astro-emdash/tests/ui-browser.py \
