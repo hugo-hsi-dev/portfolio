@@ -54,16 +54,27 @@ test('page renders complete accessible content without browser APIs or JavaScrip
 
 test('shared links preserve native anchor attributes and isolate underline hover groups', async () => {
 	const html = await renderModule('/tests/fixtures/Links.svelte');
-	assert.match(html, /href="\/resume.pdf"/);
-	assert.match(html, /download="resume.pdf"/);
-	assert.match(html, /aria-label="Download fixture"/);
-	assert.match(html, /target="_blank"/);
-	assert.match(html, /rel="noreferrer"/);
-	assert.match(html, /group\/link/);
-	assert.match(html, /group-hover\/link:after:scale-x-100/);
-	assert.match(html, /aria-hidden="true">↗/);
-	assert.match(html, /data-magnetic-content/);
-	assert.match(html, /class="fixture-magnetic fixture-active"/);
-	assert.match(html, /aria-label="Magnetic fixture"/);
 	assert.equal((html.match(/<a\b/g) ?? []).length, 3);
+	const anchors = [...html.matchAll(/(<a\b[^>]*>)([\s\S]*?)<\/a>/g)];
+	assert.equal(anchors.length, 3);
+	// Links.svelte renders Button, TextLink, then MagneticLink.
+	const [button, textLink, magneticLink] = anchors;
+
+	assert.match(button[1], /\shref="\/resume\.pdf"/);
+	assert.match(button[1], /\sdownload="resume\.pdf"/);
+	assert.match(button[1], /\saria-label="Download fixture"/);
+	assert.match(button[2], /Download/);
+
+	assert.match(textLink[1], /\shref="https:\/\/example\.com"/);
+	assert.match(textLink[1], /\starget="_blank"/);
+	assert.match(textLink[1], /\srel="noreferrer"/);
+	assert.match(textLink[1], /group\/link/);
+	assert.match(textLink[2], /group-hover\/link:after:scale-x-100/);
+	assert.match(textLink[2], /aria-hidden="true">↗/);
+	assert.match(textLink[2], /Visit/);
+
+	assert.match(magneticLink[1], /\shref="#top"/);
+	assert.match(magneticLink[1], /\sclass="fixture-magnetic fixture-active"/);
+	assert.match(magneticLink[1], /\saria-label="Magnetic fixture"/);
+	assert.match(magneticLink[2], /<span\b[^>]*\sdata-magnetic-content\b[^>]*>[\s\S]*?Top/);
 });
