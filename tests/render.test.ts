@@ -76,9 +76,10 @@ test('shared links preserve native anchor attributes and isolate underline hover
 	assert.match(magneticLink[1], /\shref="#top"/);
 	assert.match(magneticLink[1], /\sclass="fixture-magnetic fixture-active"/);
 	assert.match(magneticLink[1], /\saria-label="Magnetic fixture"/);
-	// The fixture label is text with Svelte comments; never cross an element boundary.
+	// Remove comments first so neither their text nor backtracking can supply the label.
+	const magneticContent = magneticLink[2].replace(/<!--[\s\S]*?-->/g, '');
 	assert.match(
-		magneticLink[2],
-		/<span\b[^>]*\sdata-magnetic-content=""(?=\s|>)[^>]*>(?:<!--[^]*?-->|[^<])*?Top(?:<!--[^]*?-->|[^<])*?<\/span>/
+		magneticContent,
+		/<span\b[^>]*\sdata-magnetic-content=""(?=\s|>)[^>]*>[^<]*Top[^<]*<\/span>/
 	);
 });
