@@ -4,10 +4,11 @@
 	import SiteNav from '$lib/components/SiteNav.svelte';
 	import ScrollProgress from '$lib/components/ScrollProgress.svelte';
 	import ProjectsSection from '$lib/components/ProjectsSection.svelte';
+	import ExperienceSection from '$lib/components/ExperienceSection.svelte';
 	import TimelineSection from '$lib/components/TimelineSection.svelte';
 	import SkillsSection from '$lib/components/SkillsSection.svelte';
 	import SiteFooter from '$lib/components/SiteFooter.svelte';
-	import { experience, education } from '$lib/data/portfolio';
+	import { education } from '$lib/data/portfolio';
 
 	let showName = $state(false);
 </script>
@@ -52,7 +53,7 @@
 <main id="main" tabindex="-1" class="overflow-clip">
 	<Hero onNameVisibilityChange={(visible) => (showName = !visible)} />
 	<ProjectsSection />
-	<TimelineSection id="experience" title="Experience" items={experience} />
+	<ExperienceSection />
 	<TimelineSection id="education" title="Education" items={education} divided />
 	<SkillsSection />
 </main>

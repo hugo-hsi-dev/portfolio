@@ -21,7 +21,7 @@ async function renderModule(path: string) {
 
 test('page renders complete accessible content without browser APIs or JavaScript', async () => {
 	const html = await renderModule('/src/routes/+page.svelte');
-	assert.equal((html.match(/<article\b/g) ?? []).length, 10);
+	assert.equal((html.match(/<article\b/g) ?? []).length, 11);
 	assert.equal((html.match(/<img\b/g) ?? []).length, 3);
 	for (const id of [
 		'hero-title',

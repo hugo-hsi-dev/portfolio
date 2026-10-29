@@ -18,6 +18,7 @@ export interface TimelineEntry {
 	date: string;
 	role: string;
 	company: string;
+	highlights?: string[];
 }
 
 export const projects: Project[] = [
@@ -91,6 +92,12 @@ export const experience: TimelineEntry[] = [
 		date: '2021 — Present',
 		role: 'Badminton Head Coach',
 		company: 'Reflex'
+	},
+	{
+		date: 'TODO dates',
+		role: 'After School Teacher Assistant',
+		company: 'TODO employer',
+		highlights: ['TODO first highlight', 'TODO second highlight']
 	}
 ];
 
